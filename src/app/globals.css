@@ -1,0 +1,109 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --color-bg:        #FDFBF7;
+  --color-bg-card:   #FFFFFF;
+  --color-text:      #2D3436;
+  --color-text-mute: #636E72;
+  --color-accent:    #E07B39;
+  --color-accent-lt: #F5EBE0;
+  --color-border:    rgba(45,52,54,0.08);
+  --radius-btn:      100px;
+  --radius-card:     16px;
+  --font-main:       'Inter', sans-serif;
+}
+
+@theme inline {
+  --color-bg:         #FDFBF7;
+  --color-bg-card:    #FFFFFF;
+  --color-accent:     #E07B39;
+  --color-accent-lt:  #F5EBE0;
+  --color-muted:      #636E72;
+  --color-anthracite: #2D3436;
+  --font-sans:        var(--font-inter, 'Inter', sans-serif);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Bouton CTA partagé */
+.btn-accent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-accent);
+  color: #fff;
+  border-radius: var(--radius-btn);
+  padding: 14px 32px;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  letter-spacing: 0.01em;
+  border: none;
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-accent:hover   { opacity: 0.85; }
+.btn-accent:active  { transform: scale(0.98); }
+
+/* Bouton secondaire (texte + lien) */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--color-text-mute);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.btn-ghost:hover { color: var(--color-accent); }
+
+/* Carte produit */
+.card {
+  background: var(--color-bg-card);
+  border: 0.5px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: 0 2px 24px rgba(45,52,54,0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 32px rgba(45,52,54,0.10);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-accent-lt);
+  color: var(--color-accent);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  section { padding-top: 64px !important; padding-bottom: 64px !important; }
+  .btn-accent { width: 100%; justify-content: center; }
+}
+
+/* Supprime le dark-mode OS qui forçait un fond noir */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:        #FDFBF7;
+    --color-bg-card:   #FFFFFF;
+    --color-text:      #2D3436;
+    --color-text-mute: #636E72;
+  }
+}
