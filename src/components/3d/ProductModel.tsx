@@ -150,18 +150,8 @@ export default function ProductModel({
       // Position légèrement au-dessus de la surface du couvercle
       plane.position.set(localTop.x, localTop.y + 0.008 / autoScale, localTop.z);
 
-      // Orientation : aligne le plan sur la normale réelle du couvercle
-      // La face supérieure du mesh box_top a pour normale +Y dans son espace local
-      const lidWorldQuat  = new Quaternion();
-      lidMesh.getWorldQuaternion(lidWorldQuat);
-      // La normale du dessus du couvercle en world space
-      const topNormal = new Vector3(0, 1, 0).applyQuaternion(lidWorldQuat);
-      // PlaneGeometry a sa normale sur +Z par défaut → on tourne pour l'aligner sur topNormal
-      const worldPlaneQuat = new Quaternion().setFromUnitVectors(new Vector3(0, 0, 1), topNormal);
-      // Convertit en espace local du groupRef
-      const groupQuat = new Quaternion();
-      groupRef.current!.getWorldQuaternion(groupQuat);
-      plane.quaternion.copy(worldPlaneQuat.premultiply(groupQuat.invert()));
+      // Inclinaison 6° sur axe Y
+      plane.rotation.set(-Math.PI / 2, LID_TILT_RAD, 0);
 
       groupRef.current!.add(plane);
     };
