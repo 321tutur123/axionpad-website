@@ -169,3 +169,20 @@ export async function PATCH(
     return NextResponse.json({ error: "DB error" }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  if (!(await isAuthorized(request))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const { id } = await params;
+  try {
+    const { env } = getRequestContext();
+    await env.DB.prepare("DELETE FROM orders WHERE id = ?").bind(id).run();
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "DB error" }, { status: 500 });
+  }
+}

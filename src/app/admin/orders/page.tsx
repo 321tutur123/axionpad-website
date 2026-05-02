@@ -195,10 +195,23 @@ function buildAddressText(name: string, address: ShippingAddress): string {
 function OrderModal({ order, onUpdate, onClose }: ModalProps) {
   const address = safeJSON<ShippingAddress>(order.shipping_address, {});
   const items   = safeJSON<OrderItem[]>(order.items, []);
-  const [tracking, setTracking] = useState(order.tracking_number ?? "");
-  const [saving, setSaving]     = useState(false);
-  const [copied, setCopied]     = useState<"mr" | "col" | null>(null);
+  const [tracking,  setTracking]  = useState(order.tracking_number ?? "");
+  const [saving,    setSaving]    = useState(false);
+  const [copied,    setCopied]    = useState<"mr" | "col" | null>(null);
+  const [deleting,  setDeleting]  = useState(false);
+  const [confirmDel, setConfirmDel] = useState(false);
   const isShipped = order.status === "shipped";
+
+  const deleteOrder = async () => {
+    setDeleting(true);
+    try {
+      await fetch(`/api/admin/orders/${order.id}`, { method: "DELETE" });
+      onUpdate(order.id, {} as Partial<Order>);
+      onClose();
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const openCarrier = (carrier: "mr" | "col") => {
     const name = order.shipping_name || order.customer_name || "";
@@ -338,6 +351,24 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
         </div>
 
         <div className="px-6 py-4 border-t border-white/10 flex flex-wrap gap-2 justify-between items-center shrink-0">
+          {confirmDel ? (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-red-400">Supprimer définitivement ?</span>
+              <button onClick={deleteOrder} disabled={deleting}
+                className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-semibold transition-colors disabled:opacity-60">
+                {deleting ? "..." : "Confirmer"}
+              </button>
+              <button onClick={() => setConfirmDel(false)}
+                className="px-3 py-1.5 rounded-lg border border-white/10 text-zinc-400 hover:text-white text-xs transition-colors">
+                Annuler
+              </button>
+            </div>
+          ) : (
+            <button onClick={() => setConfirmDel(true)}
+              className="text-xs text-zinc-600 hover:text-red-400 transition-colors">
+              Supprimer
+            </button>
+          )}
           <div className="flex gap-2">
             <button
               onClick={() => openCarrier("mr")}
@@ -414,6 +445,10 @@ export default function AdminOrdersPage() {
   };
 
   const handleOrderUpdate = (id: string, patch: Partial<Order>) => {
+    if (Object.keys(patch).length === 0) {
+      setOrders(prev => prev.filter(o => o.id !== id));
+      return;
+    }
     setOrders(prev => prev.map(o => o.id === id ? { ...o, ...patch } : o));
     setSelected(prev => prev?.id === id ? { ...prev, ...patch } : prev);
   };
