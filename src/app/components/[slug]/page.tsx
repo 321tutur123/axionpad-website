@@ -2,6 +2,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getComponent, COMPONENTS } from "@/lib/components-data";
 
+const SLUG_EMOJI: Record<string, string> = {
+  pcb: "🔌",
+  switches: "⌨️",
+  body: "📦",
+  top: "🪟",
+  bottom: "🔩",
+};
+
 export function generateStaticParams() {
   return Object.keys(COMPONENTS).map(slug => ({ slug }));
 }
@@ -11,89 +19,142 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
   const component = getComponent(slug);
   if (!component) notFound();
 
-  return (
-    <main className="min-h-screen bg-black pt-20">
-      <div className="max-w-4xl mx-auto px-6 py-16">
+  const emoji = SLUG_EMOJI[slug] ?? "📐";
 
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-zinc-600 mb-12">
-          <Link href="/" className="hover:text-zinc-400 transition-colors">Accueil</Link>
-          <span>›</span>
-          <Link href="/#hero" className="hover:text-zinc-400 transition-colors">Axion Pad</Link>
-          <span>›</span>
-          <span className="text-zinc-300">{component.name}</span>
+  return (
+    <main style={{ minHeight: "100vh", background: "transparent", paddingTop: "80px" }}>
+      <div className="max-w-[1100px] mx-auto px-6 py-14 md:py-20">
+
+        <nav className="flex flex-wrap items-center gap-2 text-sm mb-10 md:mb-14">
+          <Link
+            href="/"
+            className="transition-colors"
+            style={{ color: "var(--color-text-mute)" }}
+          >
+            Accueil
+          </Link>
+          <span style={{ color: "var(--color-text-mute)" }} aria-hidden>/</span>
+          <Link
+            href="/#hero"
+            className="transition-colors"
+            style={{ color: "var(--color-text-mute)" }}
+          >
+            Axion Pad
+          </Link>
+          <span style={{ color: "var(--color-text-mute)" }} aria-hidden>/</span>
+          <span style={{ color: "var(--color-text)" }}>{component.name}</span>
         </nav>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 items-start">
 
-          {/* Visuel */}
           <div
-            className="aspect-square rounded-3xl flex items-center justify-center text-8xl"
-            style={{ background: `radial-gradient(circle at 40% 40%, ${component.color}33, #09090b)`, border: `1px solid ${component.color}30` }}
+            className="card aspect-square overflow-hidden flex items-center justify-center text-8xl select-none relative"
+            style={{
+              borderColor: `${component.color}35`,
+              background: `
+                radial-gradient(circle at 38% 32%, ${component.color}35 0%, transparent 52%),
+                radial-gradient(circle at 72% 78%, rgba(108, 92, 231, 0.12) 0%, transparent 46%),
+                var(--color-bg-card)
+              `,
+              boxShadow: `0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 40px rgba(0,0,0,0.45), 0 0 0 1px ${component.color}18`,
+            }}
           >
-            {slug === "pcb"      && "🔌"}
-            {slug === "switches" && "⌨️"}
-            {slug === "body"     && "📦"}
-            {slug === "top"      && "🪟"}
-            {slug === "bottom"   && "🔩"}
+            <span className="relative z-[1]" aria-hidden>{emoji}</span>
           </div>
 
-          {/* Infos */}
           <div>
             <div
-              className="inline-block text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full mb-4"
-              style={{ background: `${component.color}20`, color: component.color }}
+              className="badge mb-4 inline-flex border"
+              style={{
+                borderColor: `${component.color}40`,
+                background: `${component.color}18`,
+                color: component.color,
+              }}
             >
               Composant
             </div>
-            <h1 className="text-4xl font-bold text-white mb-2">{component.name}</h1>
-            <p className="text-zinc-500 mb-6">{component.subtitle}</p>
-            <p className="text-zinc-300 leading-relaxed mb-10">{component.description}</p>
+            <h1
+              className="font-semibold mb-2 tracking-tight"
+              style={{
+                fontSize: "clamp(1.875rem, 4vw, 2.75rem)",
+                color: "var(--color-text)",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              {component.name}
+            </h1>
+            <p className="mb-6 font-medium" style={{ fontSize: "1rem", color: "var(--color-accent)" }}>
+              {component.subtitle}
+            </p>
+            <p
+              className="leading-relaxed mb-10"
+              style={{ fontSize: "1rem", color: "var(--color-text-mute)", lineHeight: 1.75 }}
+            >
+              {component.description}
+            </p>
 
-            {/* Specs */}
-            <div className="space-y-3 mb-10">
+            <div className="space-y-0 mb-10 rounded-xl border overflow-hidden"
+              style={{
+                borderColor: "var(--color-border)",
+                background: "var(--color-bg-card)",
+              }}
+            >
               {component.specs.map(s => (
-                <div key={s.label} className="flex justify-between py-2 border-b border-white/5">
-                  <span className="text-zinc-500 text-sm">{s.label}</span>
-                  <span className="text-zinc-200 text-sm font-medium">{s.value}</span>
+                <div
+                  key={s.label}
+                  className="flex justify-between gap-6 py-3.5 px-4 border-b last:border-b-0"
+                  style={{ borderColor: "var(--color-border)" }}
+                >
+                  <span className="text-sm shrink-0" style={{ color: "var(--color-text-mute)" }}>
+                    {s.label}
+                  </span>
+                  <span className="text-sm font-medium text-right" style={{ color: "var(--color-text)" }}>
+                    {s.value}
+                  </span>
                 </div>
               ))}
             </div>
 
-            <div className="flex gap-4">
-              <Link
-                href="/shop"
-                className="px-6 py-3 rounded-full text-white font-semibold transition-all hover:scale-105"
-                style={{ background: component.color }}
-              >
-                Commander l'Axion Pad
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <Link href="/shop" className="btn-accent w-full sm:w-auto text-center" style={{ padding: "14px 32px" }}>
+                Commander l&apos;Axion Pad
               </Link>
-              <Link
-                href="/"
-                className="px-6 py-3 rounded-full border border-white/10 text-zinc-400 hover:text-white transition-colors"
-              >
+              <Link href="/#hero" className="btn-ghost w-full sm:w-auto justify-center">
                 ← Vue 3D
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Autres composants */}
-        <div className="mt-24">
-          <h2 className="text-zinc-600 text-sm uppercase tracking-widest mb-6">Autres composants</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="mt-20 md:mt-28">
+          <h2
+            className="text-sm font-semibold uppercase tracking-widest mb-6"
+            style={{ color: "var(--color-text-mute)", letterSpacing: "0.12em" }}
+          >
+            Autres composants
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             {Object.values(COMPONENTS)
               .filter(c => c.slug !== slug)
               .map(c => (
                 <Link
                   key={c.slug}
                   href={`/components/${c.slug}`}
-                  className="p-4 rounded-2xl border border-white/5 bg-white/5 hover:bg-white/10 transition-colors group"
+                  className="card p-4 md:p-5 group no-underline"
+                  style={{ height: "100%" }}
                 >
-                  <div className="text-xs text-zinc-600 mb-1 group-hover:text-zinc-400 transition-colors uppercase tracking-wide">
+                  <div
+                    className="text-xs mb-1 uppercase tracking-wide transition-colors"
+                    style={{ color: "var(--color-text-mute)" }}
+                  >
                     {c.slug}
                   </div>
-                  <div className="text-white text-sm font-medium">{c.name}</div>
+                  <div
+                    className="text-sm font-medium transition-colors"
+                    style={{ color: "var(--color-text)" }}
+                  >
+                    {c.name}
+                  </div>
                 </Link>
               ))}
           </div>

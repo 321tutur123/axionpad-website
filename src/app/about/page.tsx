@@ -19,7 +19,7 @@ const TECH = [
   {
     title: "PCB 2 couches",
     sub: "Conception maison",
-    desc: "Conçu sur KiCad. FR4 haute stabilité avec potentiomètres ALPS, sockets Kailh Hot-swap et USB-C.",
+    desc: "Conçu sur KiCad. FR4 haute stabilité avec potentiomètres linéaires B103 (10 kΩ), sockets Kailh Hot-swap et USB-C.",
   },
   {
     title: "3D Print",
@@ -66,13 +66,8 @@ export default function AboutPage() {
         </p>
       </section>
 
-      {/* Histoire — fond plus doux que blanc pur */}
-      <section
-        style={{
-          padding: "0 24px 80px",
-          background: "linear-gradient(180deg, var(--color-bg-soft) 0%, var(--color-bg-muted) 45%, var(--color-bg) 100%)",
-        }}
-      >
+      {/* Histoire — même fond que le reste du site (pas de bloc dégradé) */}
+      <section style={{ padding: "0 24px 80px", background: "transparent" }}>
         <div className="max-w-3xl mx-auto">
           <div className="card p-8" style={{ background: "var(--color-bg-card-alt)", boxShadow: "0 4px 28px rgba(0,0,0,0.35)" }}>
             <h2
@@ -127,7 +122,7 @@ export default function AboutPage() {
       </section>
 
       {/* Technique */}
-      <section style={{ padding: "80px 24px", background: "var(--color-bg-soft)" }}>
+      <section style={{ padding: "80px 24px", background: "transparent" }}>
         <div className="max-w-4xl mx-auto">
           <h2
             className="text-xs uppercase tracking-widest mb-8"
@@ -164,13 +159,7 @@ export default function AboutPage() {
       </section>
 
       {/* Contact */}
-      <section
-        className="text-center px-6"
-        style={{
-          padding: "80px 24px",
-          background: "linear-gradient(145deg, var(--color-accent-lt) 0%, var(--color-bg-soft) 60%, var(--color-bg-muted) 100%)",
-        }}
-      >
+      <section className="text-center px-6" style={{ padding: "80px 24px", background: "transparent" }}>
         <div className="max-w-2xl mx-auto">
           <h2
             className="font-semibold mb-4"

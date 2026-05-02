@@ -6,7 +6,7 @@
       "name": "Axion Pad Standard",
       "tagline": "Le macro pad essentiel pour ton workflow",
       "description": "12 touches mécaniques + 4 potentiomètres sur RP2040. Boîtier imprimé en 3D, firmware CircuitPython.",
-      "longDescription": "L'Axion Pad Standard est le point d'entrée parfait dans l'univers des macro pads programmables. Avec ses 12 touches mécaniques Cherry MX et ses 4 potentiomètres ALPS, il te permet de contrôler n'importe quelle application en un geste. Le boîtier est imprimé en 3D en PLA par défaut, personnalisable à la commande. Le couvercle supérieur peut recevoir une gravure en creux (extrusion négative) : texte court ou logo officiel Axion ; un logo entièrement personnalisé est réalisé à partir de ton fichier vectoriel après validation de la commande.",
+      "longDescription": "L'Axion Pad Standard est le point d'entrée parfait dans l'univers des macro pads programmables. Avec ses 12 touches mécaniques Cherry MX et ses 4 potentiomètres linéaires B103 (10 kΩ), il te permet de contrôler n'importe quelle application en un geste. Le boîtier est imprimé en 3D en PLA par défaut, personnalisable à la commande. Le couvercle supérieur peut recevoir une gravure en creux (extrusion négative) : texte court ou logo officiel Axion ; un logo entièrement personnalisé est réalisé à partir de ton fichier vectoriel après validation de la commande.",
       "price": 7999,
       "comparePrice": 9999,
       "category": "macro-pads",
@@ -56,10 +56,10 @@
           "type": "radio",
           "choices": [
             { "value": "mx-red",          "label": "Cherry MX Red — Linéaire",          "priceAdd": 0,   "available": true, "badge": "Populaire" },
-            { "value": "mx-brown",        "label": "Cherry MX Brown — Tactile",         "priceAdd": 0,   "available": true },
-            { "value": "mx-silent-red",   "label": "Cherry MX Silent Red — Silencieux", "priceAdd": 600, "available": true },
-            { "value": "mx-silent-brown", "label": "Cherry MX Silent Brown",            "priceAdd": 600, "available": true },
-            { "value": "mx-blue",         "label": "Cherry MX Blue — Clicky",           "priceAdd": 0,   "available": true }
+            { "value": "mx-brown",        "label": "Cherry MX Brown — Tactile",         "priceAdd": 0,   "available": false },
+            { "value": "mx-silent-red",   "label": "Cherry MX Silent Red — Silencieux", "priceAdd": 600, "available": false },
+            { "value": "mx-silent-brown", "label": "Cherry MX Silent Brown",            "priceAdd": 600, "available": false },
+            { "value": "mx-blue",         "label": "Cherry MX Blue — Clicky",           "priceAdd": 0,   "available": false }
           ]
         },
         {
@@ -76,7 +76,7 @@
       "specs": [
         { "label": "MCU",            "value": "RP2040 Dual-core 133 MHz" },
         { "label": "Touches",        "value": "12 × Cherry MX" },
-        { "label": "Potentiomètres", "value": "4 × ALPS RK09L" },
+        { "label": "Potentiomètres", "value": "4 × B103 (lin., 10 kΩ)" },
         { "label": "Connecteur",     "value": "USB-C Gen 2" },
         { "label": "Boîtier",        "value": "PLA 3D (autres options dispo)" },
         { "label": "Couvercle",      "value": "Option gravure en creux (texte ou logo)" },
@@ -125,10 +125,10 @@
           "type": "radio",
           "choices": [
             { "value": "mx-red",          "label": "Cherry MX Red — Linéaire",          "priceAdd": 0,   "available": true, "badge": "Populaire" },
-            { "value": "mx-brown",        "label": "Cherry MX Brown — Tactile",         "priceAdd": 0,   "available": true },
-            { "value": "mx-silent-red",   "label": "Cherry MX Silent Red — Silencieux", "priceAdd": 600, "available": true },
-            { "value": "mx-silent-brown", "label": "Cherry MX Silent Brown",            "priceAdd": 600, "available": true },
-            { "value": "mx-blue",         "label": "Cherry MX Blue — Clicky",           "priceAdd": 0,   "available": true }
+            { "value": "mx-brown",        "label": "Cherry MX Brown — Tactile",         "priceAdd": 0,   "available": false },
+            { "value": "mx-silent-red",   "label": "Cherry MX Silent Red — Silencieux", "priceAdd": 600, "available": false },
+            { "value": "mx-silent-brown", "label": "Cherry MX Silent Brown",            "priceAdd": 600, "available": false },
+            { "value": "mx-blue",         "label": "Cherry MX Blue — Clicky",           "priceAdd": 0,   "available": false }
           ]
         },
         {
@@ -154,7 +154,7 @@
       "specs": [
         { "label": "MCU",            "value": "RP2040 Dual-core 133 MHz" },
         { "label": "Touches",        "value": "12 × Cherry MX" },
-        { "label": "Potentiomètres", "value": "4 × ALPS RK09L" },
+        { "label": "Potentiomètres", "value": "4 × B103 (lin., 10 kΩ)" },
         { "label": "Boîtier",        "value": "Aluminium 6061 CNC anodisé" },
         { "label": "RGB",            "value": "16 LEDs WS2812B underglow" },
         { "label": "Connecteur",     "value": "USB-C Gen 2 + port TRRS" },
@@ -303,7 +303,7 @@
       "specs": [
         { "label": "MCU",            "value": "RP2040 Dual-core 133 MHz" },
         { "label": "Touches",        "value": "16 × Cherry MX (4×4)" },
-        { "label": "Potentiomètres", "value": "6 × ALPS RK09L" },
+        { "label": "Potentiomètres", "value": "6 × B103 (lin., 10 kΩ)" },
         { "label": "Écran",          "value": "OLED 128×32 I2C" },
         { "label": "Boîtier",        "value": "PLA 3D (par défaut)" },
         { "label": "Connecteur",     "value": "USB-C Gen 2" },
@@ -359,7 +359,7 @@
         "1 × PCB Axion Pad",
         "Tous les composants CMS",
         "1 × RP2040 pré-flashé",
-        "4 × Potentiomètres ALPS",
+        "4 × Potentiomètres B103 (10 kΩ lin.)",
         "Fichiers STL boîtier (Impression 3D)",
         "Guide d'assemblage PDF"
       ]

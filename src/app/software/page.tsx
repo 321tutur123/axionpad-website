@@ -213,15 +213,21 @@ export default function SoftwarePage() {
                 Pas de limites avec CircuitPython
               </h2>
               <p className="leading-relaxed mb-6" style={{ color: "var(--color-text-mute)" }}>
-                Si le configurateur ne suffit plus, édite directement le fichier{" "}
+                Si le configurateur ne suffit plus, édite{" "}
                 <code
                   className="px-1.5 py-0.5 rounded text-sm"
                   style={{ color: "var(--color-accent)", background: "var(--color-accent-muted)" }}
                 >
                   code.py
                 </code>{" "}
-                sur l'Axion Pad. Il se monte comme une clé USB — modifie le code,
-                sauvegarde, la mise à jour est instantanée. Zéro compilation.
+                à la racine du volume USB (l&apos;Axion Pad se monte comme une clé). Dans le dépôt, la version Standard est le fichier{" "}
+                <code
+                  className="px-1.5 py-0.5 rounded text-sm"
+                  style={{ color: "var(--color-accent)", background: "var(--color-accent-muted)" }}
+                >
+                  firmwares/STANDARD/code.py
+                </code>
+                . Sauvegarde → rechargement immédiat, zéro compilation.
               </p>
               <div className="flex flex-wrap gap-3">
                 <a
@@ -234,13 +240,13 @@ export default function SoftwarePage() {
                   Doc CircuitPython →
                 </a>
                 <a
-                  href="https://github.com"
+                  href="https://github.com/321tutur123/axion-pad/tree/main/firmwares/STANDARD"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-4 py-2 rounded-full border text-sm transition-colors"
                   style={{ borderColor: "var(--color-border)", color: "var(--color-text-mute)" }}
                 >
-                  GitHub — firmware →
+                  GitHub — firmwares/STANDARD →
                 </a>
               </div>
             </div>
@@ -520,20 +526,59 @@ function DeejMockup() {
   );
 }
 
+/** Extrait colorisé aligné sur firmwares/STANDARD/code.py (repo). */
 function CodeSnippet() {
+  const kw = "#c678dd";
+  const def = "#abb2bf";
+  const str = "#98c379";
+  const fn = "#61afef";
+  const varC = "#e06c75";
+  const cls = "#e5c07b";
+  const cm = "#5c6370";
+
   const lines = [
-    { indent: 0, tokens: [{ t: "import", c: "#c678dd" }, { t: " usb_hid", c: "#abb2bf" }] },
-    { indent: 0, tokens: [{ t: "from", c: "#c678dd" }, { t: " adafruit_hid.keyboard ", c: "#abb2bf" }, { t: "import", c: "#c678dd" }, { t: " Keyboard", c: "#e5c07b" }] },
+    { indent: 0, tokens: [{ t: "# firmwares/STANDARD/code.py — Standard v2.1.0 (extrait)", c: cm }] },
     { indent: 0, tokens: [] },
-    { indent: 0, tokens: [{ t: "kbd ", c: "#e06c75" }, { t: "= ", c: "#abb2bf" }, { t: "Keyboard", c: "#e5c07b" }, { t: "(usb_hid.devices)", c: "#abb2bf" }] },
+    { indent: 0, tokens: [{ t: "import ", c: kw }, { t: "analogio", c: cls }, { t: ", board, sys, usb_hid, supervisor", c: def }] },
+    { indent: 0, tokens: [{ t: "import ", c: kw }, { t: "adafruit_matrixkeypad", c: cls }] },
+    { indent: 0, tokens: [{ t: "from ", c: kw }, { t: "adafruit_hid.keyboard ", c: def }, { t: "import ", c: kw }, { t: "Keyboard", c: cls }] },
+    { indent: 0, tokens: [{ t: "from ", c: kw }, { t: "adafruit_hid.keycode ", c: def }, { t: "import ", c: kw }, { t: "Keycode", c: cls }] },
+    { indent: 0, tokens: [{ t: "import ", c: kw }, { t: "time", c: cls }] },
     { indent: 0, tokens: [] },
-    { indent: 0, tokens: [{ t: "# Assigner Ctrl+S à la touche 1", c: "#5c6370" }] },
-    { indent: 0, tokens: [{ t: "def", c: "#c678dd" }, { t: " on_key_1", c: "#61afef" }, { t: "():", c: "#abb2bf" }] },
-    { indent: 1, tokens: [{ t: "kbd.press", c: "#61afef" }, { t: "(KC.CTRL, KC.S)", c: "#abb2bf" }] },
-    { indent: 1, tokens: [{ t: "kbd.release_all", c: "#61afef" }, { t: "()", c: "#abb2bf" }] },
+    { indent: 0, tokens: [{ t: "DEVICE_ID ", c: varC }, { t: "= ", c: def }, { t: '"AXIONPAD:STANDARD"', c: str }] },
     { indent: 0, tokens: [] },
-    { indent: 0, tokens: [{ t: "# Layer 2 — raccourcis OBS", c: "#5c6370" }] },
-    { indent: 0, tokens: [{ t: "LAYERS", c: "#e5c07b" }, { t: " = [layer_1, layer_2]", c: "#abb2bf" }] },
+    {
+      indent: 0,
+      tokens: [{ t: "sliders ", c: varC }, { t: "= [", c: def }],
+    },
+    { indent: 1, tokens: [{ t: "analogio.AnalogIn(board.GP26), analogio.AnalogIn(board.GP27),", c: def }] },
+    { indent: 1, tokens: [{ t: "analogio.AnalogIn(board.GP28), analogio.AnalogIn(board.GP29),", c: def }] },
+    { indent: 0, tokens: [{ t: "]", c: def }] },
+    { indent: 0, tokens: [{ t: "kbd ", c: varC }, { t: "= ", c: def }, { t: "Keyboard", c: cls }, { t: "(usb_hid.devices)", c: def }] },
+    { indent: 0, tokens: [] },
+    { indent: 0, tokens: [{ t: "KEY_MAP ", c: varC }, { t: "= {", c: def }] },
+    {
+      indent: 1,
+      tokens: [
+        { t: "0", c: "#d19a66" },
+        { t: ": [Keycode.F13], 1: [Keycode.F14], 2: [Keycode.F15], 3: [Keycode.F16],", c: def },
+      ],
+    },
+    {
+      indent: 1,
+      tokens: [
+        { t: "4", c: "#d19a66" },
+        { t: ": [Keycode.F17], …, ", c: def },
+        { t: "11", c: "#d19a66" },
+        { t: ": [Keycode.F24],", c: def },
+      ],
+    },
+    { indent: 0, tokens: [{ t: "}", c: def }] },
+    { indent: 0, tokens: [] },
+    { indent: 0, tokens: [{ t: "while ", c: kw }, { t: "True", c: cls }, { t: ":", c: def }] },
+    { indent: 1, tokens: [{ t: "vals ", c: varC }, { t: "= [", c: def }, { t: "str", c: fn }, { t: "(int(s.value / 64)) ", c: def }, { t: "for", c: kw }, { t: " s ", c: def }, { t: "in", c: kw }, { t: " sliders]", c: def }] },
+    { indent: 1, tokens: [{ t: "print", c: fn }, { t: "(\"|\".join(vals))", c: def }] },
+    { indent: 1, tokens: [{ t: "time.sleep", c: fn }, { t: "(0.01)", c: def }] },
   ];
 
   return (
@@ -547,7 +592,7 @@ function CodeSnippet() {
           <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#c9c4bd" }} />
           <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#c9c4bd" }} />
         </div>
-        <span className="text-xs font-mono" style={{ color: "var(--color-text-mute)" }}>AXIONPAD / code.py</span>
+        <span className="text-xs font-mono" style={{ color: "var(--color-text-mute)" }}>firmwares/STANDARD/code.py</span>
         <div className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-accent)" }} />
           <span className="text-[10px]" style={{ color: "var(--color-text-mute)" }}>modifié</span>
@@ -557,7 +602,7 @@ function CodeSnippet() {
       <div className="p-4 font-mono text-xs leading-6 overflow-x-auto" style={{ background: "#14141f" }}>
         {lines.map((line, i) => (
           <div key={i} className="flex">
-            <span className="w-6 shrink-0 text-right mr-4 select-none" style={{ color: "rgba(255,255,255,0.2)" }}>{i + 1}</span>
+            <span className="w-7 shrink-0 text-right mr-3 select-none tabular-nums" style={{ color: "rgba(255,255,255,0.2)" }}>{i + 1}</span>
             <span>
               {"  ".repeat(line.indent)}
               {line.tokens.map((tok, j) => (

@@ -5,7 +5,7 @@ import { Canvas, ThreeEvent } from "@react-three/fiber";
 import { Suspense } from "react";
 import { Environment, OrbitControls, PerspectiveCamera, useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { Group, Box3, Vector3, Object3D, Color, MathUtils } from "three";
+import { Group, Box3, Vector3, Object3D, Color, MathUtils, Mesh } from "three";
 import { useRouter } from "next/navigation";
 import { scrollProgress } from "@/lib/scrollProgress";
 import FloatingParticles from "./FloatingParticles";
@@ -14,7 +14,8 @@ import ModelErrorBoundary from "./ModelErrorBoundary";
 const MODEL_PATH = "/models/axionpad.glb";
 useGLTF.preload(MODEL_PATH);
 
-const CASING_PATTERNS = ["body", "coque", "top", "case", "boitier", "shell", "lid", "cover"];
+/** À plein scroll : déplacement vertical max du couvercle (coords « monde » équivalentes après / autoScale). */
+const COVER_LIFT_WORLD_MAX = 1.82;
 
 const COMPONENT_ROUTES: Record<string, string> = {
   "body axion": "body",
@@ -23,25 +24,50 @@ const COMPONENT_ROUTES: Record<string, string> = {
   "cherry mx":  "switches",
 };
 
+/** Noms issus du blend / axionpad.glb (Outliner Blender). */
 function getSlug(name: string): string | null {
-  const n = name.toLowerCase();
+  const n = name.trim().toLowerCase();
+  if (n === "pcb_main") return "pcb";
+  if (n === "box_top") return "top";
+  if (n === "box_bottom") return "bottom";
+  if (n.startsWith("vis_")) return "top";
+  if (n.startsWith("cherry")) return "switches";
+  if (n.startsWith("keycaps_")) return "switches";
+  if (n.startsWith("faderknob_")) return "pcb";
+  if (name in COMPONENT_ROUTES) return COMPONENT_ROUTES[name];
   if (n.includes("pcb") || n.includes("circuit")) return "pcb";
   if (n.includes("cherry") || n.includes("switch") || n.includes("mx")) return "switches";
-  if (n.includes("top") || n.includes("lid") || n.includes("cover")) return "top";
+  if ((n.includes("top") || n.includes("lid") || n.includes("cover")) && !n.includes("bottom"))
+    return "top";
   if (n.includes("body") || n.includes("boitier") || n.includes("coque")) return "body";
   if (n.includes("bottom") || n.includes("base")) return "bottom";
-  return COMPONENT_ROUTES[name] ?? null;
+  return null;
 }
 
-function isCasing(name: string) {
-  const n = name.toLowerCase();
-  return CASING_PATTERNS.some(p => n.includes(p));
+/**
+ * Couche d’éclatement : couvercle (+ vis plaques) monte jusqu’à COVER_LIFT_WORLD_MAX ;
+ * tout le bloc PCB / touches / faders monte à la moitié. box_bottom immobile.
+ */
+function explodeLiftLayer(name: string): "cover" | "pcbHalf" | null {
+  const n = name.trim().toLowerCase();
+  if (n === "box_top") return "cover";
+  if (n.startsWith("vis_")) return "cover";
+  if (n === "pcb_main") return "pcbHalf";
+  if (n.startsWith("keycaps_")) return "pcbHalf";
+  if (n.startsWith("faderknob_")) return "pcbHalf";
+  if (n.startsWith("cherry")) return "pcbHalf";
+  return null;
+}
+
+function meshEntry(child: Mesh) {
+  return { mesh: child as Object3D, originY: child.position.y };
 }
 
 function ExplodingModel() {
   const router = useRouter();
-  const groupRef    = useRef<Group>(null);
-  const casingRef   = useRef<{ mesh: Object3D; originY: number }[]>([]);
+  const groupRef   = useRef<Group>(null);
+  const coverRef   = useRef<{ mesh: Object3D; originY: number }[]>([]);
+  const pcbRef     = useRef<{ mesh: Object3D; originY: number }[]>([]);
   const { scene } = useGLTF(MODEL_PATH);
 
   const { autoScale, centerOffset } = useMemo(() => {
@@ -55,34 +81,30 @@ function ExplodingModel() {
   }, [scene]);
 
   useEffect(() => {
-    const casing: { mesh: Object3D; originY: number }[] = [];
+    const covers: { mesh: Object3D; originY: number }[] = [];
+    const pcbs: { mesh: Object3D; originY: number }[] = [];
     scene.traverse(child => {
-      if ((child as any).isMesh && isCasing(child.name)) {
-        casing.push({ mesh: child, originY: child.position.y });
-      }
+      if (!(child instanceof Mesh)) return;
+      const layer = explodeLiftLayer(child.name);
+      if (layer === "cover") covers.push(meshEntry(child));
+      else if (layer === "pcbHalf") pcbs.push(meshEntry(child));
     });
-
-    if (casing.length === 0) {
-      const all: { mesh: Object3D; originY: number }[] = [];
-      scene.traverse(c => {
-        if ((c as any).isMesh) all.push({ mesh: c, originY: c.position.y });
-      });
-      casingRef.current = all.slice(0, Math.ceil(all.length / 2));
-    } else {
-      casingRef.current = casing;
-    }
+    coverRef.current = covers;
+    pcbRef.current = pcbs;
   }, [scene]);
 
   useFrame((_, delta) => {
     const p = scrollProgress.current;
-    const lift = MathUtils.lerp(0, 3.5 / autoScale, p);
+    const scaledCoverMax = COVER_LIFT_WORLD_MAX / Math.max(autoScale, 1e-6);
+    const coverLift = MathUtils.lerp(0, scaledCoverMax, p);
+    const pcbLift = coverLift * 0.5;
+    const k = Math.min(1, delta * 10);
 
-    casingRef.current.forEach(({ mesh, originY }) => {
-      mesh.position.y = MathUtils.lerp(
-        mesh.position.y,
-        originY + lift,
-        Math.min(1, delta * 10)
-      );
+    coverRef.current.forEach(({ mesh, originY }) => {
+      mesh.position.y = MathUtils.lerp(mesh.position.y, originY + coverLift, k);
+    });
+    pcbRef.current.forEach(({ mesh, originY }) => {
+      mesh.position.y = MathUtils.lerp(mesh.position.y, originY + pcbLift, k);
     });
 
     if (groupRef.current) {

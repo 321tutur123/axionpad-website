@@ -49,7 +49,7 @@ export const COMPONENTS: Record<string, ComponentInfo> = {
     slug: "pcb",
     name: "PCB RP2040",
     subtitle: "Carte électronique sur mesure",
-    description: "Conçu en interne autour du microcontrôleur RP2040 de Raspberry Pi. Le PCB intègre les 12 emplacements MX Kailh Hot-swap, 4 potentiomètres ALPS et l'interface USB-C en un circuit compact 2 couches haute stabilité.",
+    description: "Conçu en interne autour du microcontrôleur RP2040 de Raspberry Pi. Le PCB intègre les 12 emplacements MX Kailh Hot-swap, 4 potentiomètres linéaires B103 (10 kΩ) et l'interface USB-C en un circuit compact 2 couches haute stabilité.",
     specs: [
       { label: "MCU",         value: "RP2040 — Dual-core ARM Cortex-M0+" },
       { label: "Fréquence",   value: "133 MHz" },

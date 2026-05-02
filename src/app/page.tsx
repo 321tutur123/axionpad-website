@@ -25,8 +25,8 @@ const FEATURES = [
         <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
       </svg>
     ),
-    title: "4 Potentiomètres ALPS",
-    desc: "Contrôle du volume par application, précis et silencieux.",
+    title: "4 Potentiomètres B103",
+    desc: "Marquage B103, 10 kΩ linéaire — contrôle du volume par application.",
   },
   {
     icon: (
@@ -51,7 +51,7 @@ const FEATURES = [
 const SCROLL_STEPS = [
   { at: 0.05, title: "Design compact", body: "12 touches mécaniques dans un format minimaliste." },
   { at: 0.45, title: "Intérieur RP2040", body: "Microcontrôleur dual-core 133 MHz. Firmware CircuitPython." },
-  { at: 0.75, title: "PCB sur mesure", body: "4 potentiomètres ALPS pour un contrôle audio précis." },
+  { at: 0.75, title: "PCB sur mesure", body: "4 potentiomètres B103 (linéaires, 10 kΩ) pour un contrôle audio précis." },
 ];
 
 export default function HomePage() {
@@ -61,55 +61,69 @@ export default function HomePage() {
   useEffect(() => {
     if (!scrollSectionRef.current) return;
 
-    const triggers: ReturnType<typeof ScrollTrigger.create>[] = [];
+    const section = scrollSectionRef.current;
 
-    triggers.push(
-      ScrollTrigger.create({
-        trigger: scrollSectionRef.current,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.6,
-        onUpdate: self => { scrollProgress.current = self.progress; },
-      })
-    );
+    function updateLabels(globalProgress: number) {
+      labelRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const step = SCROLL_STEPS[i];
+        const w = 0.28;
+        const start = step.at;
+        const end = start + w;
+        if (globalProgress <= start || globalProgress >= end) {
+          gsap.set(el, { opacity: 0, y: 20 });
+          return;
+        }
+        const p = (globalProgress - start) / (end - start);
+        const opacity = p < 0.5
+          ? gsap.utils.mapRange(0, 0.5, 0, 1, p)
+          : gsap.utils.mapRange(0.5, 1, 1, 0, p);
+        const y = gsap.utils.mapRange(0, 1, 20, 0, Math.min(p * 2, 1));
+        gsap.set(el, { opacity, y });
+      });
+    }
 
-    labelRefs.current.forEach((el, i) => {
-      if (!el) return;
-      const step = SCROLL_STEPS[i];
-      const start = step.at;
-      const end   = start + 0.28;
+    const endPixels = () => {
+      const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+      const reduceMotion =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const mult = reduceMotion ? 0.95 : 2.82;
+      return "+=" + Math.round(vh * mult);
+    };
 
-      triggers.push(
-        ScrollTrigger.create({
-          trigger: scrollSectionRef.current,
-          start: `${start * 100}% top`,
-          end:   `${end   * 100}% top`,
-          scrub: true,
-          onUpdate: self => {
-            const p = self.progress;
-            const opacity = p < 0.5
-              ? gsap.utils.mapRange(0, 0.5, 0, 1, p)
-              : gsap.utils.mapRange(0.5, 1, 1, 0, p);
-            gsap.set(el, { opacity, y: gsap.utils.mapRange(0, 1, 20, 0, Math.min(p * 2, 1)) });
-          },
-        })
-      );
+    const main = ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: endPixels,
+      pin: true,
+      pinSpacing: true,
+      anticipatePin: 1,
+      scrub: 0.55,
+      invalidateOnRefresh: true,
+      onUpdate: self => {
+        scrollProgress.current = self.progress;
+        updateLabels(self.progress);
+      },
     });
 
-    return () => { triggers.forEach(t => t.kill()); };
+    updateLabels(0);
+
+    requestAnimationFrame(() => { ScrollTrigger.refresh(); });
+
+    return () => { main.kill(); };
   }, []);
 
   return (
     <main style={{ background: "transparent" }}>
 
-      {/* ── Hero scrollytelling ──────────────────────────────────────── */}
+      {/* ── Hero scrollytelling : pin jusqu’à fin de la vue éclatée (scroll virtuel GSAP) ── */}
       <section
+        id="hero"
         ref={scrollSectionRef}
-        className="relative"
-        style={{ height: "300vh" }}
+        className="relative hero-3d-section overflow-hidden"
       >
-        {/* Canvas sticky */}
-        <div className="sticky top-0 h-screen w-full overflow-hidden scene-3d-shell">
+        <div className="relative h-[100svh] min-h-[540px] w-full scene-3d-shell overflow-hidden">
           <div className="scene-3d-atmosphere" aria-hidden />
           <div className="scene-3d-canvas-wrap">
             <ScrollScene />
