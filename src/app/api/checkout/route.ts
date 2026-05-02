@@ -11,18 +11,35 @@ export const runtime = "edge";
 
 const MAX_DISTINCT_ITEMS = 30;
 const MAX_QTY_PER_LINE = 10;
+const FREE_SHIPPING_THRESHOLD = 10000; // 100 € en centimes
 
-const STANDARD_SHIPPING: Stripe.Checkout.SessionCreateParams.ShippingOption = {
-  shipping_rate_data: {
-    type: "fixed_amount",
-    fixed_amount: { amount: 500, currency: "eur" },
-    display_name: "Livraison Standard",
-    delivery_estimate: {
-      minimum: { unit: "business_day", value: 5 },
-      maximum: { unit: "business_day", value: 7 },
+function buildShippingOptions(subtotalCents: number): Stripe.Checkout.SessionCreateParams.ShippingOption[] {
+  const free = subtotalCents >= FREE_SHIPPING_THRESHOLD;
+  return [
+    {
+      shipping_rate_data: {
+        type: "fixed_amount",
+        fixed_amount: { amount: free ? 0 : 499, currency: "eur" },
+        display_name: free ? "Mondial Relay — Point Relais (offerte)" : "Mondial Relay — Point Relais",
+        delivery_estimate: {
+          minimum: { unit: "business_day", value: 3 },
+          maximum: { unit: "business_day", value: 5 },
+        },
+      },
     },
-  },
-};
+    {
+      shipping_rate_data: {
+        type: "fixed_amount",
+        fixed_amount: { amount: free ? 0 : 749, currency: "eur" },
+        display_name: free ? "Colissimo — Livraison à domicile (offerte)" : "Colissimo — Livraison à domicile",
+        delivery_estimate: {
+          minimum: { unit: "business_day", value: 2 },
+          maximum: { unit: "business_day", value: 3 },
+        },
+      },
+    },
+  ];
+}
 
 interface CheckoutItem {
   productId: string;
@@ -128,6 +145,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Panier vide" }, { status: 400 });
     }
 
+    const subtotalCents = lineItems.reduce((sum, li) => {
+      const unit = (li.price_data as { unit_amount: number }).unit_amount;
+      const qty  = li.quantity ?? 1;
+      return sum + unit * qty;
+    }, 0);
+
     const orderId = `AXN-${Date.now().toString(36).toUpperCase()}`;
     const origin = getPublicSiteOrigin(request);
 
@@ -137,7 +160,7 @@ export async function POST(request: Request) {
       shipping_address_collection: {
         allowed_countries: ["FR", "BE", "CH", "LU", "DE", "ES", "IT", "NL", "AT", "PT"],
       },
-      shipping_options: [STANDARD_SHIPPING],
+      shipping_options: buildShippingOptions(subtotalCents),
       allow_promotion_codes: true,
       metadata: { orderId, productSlug: items[0]?.productId ?? "" },
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,

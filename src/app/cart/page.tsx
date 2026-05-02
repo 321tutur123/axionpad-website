@@ -232,9 +232,9 @@ export default function CartPage() {
               <div className="flex justify-between">
                 <span>Livraison</span>
                 <span>
-                  {shipping === 0
+                  {sub >= FREE_SHIPPING_THRESHOLD
                     ? <span style={{ color: "#5a7d62" }}>Gratuite</span>
-                    : `${shipping.toFixed(2)} €`}
+                    : <span>4,99 € &#8211; 7,49 €</span>}
                 </span>
               </div>
             </div>
@@ -243,9 +243,16 @@ export default function CartPage() {
               className="border-t pt-4 flex justify-between font-semibold"
               style={{ borderColor: "var(--color-border)", color: "var(--color-text)" }}
             >
-              <span>Total</span>
-              <span>{total.toFixed(2)} €</span>
+              <span>Total estimé</span>
+              <span>
+                {sub >= FREE_SHIPPING_THRESHOLD
+                  ? `${sub.toFixed(2)} €`
+                  : `${(sub + 4.99).toFixed(2)} € – ${(sub + 7.49).toFixed(2)} €`}
+              </span>
             </div>
+            <p className="text-xs text-center" style={{ color: "var(--color-text-mute)" }}>
+              Mode de livraison choisi &#224; l&#8217;&#233;tape suivante
+            </p>
 
             {/* Note code promo */}
             <div
