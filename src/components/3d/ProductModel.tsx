@@ -151,7 +151,7 @@ export default function ProductModel({
       plane.position.set(localTop.x, localTop.y + 0.008 / autoScale, localTop.z);
 
       // Inclinaison 6° sur axe Y
-      plane.rotation.set(-Math.PI / 2, LID_TILT_RAD, 0);
+      plane.rotation.set(-Math.PI / 2, LID_TILT_RAD, Math.PI / 2);
 
       groupRef.current!.add(plane);
     };
