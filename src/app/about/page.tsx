@@ -66,10 +66,15 @@ export default function AboutPage() {
         </p>
       </section>
 
-      {/* Histoire */}
-      <section style={{ background: "var(--color-bg-card)", padding: "0 24px 80px" }}>
+      {/* Histoire — fond plus doux que blanc pur */}
+      <section
+        style={{
+          padding: "0 24px 80px",
+          background: "linear-gradient(180deg, var(--color-bg-soft) 0%, var(--color-bg-muted) 45%, var(--color-bg) 100%)",
+        }}
+      >
         <div className="max-w-3xl mx-auto">
-          <div className="card p-8">
+          <div className="card p-8" style={{ background: "var(--color-bg-card-alt)", boxShadow: "0 4px 28px rgba(58,54,51,0.06)" }}>
             <h2
               className="font-semibold mb-4"
               style={{ fontSize: "22px", color: "var(--color-text)" }}
@@ -122,7 +127,7 @@ export default function AboutPage() {
       </section>
 
       {/* Technique */}
-      <section style={{ padding: "80px 24px", background: "var(--color-bg-card)" }}>
+      <section style={{ padding: "80px 24px", background: "var(--color-bg-soft)" }}>
         <div className="max-w-4xl mx-auto">
           <h2
             className="text-xs uppercase tracking-widest mb-8"
@@ -159,7 +164,13 @@ export default function AboutPage() {
       </section>
 
       {/* Contact */}
-      <section className="text-center px-6" style={{ padding: "80px 24px", background: "var(--color-accent-lt)" }}>
+      <section
+        className="text-center px-6"
+        style={{
+          padding: "80px 24px",
+          background: "linear-gradient(145deg, var(--color-accent-lt) 0%, #ebe4dc 50%, #e8dfd6 100%)",
+        }}
+      >
         <div className="max-w-2xl mx-auto">
           <h2
             className="font-semibold mb-4"

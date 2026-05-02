@@ -69,3 +69,24 @@ export function getProduct(slug: string): ProductVariantFull | null {
 export function getAllProducts(): ProductVariantFull[] {
   return Object.values(PRODUCTS);
 }
+
+/**
+ * Prix unitaire (centimes) à partir des choix d’options — null si valeur manquante ou indisponible.
+ * Utilisé côté checkout pour ignorer le prix client.
+ */
+export function computeUnitPriceFromSelections(
+  product: ProductVariantFull,
+  selections: Record<string, string> | null | undefined,
+): number | null {
+  if (product.options.length === 0) return product.price;
+  if (!selections) return null;
+  let total = product.price;
+  for (const opt of product.options) {
+    const val = selections[opt.id];
+    if (val == null || val === "") return null;
+    const choice = opt.choices.find(c => c.value === val);
+    if (!choice || choice.available === false) return null;
+    total += choice.priceAdd ?? 0;
+  }
+  return total;
+}

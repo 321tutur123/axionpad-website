@@ -24,9 +24,10 @@ export default function CheckoutButton({ className, label = "Payer avec Stripe �
           items: items.map(i => ({
             productId:    i.productId,
             name:         i.name,
-            price:        Math.round((i.price ?? 0) * 100), // euros → cents
+            price:        Math.round((i.price ?? 0) * 100), // euros → cents (audit / logs)
             quantity:     i.quantity ?? 1,
             variantLabel: i.variantLabel,
+            selections:   i.selections,
           })),
         }),
       });

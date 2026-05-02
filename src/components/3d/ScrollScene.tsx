@@ -137,8 +137,8 @@ export default function ScrollScene() {
   return (
     <Canvas
       dpr={[1, 1.5]}
-      gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-      style={{ width: "100%", height: "100%", background: "#F5EEE6" }}
+      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      style={{ width: "100%", height: "100%" }}
     >
       <PerspectiveCamera makeDefault position={[0, 0, 6]} fov={50} />
 

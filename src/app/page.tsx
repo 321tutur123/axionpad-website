@@ -103,14 +103,14 @@ export default function HomePage() {
         style={{ height: "300vh" }}
       >
         {/* Canvas sticky */}
-        <div
-          className="sticky top-0 h-screen w-full overflow-hidden"
-          style={{ background: "var(--color-bg)" }}
-        >
-          <ScrollScene />
+        <div className="sticky top-0 h-screen w-full overflow-hidden scene-3d-shell">
+          <div className="scene-3d-atmosphere" aria-hidden />
+          <div className="scene-3d-canvas-wrap">
+            <ScrollScene />
+          </div>
 
           {/* Titre initial */}
-          <div className="absolute inset-0 flex flex-col items-center justify-end pb-24 pointer-events-none z-10">
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-24 pointer-events-none z-[2]">
             <div className="text-center px-4">
               <span className="badge mb-5 inline-flex">
                 <span
@@ -160,7 +160,7 @@ export default function HomePage() {
             <div
               key={i}
               ref={el => { labelRefs.current[i] = el; }}
-              className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 max-w-xs opacity-0 pointer-events-none z-10"
+              className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 max-w-xs opacity-0 pointer-events-none z-[2]"
             >
               <div
                 className="pl-4"

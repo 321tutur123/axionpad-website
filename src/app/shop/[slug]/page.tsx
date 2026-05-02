@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProduct, getAllProducts, formatPrice } from "@/lib/products-data";
+import { getProduct, getAllProducts } from "@/lib/products-data";
 import ProductConfigurator from "./ProductConfigurator";
 import ProductImage from "@/components/ProductImage";
 import ReviewSection from "@/components/ReviewSection";

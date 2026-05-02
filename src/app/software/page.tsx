@@ -65,26 +65,31 @@ const STEPS = [
 
 export default function SoftwarePage() {
   return (
-    <main className="min-h-screen bg-black">
+    <main className="min-h-screen pb-12" style={{ background: "var(--color-bg)", paddingTop: "5.5rem" }}>
 
       {/* ── Hero ───────────────────────────────────────────────────────── */}
-      <section className="pt-32 pb-20 px-6 max-w-6xl mx-auto">
+      <section className="pb-20 px-6 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
           {/* Text */}
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-300 text-xs font-medium mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium mb-6"
+              style={{
+                background: "var(--color-accent-muted)",
+                borderColor: "rgba(184,118,92,0.25)",
+                color: "var(--color-accent)",
+              }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-accent)" }} />
               v2.1 — Gratuit & open-source
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-5 leading-tight">
+            <h1 className="text-4xl md:text-5xl font-semibold mb-5 leading-tight" style={{ color: "var(--color-text)" }}>
               Axion Pad
               <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-300">
-                Configurateur
-              </span>
+              <span style={{ color: "var(--color-accent)" }}>Configurateur</span>
             </h1>
-            <p className="text-zinc-400 text-lg leading-relaxed mb-8">
+            <p className="text-lg leading-relaxed mb-8" style={{ color: "var(--color-text-mute)" }}>
               L'application desktop pour programmer ton Axion Pad sans toucher à une ligne de code.
               Mappings, macros, layers, protocole AxionPad Native — tout en quelques clics.
             </p>
@@ -93,7 +98,7 @@ export default function SoftwarePage() {
               <DownloadButton os="macOS" icon="🍎" ext=".dmg" href="#download" />
               <DownloadButton os="Linux" icon="🐧" ext=".AppImage" href="#download" />
             </div>
-            <p className="text-zinc-600 text-xs mt-4">
+            <p className="text-xs mt-4" style={{ color: "var(--color-text-mute)" }}>
               Compatible Windows 10+, macOS 12+, Ubuntu 20.04+ · Python non requis
             </p>
           </div>
@@ -106,22 +111,26 @@ export default function SoftwarePage() {
       {/* ── Features ────────────────────────────────────────────────────── */}
       <section className="py-20 px-6 max-w-6xl mx-auto">
         <div className="text-center mb-14">
-          <h2 className="text-3xl font-bold text-white mb-3">Tout ce dont tu as besoin</h2>
-          <p className="text-zinc-500">Puissant pour les power users, simple pour les débutants.</p>
+          <h2 className="text-3xl font-semibold mb-3" style={{ color: "var(--color-text)" }}>Tout ce dont tu as besoin</h2>
+          <p style={{ color: "var(--color-text-mute)" }}>Puissant pour les utilisateurs avancés, simple pour commencer.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FEATURES.map(f => (
-            <div key={f.title} className="p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-colors group">
+            <div
+              key={f.title}
+              className="p-5 rounded-2xl border transition-shadow hover:shadow-md group card"
+              style={{ borderColor: "var(--color-border)", background: "var(--color-bg-card)" }}
+            >
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-4"
-                style={{ background: `${f.color}18`, border: `1px solid ${f.color}30` }}
+                style={{ background: `${f.color}14`, border: `1px solid ${f.color}28` }}
               >
                 {f.icon}
               </div>
-              <h3 className="text-white font-semibold mb-2 group-hover:text-violet-300 transition-colors">
+              <h3 className="font-semibold mb-2 transition-colors" style={{ color: "var(--color-text)" }}>
                 {f.title}
               </h3>
-              <p className="text-zinc-500 text-sm leading-relaxed">{f.desc}</p>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-mute)" }}>{f.desc}</p>
             </div>
           ))}
         </div>
@@ -132,13 +141,20 @@ export default function SoftwarePage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <DeejMockup />
           <div>
-            <div className="inline-block text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 mb-5">
+            <div
+              className="inline-block text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full border mb-5"
+              style={{
+                background: "rgba(212,187,140,0.2)",
+                color: "#6b5a45",
+                borderColor: "rgba(184,118,92,0.25)",
+              }}
+            >
               Protocole AxionPad Native
             </div>
-            <h2 className="text-3xl font-bold text-white mb-4">
+            <h2 className="text-3xl font-semibold mb-4" style={{ color: "var(--color-text)" }}>
               Un potentiomètre,<br />un volume.
             </h2>
-            <p className="text-zinc-400 leading-relaxed mb-6">
+            <p className="leading-relaxed mb-6" style={{ color: "var(--color-text-mute)" }}>
               Chacun des 4 potentiomètres de l'Axion Pad peut être assigné à n'importe quelle
               application en cours d'exécution. Plus besoin de plonger dans le mixer Windows.
             </p>
@@ -149,15 +165,22 @@ export default function SoftwarePage() {
                 "Pot 3 → Discord / voix",
                 "Pot 4 → Navigateur web",
               ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 text-sm text-zinc-300">
-                  <span className="w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 flex items-center justify-center text-xs font-bold shrink-0">
+                <li key={i} className="flex items-center gap-3 text-sm" style={{ color: "var(--color-text)" }}>
+                  <span
+                    className="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0"
+                    style={{
+                      background: "var(--color-accent-lt)",
+                      borderColor: "rgba(184,118,92,0.3)",
+                      color: "var(--color-accent)",
+                    }}
+                  >
                     {i + 1}
                   </span>
                   {item}
                 </li>
               ))}
             </ul>
-            <p className="text-zinc-600 text-xs mt-5">
+            <p className="text-xs mt-5" style={{ color: "var(--color-text-mute)" }}>
               Protocole AxionPad Native — bas-latence, Watchdog auto-recovery intégré.
             </p>
           </div>
@@ -166,18 +189,37 @@ export default function SoftwarePage() {
 
       {/* ── CircuitPython section ─────────────────────────────────────────── */}
       <section className="py-20 px-6 max-w-6xl mx-auto">
-        <div className="rounded-3xl border border-violet-500/10 bg-gradient-to-br from-violet-950/30 to-zinc-950 p-10 md:p-14">
+        <div
+          className="rounded-3xl border p-10 md:p-14"
+          style={{
+            borderColor: "var(--color-border)",
+            background: "linear-gradient(145deg, #ebe4dc 0%, var(--color-bg-card) 40%, #e8eced 100%)",
+            boxShadow: "0 8px 40px rgba(58,54,51,0.06)",
+          }}
+        >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-block text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 border border-violet-500/20 mb-5">
+              <div
+                className="inline-block text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full border mb-5"
+                style={{
+                  background: "rgba(139,157,195,0.18)",
+                  color: "#4d5670",
+                  borderColor: "rgba(139,157,195,0.35)",
+                }}
+              >
                 Mode avancé
               </div>
-              <h2 className="text-3xl font-bold text-white mb-4">
+              <h2 className="text-3xl font-semibold mb-4" style={{ color: "var(--color-text)" }}>
                 Pas de limites avec CircuitPython
               </h2>
-              <p className="text-zinc-400 leading-relaxed mb-6">
+              <p className="leading-relaxed mb-6" style={{ color: "var(--color-text-mute)" }}>
                 Si le configurateur ne suffit plus, édite directement le fichier{" "}
-                <code className="text-violet-300 bg-violet-500/10 px-1.5 py-0.5 rounded text-sm">code.py</code>{" "}
+                <code
+                  className="px-1.5 py-0.5 rounded text-sm"
+                  style={{ color: "var(--color-accent)", background: "var(--color-accent-muted)" }}
+                >
+                  code.py
+                </code>{" "}
                 sur l'Axion Pad. Il se monte comme une clé USB — modifie le code,
                 sauvegarde, la mise à jour est instantanée. Zéro compilation.
               </p>
@@ -186,7 +228,8 @@ export default function SoftwarePage() {
                   href="https://circuitpython.org"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-full border border-violet-500/30 text-violet-300 hover:bg-violet-500/10 transition-colors text-sm"
+                  className="px-4 py-2 rounded-full border text-sm transition-colors hover:opacity-90"
+                  style={{ borderColor: "rgba(139,157,195,0.45)", color: "#4d5670", background: "rgba(139,157,195,0.1)" }}
                 >
                   Doc CircuitPython →
                 </a>
@@ -194,7 +237,8 @@ export default function SoftwarePage() {
                   href="https://github.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-full border border-white/10 text-zinc-400 hover:text-white transition-colors text-sm"
+                  className="px-4 py-2 rounded-full border text-sm transition-colors"
+                  style={{ borderColor: "var(--color-border)", color: "var(--color-text-mute)" }}
                 >
                   GitHub — firmware →
                 </a>
@@ -207,20 +251,27 @@ export default function SoftwarePage() {
 
       {/* ── Getting started ───────────────────────────────────────────────── */}
       <section className="py-20 px-6 max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-white text-center mb-14">
+        <h2 className="text-3xl font-semibold text-center mb-14" style={{ color: "var(--color-text)" }}>
           Opérationnel en 3 minutes
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {STEPS.map(step => (
-            <div key={step.n} className="relative p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
-              <div className="text-5xl font-black text-white/5 absolute top-4 right-5 leading-none select-none">
+            <div
+              key={step.n}
+              className="relative p-6 rounded-2xl border card"
+              style={{ borderColor: "var(--color-border)", background: "var(--color-bg-card)" }}
+            >
+              <div
+                className="text-5xl font-black absolute top-4 right-5 leading-none select-none"
+                style={{ color: "rgba(58,54,51,0.06)" }}
+              >
                 {step.n}
               </div>
-              <div className="text-xs text-violet-400 font-semibold uppercase tracking-widest mb-3">
+              <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--color-accent)" }}>
                 Étape {step.n}
               </div>
-              <h3 className="text-white font-semibold mb-2">{step.title}</h3>
-              <p className="text-zinc-500 text-sm leading-relaxed">{step.desc}</p>
+              <h3 className="font-semibold mb-2" style={{ color: "var(--color-text)" }}>{step.title}</h3>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-mute)" }}>{step.desc}</p>
             </div>
           ))}
         </div>
@@ -228,10 +279,10 @@ export default function SoftwarePage() {
 
       {/* ── Download ─────────────────────────────────────────────────────── */}
       <section id="download" className="py-20 px-6 max-w-3xl mx-auto text-center">
-        <div className="p-10 rounded-3xl border border-white/10 bg-white/[0.02]">
+        <div className="p-10 rounded-3xl border card" style={{ borderColor: "var(--color-border)", background: "var(--color-bg-card-alt)" }}>
           <div className="text-5xl mb-5">⬇️</div>
-          <h2 className="text-3xl font-bold text-white mb-3">Télécharger le configurateur</h2>
-          <p className="text-zinc-400 mb-8">
+          <h2 className="text-3xl font-semibold mb-3" style={{ color: "var(--color-text)" }}>Télécharger le configurateur</h2>
+          <p className="mb-8" style={{ color: "var(--color-text-mute)" }}>
             Gratuit, sans publicité, sans télémétrie. Code source disponible sur GitHub.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
@@ -239,7 +290,7 @@ export default function SoftwarePage() {
             <DownloadButton os="macOS" icon="🍎" ext=".dmg" href="#" size="lg" />
             <DownloadButton os="Linux" icon="🐧" ext=".AppImage" href="#" size="lg" />
           </div>
-          <p className="text-zinc-600 text-xs">
+          <p className="text-xs" style={{ color: "var(--color-text-mute)" }}>
             v2.1.0 · 45 MB · Nécessite l'Axion Pad pour fonctionner
           </p>
         </div>
@@ -247,11 +298,8 @@ export default function SoftwarePage() {
 
       {/* ── CTA shop ─────────────────────────────────────────────────────── */}
       <section className="py-16 px-6 text-center">
-        <p className="text-zinc-500 text-sm mb-4">Tu n'as pas encore l'Axion Pad ?</p>
-        <Link
-          href="/shop"
-          className="inline-flex px-8 py-3.5 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold transition-all hover:scale-105"
-        >
+        <p className="text-sm mb-4" style={{ color: "var(--color-text-mute)" }}>Tu n&apos;as pas encore l&apos;Axion Pad ?</p>
+        <Link href="/shop" className="btn-accent inline-flex px-8 py-3.5 font-semibold">
           Commander — à partir de 59,99 €
         </Link>
       </section>
@@ -272,15 +320,26 @@ function DownloadButton({
   return (
     <a
       href={href}
-      className={`inline-flex items-center gap-2.5 rounded-full font-medium transition-all hover:scale-105 ${base} ${
+      className={`inline-flex items-center gap-2.5 rounded-full font-medium transition-all hover:opacity-92 ${base} ${
         primary
-          ? "bg-violet-600 hover:bg-violet-500 text-white shadow-lg shadow-violet-900/30"
-          : "border border-white/15 text-zinc-300 hover:border-white/30 hover:text-white"
+          ? "btn-accent shadow-md"
+          : "border"
       }`}
+      style={
+        primary
+          ? undefined
+          : {
+              borderColor: "var(--color-border)",
+              color: "var(--color-text)",
+              background: "var(--color-bg-card)",
+            }
+      }
     >
       <span>{icon}</span>
       <span>{os}</span>
-      <span className={`text-xs ${primary ? "text-violet-300" : "text-zinc-600"}`}>{ext}</span>
+      <span className={`text-xs ${primary ? "opacity-90" : ""}`} style={primary ? undefined : { color: "var(--color-text-mute)" }}>
+        {ext}
+      </span>
     </a>
   );
 }
@@ -301,81 +360,101 @@ function AppMockup() {
     { label: "Sleep", sub: "💤", color: "#52525b" },
   ];
 
+  const chrome = {
+    shell: { borderColor: "var(--color-border)", background: "var(--color-bg-card)" },
+    bar: { borderColor: "var(--color-border)", background: "var(--color-bg-soft)" },
+    muted: "var(--color-text-mute)",
+    text: "var(--color-text)",
+  } as const;
+
   return (
-    <div className="rounded-2xl border border-white/10 bg-zinc-900/80 overflow-hidden shadow-2xl shadow-violet-950/30">
-      {/* Title bar */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-zinc-950/50">
+    <div className="rounded-2xl border overflow-hidden shadow-xl" style={chrome.shell}>
+      <div className="flex items-center justify-between px-4 py-3 border-b" style={chrome.bar}>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-red-500/70" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
-          <div className="w-3 h-3 rounded-full bg-green-500/70" />
+          <div className="w-3 h-3 rounded-full" style={{ background: "#e8a598" }} />
+          <div className="w-3 h-3 rounded-full" style={{ background: "#e8d598" }} />
+          <div className="w-3 h-3 rounded-full" style={{ background: "#a8c9a8" }} />
         </div>
-        <span className="text-xs text-zinc-500 font-medium">AxionPad Configurator</span>
+        <span className="text-xs font-medium" style={{ color: chrome.muted }}>AxionPad Configurator</span>
         <div className="w-14" />
       </div>
 
-      {/* Toolbar */}
-      <div className="flex items-center gap-1 px-4 py-2 border-b border-white/5 bg-zinc-950/30">
+      <div className="flex items-center gap-1 px-4 py-2 border-b" style={{ ...chrome.bar, borderColor: "var(--color-border)" }}>
         {["Layer 1", "Layer 2", "Layer 3", "+ Ajouter"].map((l, i) => (
           <button
             key={l}
-            className={`px-3 py-1 rounded text-xs transition-colors ${
-              i === 0
-                ? "bg-violet-600/30 text-violet-300 border border-violet-500/30"
-                : "text-zinc-600 hover:text-zinc-400"
+            type="button"
+            className={`px-3 py-1 rounded text-xs transition-colors border ${
+              i === 0 ? "" : ""
             }`}
+            style={
+              i === 0
+                ? { background: "var(--color-accent-muted)", color: "var(--color-accent)", borderColor: "rgba(184,118,92,0.35)" }
+                : { color: chrome.muted, borderColor: "transparent", background: "transparent" }
+            }
           >
             {l}
           </button>
         ))}
         <div className="ml-auto flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-xs text-zinc-600">Connecté</span>
+          <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#7aab82" }} />
+          <span className="text-xs" style={{ color: chrome.muted }}>Connecté</span>
         </div>
       </div>
 
-      {/* Key grid */}
-      <div className="p-4">
+      <div className="p-4" style={{ background: "var(--color-bg-card-alt)" }}>
         <div className="grid grid-cols-4 gap-2 mb-4">
           {keys.map((key, i) => (
             <div
               key={i}
-              className={`aspect-square rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all hover:scale-105 border ${
-                i === 4 ? "ring-2 ring-violet-500 ring-offset-1 ring-offset-zinc-900" : ""
-              }`}
+              className="aspect-square rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all hover:scale-[1.02] border"
               style={{
-                background: i === 4 ? `${key.color}28` : `${key.color}10`,
-                borderColor: i === 4 ? key.color : `${key.color}30`,
+                background: i === 4 ? `${key.color}22` : `${key.color}12`,
+                borderColor: i === 4 ? key.color : `${key.color}35`,
+                ...(i === 4 ? { boxShadow: "0 0 0 2px rgba(184,118,92,0.28)" } : {}),
               }}
             >
-              <span className="text-[10px] font-bold text-white/80 leading-tight text-center px-1">
+              <span className="text-[10px] font-bold leading-tight text-center px-1" style={{ color: chrome.text }}>
                 {key.label}
               </span>
               {key.sub && (
-                <span className="text-[8px] text-zinc-500 mt-0.5">{key.sub}</span>
+                <span className="text-[8px] mt-0.5" style={{ color: chrome.muted }}>{key.sub}</span>
               )}
             </div>
           ))}
         </div>
 
-        {/* Selected key editor */}
-        <div className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-3">
-          <div className="text-[10px] text-zinc-500 uppercase tracking-wider mb-2">Touche sélectionnée — Spotify ▶</div>
+        <div
+          className="rounded-xl border p-3"
+          style={{ borderColor: "rgba(184,118,92,0.28)", background: "var(--color-accent-lt)" }}
+        >
+          <div className="text-[10px] uppercase tracking-wider mb-2" style={{ color: chrome.muted }}>
+            Touche sélectionnée — Spotify ▶
+          </div>
           <div className="flex items-center gap-2 mb-2">
-            <div className="flex-1 px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-zinc-300">
+            <div
+              className="flex-1 px-2 py-1.5 rounded-lg border text-xs"
+              style={{ background: "var(--color-bg-card)", borderColor: "var(--color-border)", color: chrome.text }}
+            >
               Ctrl + Alt + Espace
             </div>
-            <div className="w-6 h-6 rounded bg-white/5 border border-white/10 flex items-center justify-center text-xs text-zinc-500">↻</div>
+            <div
+              className="w-6 h-6 rounded border flex items-center justify-center text-xs"
+              style={{ borderColor: "var(--color-border)", color: chrome.muted }}
+            >
+              ↻
+            </div>
           </div>
           <div className="flex gap-1.5">
             {["Touche", "Macro", "Media", "App"].map((t, i) => (
               <span
                 key={t}
-                className={`text-[9px] px-2 py-0.5 rounded-full ${
+                className="text-[9px] px-2 py-0.5 rounded-full"
+                style={
                   i === 2
-                    ? "bg-violet-500/20 text-violet-300"
-                    : "text-zinc-600"
-                }`}
+                    ? { background: "var(--color-accent-muted)", color: "var(--color-accent)" }
+                    : { color: chrome.muted }
+                }
               >
                 {t}
               </span>
@@ -396,9 +475,9 @@ function DeejMockup() {
   ];
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-zinc-900/80 p-5 shadow-xl shadow-amber-950/10">
-      <div className="text-xs text-zinc-500 uppercase tracking-wider mb-5 flex items-center gap-2">
-        <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+    <div className="rounded-2xl border p-5 shadow-lg card" style={{ borderColor: "var(--color-border)", background: "var(--color-bg-card)" }}>
+      <div className="text-xs uppercase tracking-wider mb-5 flex items-center gap-2" style={{ color: "var(--color-text-mute)" }}>
+        <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--color-accent)" }} />
         AxionPad Native — en direct
       </div>
       <div className="flex items-end gap-4 justify-center">
@@ -407,36 +486,36 @@ function DeejMockup() {
             <span className="text-xs font-medium" style={{ color: ch.color }}>
               {ch.val}%
             </span>
-            {/* Fader track */}
-            <div className="relative w-7 rounded-full bg-white/5 border border-white/10" style={{ height: 120 }}>
-              {/* Fill */}
+            <div
+              className="relative w-7 rounded-full border"
+              style={{ height: 120, background: "var(--color-bg-soft)", borderColor: "var(--color-border)" }}
+            >
               <div
                 className="absolute bottom-0 left-0 right-0 rounded-full transition-all"
-                style={{ height: `${ch.val}%`, background: `${ch.color}50`, borderTop: `2px solid ${ch.color}` }}
+                style={{ height: `${ch.val}%`, background: `${ch.color}40`, borderTop: `2px solid ${ch.color}` }}
               />
-              {/* Knob */}
               <div
-                className="absolute left-1/2 -translate-x-1/2 w-5 h-5 rounded-full border-2 shadow-lg"
+                className="absolute left-1/2 -translate-x-1/2 w-5 h-5 rounded-full border-2 shadow-md"
                 style={{
                   bottom: `calc(${ch.val}% - 10px)`,
                   borderColor: ch.color,
-                  background: "#18181b",
-                  boxShadow: `0 0 8px ${ch.color}60`,
+                  background: "var(--color-bg-card)",
+                  boxShadow: `0 2px 8px ${ch.color}35`,
                 }}
               />
             </div>
             <span className="text-lg">{ch.app}</span>
-            <span className="text-[10px] text-zinc-600 text-center w-12 leading-tight">{ch.name}</span>
+            <span className="text-[10px] text-center w-12 leading-tight" style={{ color: "var(--color-text-mute)" }}>{ch.name}</span>
             <div
-              className="w-5 h-5 rounded-full border text-[10px] flex items-center justify-center font-bold text-zinc-400"
-              style={{ borderColor: `${ch.color}40` }}
+              className="w-5 h-5 rounded-full border text-[10px] flex items-center justify-center font-bold"
+              style={{ borderColor: `${ch.color}45`, color: "var(--color-text-mute)" }}
             >
               {i + 1}
             </div>
           </div>
         ))}
       </div>
-      <p className="text-zinc-600 text-xs text-center mt-4">Mappé sur les 4 potentiomètres</p>
+      <p className="text-xs text-center mt-4" style={{ color: "var(--color-text-mute)" }}>Mappé sur les 4 potentiomètres</p>
     </div>
   );
 }
@@ -458,23 +537,24 @@ function CodeSnippet() {
   ];
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 shadow-xl">
-      {/* Editor header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-zinc-900/50">
+    <div className="rounded-2xl overflow-hidden border shadow-xl" style={{ borderColor: "var(--color-border)", background: "#f4f1ec" }}>
+      <div
+        className="flex items-center justify-between px-4 py-3 border-b"
+        style={{ borderColor: "var(--color-border)", background: "var(--color-bg-soft)" }}
+      >
         <div className="flex items-center gap-1.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-          <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-          <div className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+          <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#c9c4bd" }} />
+          <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#c9c4bd" }} />
+          <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#c9c4bd" }} />
         </div>
-        <span className="text-xs text-zinc-500 font-mono">AXIONPAD / code.py</span>
+        <span className="text-xs font-mono" style={{ color: "var(--color-text-mute)" }}>AXIONPAD / code.py</span>
         <div className="flex items-center gap-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-          <span className="text-[10px] text-zinc-600">modifié</span>
+          <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-accent)" }} />
+          <span className="text-[10px]" style={{ color: "var(--color-text-mute)" }}>modifié</span>
         </div>
       </div>
 
-      {/* Code */}
-      <div className="p-4 font-mono text-xs leading-6 overflow-x-auto">
+      <div className="p-4 font-mono text-xs leading-6 overflow-x-auto" style={{ background: "#faf8f5" }}>
         {lines.map((line, i) => (
           <div key={i} className="flex">
             <span className="text-zinc-700 w-6 shrink-0 text-right mr-4 select-none">{i + 1}</span>
@@ -488,9 +568,12 @@ function CodeSnippet() {
         ))}
       </div>
 
-      <div className="px-4 py-3 border-t border-white/5 bg-zinc-900/30 flex items-center gap-2">
-        <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
-        <span className="text-xs text-zinc-500">Sauvegardé — mise à jour appliquée instantanément</span>
+      <div
+        className="px-4 py-3 border-t flex items-center gap-2"
+        style={{ borderColor: "var(--color-border)", background: "var(--color-bg-soft)" }}
+      >
+        <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#7aab82" }} />
+        <span className="text-xs" style={{ color: "var(--color-text-mute)" }}>Sauvegardé — mise à jour instantanée</span>
       </div>
     </div>
   );

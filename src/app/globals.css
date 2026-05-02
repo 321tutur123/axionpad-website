@@ -1,27 +1,33 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
 :root {
-  --color-bg:        #FDFBF7;
-  --color-bg-card:   #FFFFFF;
-  --color-text:      #2D3436;
-  --color-text-mute: #636E72;
-  --color-accent:    #E07B39;
-  --color-accent-lt: #F5EBE0;
-  --color-border:    rgba(45,52,54,0.08);
-  --radius-btn:      100px;
-  --radius-card:     16px;
-  --font-main:       'Inter', sans-serif;
+  /* Pastel chaud / pro — évite le blanc pur et les néons « IA » */
+  --color-bg:          #f5f1eb;
+  --color-bg-soft:     #efe8df;
+  --color-bg-muted:    #e8e2da;
+  --color-bg-card:     #fdfbf8;
+  --color-bg-card-alt: #faf6f1;
+  --color-text:        #3a3633;
+  --color-text-mute:   #6f6964;
+  --color-accent:      #b8765c;
+  --color-accent-hover:#a3664f;
+  --color-accent-lt:   #efe4dd;
+  --color-accent-muted:rgba(184, 118, 92, 0.14);
+  --color-border:      rgba(58, 54, 51, 0.1);
+  --color-nav-bg:      rgba(245, 241, 235, 0.88);
+  --radius-btn:        100px;
+  --radius-card:       16px;
+  --font-main:         var(--font-inter, 'Inter', system-ui, sans-serif);
 }
 
 @theme inline {
-  --color-bg:         #FDFBF7;
-  --color-bg-card:    #FFFFFF;
-  --color-accent:     #E07B39;
-  --color-accent-lt:  #F5EBE0;
-  --color-muted:      #636E72;
-  --color-anthracite: #2D3436;
-  --font-sans:        var(--font-inter, 'Inter', sans-serif);
+  --color-bg:         #f5f1eb;
+  --color-bg-card:    #fdfbf8;
+  --color-accent:     #b8765c;
+  --color-accent-lt:  #efe4dd;
+  --color-muted:      #6f6964;
+  --color-anthracite: #3a3633;
+  --font-sans:        var(--font-inter, 'Inter', system-ui, sans-serif);
 }
 
 body {
@@ -29,6 +35,31 @@ body {
   color: var(--color-text);
   font-family: var(--font-main);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Fond derrière le Canvas 3D — dégradés doux, non uniformes */
+.scene-3d-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.scene-3d-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 85% 65% at 22% 38%, rgba(232, 218, 245, 0.55) 0%, transparent 58%),
+    radial-gradient(ellipse 75% 55% at 78% 62%, rgba(255, 228, 212, 0.5) 0%, transparent 52%),
+    radial-gradient(ellipse 90% 70% at 50% 95%, rgba(214, 228, 218, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 45% at 92% 18%, rgba(220, 236, 252, 0.35) 0%, transparent 45%),
+    linear-gradient(168deg, #faf7f2 0%, #f3ebe4 42%, #eef3ee 78%, #f7f2ec 100%);
+}
+
+.scene-3d-canvas-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 /* Bouton CTA partagé */
@@ -44,14 +75,16 @@ body {
   font-size: 0.9375rem;
   letter-spacing: 0.01em;
   border: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, background 0.2s ease;
   cursor: pointer;
   text-decoration: none;
 }
-.btn-accent:hover   { opacity: 0.85; }
-.btn-accent:active  { transform: scale(0.98); }
+.btn-accent:hover {
+  opacity: 0.92;
+  background: var(--color-accent-hover);
+}
+.btn-accent:active { transform: scale(0.98); }
 
-/* Bouton secondaire (texte + lien) */
 .btn-ghost {
   display: inline-flex;
   align-items: center;
@@ -67,20 +100,18 @@ body {
 }
 .btn-ghost:hover { color: var(--color-accent); }
 
-/* Carte produit */
 .card {
   background: var(--color-bg-card);
   border: 0.5px solid var(--color-border);
   border-radius: var(--radius-card);
-  box-shadow: 0 2px 24px rgba(45,52,54,0.06);
+  box-shadow: 0 2px 20px rgba(58, 54, 51, 0.05);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 6px 32px rgba(45,52,54,0.10);
+  box-shadow: 0 8px 28px rgba(58, 54, 51, 0.08);
 }
 
-/* Badge */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -92,18 +123,16 @@ body {
   padding: 4px 12px;
 }
 
-/* Mobile */
 @media (max-width: 768px) {
   section { padding-top: 64px !important; padding-bottom: 64px !important; }
   .btn-accent { width: 100%; justify-content: center; }
 }
 
-/* Supprime le dark-mode OS qui forçait un fond noir */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg:        #FDFBF7;
-    --color-bg-card:   #FFFFFF;
-    --color-text:      #2D3436;
-    --color-text-mute: #636E72;
+    --color-bg:          #f5f1eb;
+    --color-bg-card:     #fdfbf8;
+    --color-text:        #3a3633;
+    --color-text-mute:   #6f6964;
   }
 }

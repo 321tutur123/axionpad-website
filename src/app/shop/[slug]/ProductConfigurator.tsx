@@ -32,22 +32,53 @@ export default function ProductConfigurator({ product }: { product: ProductVaria
     }).join(" · ");
   }, [product, selections]);
 
+  /** Identifie une même variante pour fusionner les quantités dans le panier. */
+  const selectionSignature = useMemo(
+    () => product.options.map(o => selections[o.id] ?? "\0").join("\u001f"),
+    [product.options, selections],
+  );
+
   const handleAddToCart = async () => {
     if (!product.inStock || adding) return;
     setAdding(true);
     try {
       await api.cart.add(product.slug, qty);
     } catch {
+      /* panier API distant optionnel */
+    }
+
+    const sel = { ...selections };
+    const unitEuros = computedTotal / 100;
+    useCart.setState(state => {
+      const idx = state.items.findIndex(i => {
+        if (i.productId !== product.slug) return false;
+        const sig = product.options.map(o => i.selections?.[o.id] ?? "\0").join("\u001f");
+        return sig === selectionSignature;
+      });
+      if (idx >= 0) {
+        const next = [...state.items];
+        const cur = next[idx];
+        next[idx] = {
+          ...cur,
+          quantity: (cur.quantity || 1) + qty,
+          price: unitEuros,
+          variantLabel,
+          selections: sel,
+        };
+        return { items: next };
+      }
       const item: CartItem = {
         _id: `local-${Date.now()}`,
         productId: product.slug,
         name: product.name,
-        price: computedTotal / 100,
+        price: unitEuros,
         quantity: qty,
         variantLabel,
+        selections: sel,
       };
-      useCart.setState(state => ({ items: [...state.items, item] }));
-    }
+      return { items: [...state.items, item] };
+    });
+
     setDone(true);
     setAdding(false);
     setTimeout(() => setDone(false), 2500);

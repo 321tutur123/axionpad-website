@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Catalogue : ajouter / changer les photos produits
+
+1. Place le fichier image sous **`public/`** (ex. `public/images/products/mon-produit.jpg`). Les URLs du site commencent toujours par `/`, donc un chemin type **`/images/products/mon-produit.jpg`** est servi depuis `public/images/products/`.
+2. Dans **`src/data/products.json`**, sur chaque entrée de `products`, mets ce chemin dans le champ **`imagePath`** (voir les exemples existants comme `"/images/products/axion-pad-standard.jpg"`).
+3. Redémarre ou rafraîchis le dev server si besoin. Pour plusieurs visuels futurs, le modèle TypeScript prévoit aussi un tableau **`images`** sur `Product` côté API générique ; le catalogue embarqué utilise aujourd’hui surtout **`imagePath`**.
+
 ## Getting Started
 
 First, run the development server:

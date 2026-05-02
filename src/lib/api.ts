@@ -83,6 +83,8 @@ export interface CartItem {
   quantity: number;
   image?: string;
   variantLabel?: string;
+  /** Valeurs d’options (ex. casing → petg) — requis au checkout si le produit a des options */
+  selections?: Record<string, string>;
 }
 
 export interface CartResponse {

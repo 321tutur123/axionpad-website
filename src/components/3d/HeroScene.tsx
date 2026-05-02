@@ -17,12 +17,12 @@ export default function HeroScene() {
       <PerspectiveCamera makeDefault position={[0, 0, 6]} fov={50} />
 
       <ambientLight intensity={0.8} />
-      <pointLight position={[4, 6, 4]} intensity={2.5} color="#a78bfa" />
-      <pointLight position={[-4, -2, -3]} intensity={1.2} color="#6d28d9" />
+      <pointLight position={[4, 6, 4]} intensity={1.6} color="#d4c4e8" />
+      <pointLight position={[-4, -2, -3]} intensity={0.9} color="#c4b8a8" />
 
       {/* Particules — Suspense indépendant */}
       <Suspense fallback={null}>
-        <FloatingParticles count={700} radius={9} color="#7c3aed" />
+        <FloatingParticles count={550} radius={9} color="#c4a990" />
       </Suspense>
 
       {/* Modèle — crash isolé, sans Bounds */}

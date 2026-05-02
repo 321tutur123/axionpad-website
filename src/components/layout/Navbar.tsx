@@ -31,7 +31,7 @@ export default function Navbar() {
       ref={navRef}
       className="fixed top-0 left-0 right-0 z-50 px-6 py-3 flex items-center justify-between"
       style={{
-        background: "rgba(253,251,247,0.92)",
+        background: "var(--color-nav-bg)",
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
         borderBottom: "0.5px solid var(--color-border)",

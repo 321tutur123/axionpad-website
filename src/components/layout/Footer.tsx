@@ -33,7 +33,7 @@ const NAV = [
 
 export default function Footer() {
   return (
-    <footer style={{ background: "#2D3436" }}>
+    <footer style={{ background: "linear-gradient(180deg, #3d3632 0%, #342f2c 100%)" }}>
 
       {/* Bandeau "Fabriqué en France" */}
       <div

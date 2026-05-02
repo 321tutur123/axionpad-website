@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { getProduct } from "@/lib/products-data";
+import {
+  computeUnitPriceFromSelections,
+  getProduct,
+} from "@/lib/products-data";
 
 export const runtime = "edge";
+
+const MAX_DISTINCT_ITEMS = 30;
+const MAX_QTY_PER_LINE = 10;
 
 const STANDARD_SHIPPING: Stripe.Checkout.SessionCreateParams.ShippingOption = {
   shipping_rate_data: {
@@ -19,13 +25,25 @@ const STANDARD_SHIPPING: Stripe.Checkout.SessionCreateParams.ShippingOption = {
 interface CheckoutItem {
   productId: string;
   name: string;
-  price: number;     // cents, from client (includes option additions)
+  /** Centimes — non utilisé si le prix est recalculé côté serveur */
+  price: number;
   quantity: number;
   variantLabel?: string;
+  selections?: Record<string, string>;
 }
 
+const SLUG_RE = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
 export async function POST(request: Request) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  const secret = process.env.STRIPE_SECRET_KEY;
+  if (!secret) {
+    return NextResponse.json(
+      { error: "Paiement indisponible (configuration Stripe manquante)." },
+      { status: 503 },
+    );
+  }
+  const stripe = new Stripe(secret);
+
   let items: CheckoutItem[];
   try {
     ({ items } = (await request.json()) as { items: CheckoutItem[] });
@@ -34,10 +52,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Panier vide" }, { status: 400 });
   }
 
-  // Validate against server-side catalog — prevents client-side price tampering
+  if (items.length > MAX_DISTINCT_ITEMS) {
+    return NextResponse.json({ error: "Trop d’articles distincts dans le panier." }, { status: 400 });
+  }
+
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
   for (const item of items) {
-    if (item.quantity < 1) continue;
+    if (typeof item.productId !== "string" || !SLUG_RE.test(item.productId)) {
+      return NextResponse.json({ error: "Référence produit invalide." }, { status: 400 });
+    }
+    const qty = Math.floor(Number(item.quantity));
+    if (qty < 1 || qty > MAX_QTY_PER_LINE) {
+      return NextResponse.json({ error: "Quantité invalide pour un ou plusieurs articles." }, { status: 400 });
+    }
 
     const product = getProduct(item.productId);
     if (!product) {
@@ -46,22 +73,41 @@ export async function POST(request: Request) {
         { status: 404 },
       );
     }
+    if (product.comingSoon) {
+      return NextResponse.json(
+        { error: `Produit indisponible : ${product.name}` },
+        { status: 409 },
+      );
+    }
     if (product.stock === 0) {
       return NextResponse.json(
         { error: `Rupture de stock : ${product.name}` },
         { status: 409 },
       );
     }
+    if (qty > product.stock) {
+      return NextResponse.json(
+        { error: `Stock insuffisant pour « ${product.name} » (max ${product.stock}).` },
+        { status: 409 },
+      );
+    }
 
-    // Use whichever is higher: client price (with options) or base product price.
-    // This prevents a customer from sending a price below the base.
-    const unitAmount = Math.max(item.price, product.price);
+    const unitCents = computeUnitPriceFromSelections(product, item.selections);
+    if (unitCents === null) {
+      return NextResponse.json(
+        {
+          error:
+            `Configuration incomplète pour « ${product.name} ». Ouvrez la fiche produit et réajoutez l’article au panier.`,
+        },
+        { status: 400 },
+      );
+    }
 
     lineItems.push({
-      quantity: item.quantity,
+      quantity: qty,
       price_data: {
         currency: "eur",
-        unit_amount: unitAmount,
+        unit_amount: unitCents,
         product_data: {
           name: item.variantLabel
             ? `${product.name} — ${item.variantLabel}`
@@ -76,7 +122,7 @@ export async function POST(request: Request) {
   }
 
   const orderId = `AXN-${Date.now().toString(36).toUpperCase()}`;
-  const origin  = process.env.NEXT_PUBLIC_SITE_URL ?? "https://axionpad.com";
+  const origin = process.env.NEXT_PUBLIC_SITE_URL ?? "https://axionpad.com";
 
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
@@ -87,7 +133,7 @@ export async function POST(request: Request) {
     shipping_options: [STANDARD_SHIPPING],
     metadata: { orderId, productSlug: items[0]?.productId ?? "" },
     success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url:  `${origin}/shop`,
+    cancel_url: `${origin}/shop`,
     locale: "fr",
   });
 
