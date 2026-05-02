@@ -7,50 +7,28 @@ import CheckoutButton from "@/components/CheckoutButton";
 import { getProduct, getAllProducts } from "@/lib/products-data";
 
 export default function CartPage() {
-  const { items, coupon, loading, fetch, update, remove, clear, applyCoupon, removeCoupon, subtotal, count } = useCart();
-  const [couponInput, setCouponInput] = useState("");
-  const [couponError, setCouponError] = useState("");
-  const [couponLoading, setCouponLoading] = useState(false);
+  const { items, loading, fetch, update, remove, clear, subtotal, count } = useCart();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => { setMounted(true); fetch(); }, [fetch]);
 
-  const sub = subtotal();
+  const sub      = subtotal();
   const shipping = getShipping(sub);
-  const discount = coupon?.discount ?? 0;
-  const total = Math.max(0, sub - discount + shipping);
+  const total    = sub + shipping;
 
   const shippingProgress = Math.min(100, (sub / FREE_SHIPPING_THRESHOLD) * 100);
-  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - sub);
+  const remaining        = Math.max(0, FREE_SHIPPING_THRESHOLD - sub);
 
   const cartProductIds = new Set(items.map(i => i.productId));
   const crossSell = getAllProducts()
     .filter(p => p.inStock && !cartProductIds.has(p.slug))
     .slice(0, 2);
 
-  const handleApplyCoupon = async () => {
-    if (!couponInput.trim()) return;
-    setCouponLoading(true); setCouponError("");
-    try {
-      await applyCoupon(couponInput.trim());
-      setCouponInput("");
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "";
-      if (couponInput.toUpperCase() === "AXION10") {
-        await applyCoupon("AXION10").catch(() => null);
-        setCouponInput("");
-      } else {
-        setCouponError(msg || "Code invalide");
-      }
-    } finally { setCouponLoading(false); }
-  };
-
-  const cardLine =
-    "rounded-2xl border p-4 transition-shadow";
+  const cardLine  = "rounded-2xl border p-4 transition-shadow";
   const cardStyle = {
     borderColor: "var(--color-border)",
-    background: "var(--color-bg-card)",
-    boxShadow: "0 2px 16px rgba(0,0,0,0.28)",
+    background:  "var(--color-bg-card)",
+    boxShadow:   "0 2px 16px rgba(0,0,0,0.28)",
   } as const;
 
   if (!mounted || loading) {
@@ -98,11 +76,12 @@ export default function CartPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Articles */}
           <div className="lg:col-span-2 space-y-3">
             {items.map(item => {
-              const product = getProduct(item.productId);
-              const stock = product?.stock ?? Infinity;
-              const qty = item.quantity || 1;
+              const product  = getProduct(item.productId);
+              const stock    = product?.stock ?? Infinity;
+              const qty      = item.quantity || 1;
               const isLowStock = stock < 5 && stock > 0 && stock !== Infinity;
 
               return (
@@ -191,10 +170,7 @@ export default function CartPage() {
                       key={p.slug}
                       href={`/shop/${p.slug}`}
                       className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${cardLine}`}
-                      style={{
-                        ...cardStyle,
-                        borderColor: "var(--color-border)",
-                      }}
+                      style={{ ...cardStyle, borderColor: "var(--color-border)" }}
                     >
                       <div
                         className="w-10 h-10 rounded-lg flex items-center justify-center text-lg shrink-0"
@@ -203,7 +179,7 @@ export default function CartPage() {
                         📦
                       </div>
                       <div className="min-w-0">
-                        <div className="text-xs font-medium leading-tight truncate transition-colors" style={{ color: "var(--color-text)" }}>
+                        <div className="text-xs font-medium leading-tight truncate" style={{ color: "var(--color-text)" }}>
                           {p.name}
                         </div>
                         <div className="text-xs mt-0.5" style={{ color: "var(--color-text-mute)" }}>
@@ -217,9 +193,11 @@ export default function CartPage() {
             )}
           </div>
 
+          {/* Récapitulatif */}
           <div className={`${cardLine} p-6 h-fit space-y-4`} style={cardStyle}>
             <h2 className="font-semibold text-lg" style={{ color: "var(--color-text)" }}>Résumé</h2>
 
+            {/* Barre livraison gratuite */}
             <div className="space-y-1.5">
               {shipping > 0 ? (
                 <>
@@ -245,67 +223,41 @@ export default function CartPage() {
               )}
             </div>
 
+            {/* Détail prix */}
             <div className="space-y-2 text-sm" style={{ color: "var(--color-text-mute)" }}>
-              <div className="flex justify-between"><span>Sous-total</span><span>{sub.toFixed(2)} €</span></div>
+              <div className="flex justify-between">
+                <span>Sous-total</span>
+                <span>{sub.toFixed(2)} €</span>
+              </div>
               <div className="flex justify-between">
                 <span>Livraison</span>
                 <span>
-                  {shipping === 0 ? <span style={{ color: "#5a7d62" }}>Gratuite</span> : `${shipping.toFixed(2)} €`}
+                  {shipping === 0
+                    ? <span style={{ color: "#5a7d62" }}>Gratuite</span>
+                    : `${shipping.toFixed(2)} €`}
                 </span>
               </div>
-              {discount > 0 && (
-                <div className="flex justify-between" style={{ color: "#5a7d62" }}>
-                  <span>Coupon <strong>{coupon!.code}</strong></span>
-                  <span>−{discount.toFixed(2)} €</span>
-                </div>
-              )}
             </div>
 
-            <div className="border-t pt-4 flex justify-between font-semibold" style={{ borderColor: "var(--color-border)", color: "var(--color-text)" }}>
-              <span>Total</span><span>{total.toFixed(2)} €</span>
+            <div
+              className="border-t pt-4 flex justify-between font-semibold"
+              style={{ borderColor: "var(--color-border)", color: "var(--color-text)" }}
+            >
+              <span>Total</span>
+              <span>{total.toFixed(2)} €</span>
             </div>
 
-            <div className="space-y-1">
-              {coupon ? (
-                <div
-                  className="flex items-center justify-between text-xs rounded-lg px-3 py-2 border"
-                  style={{ color: "#5a7d62", background: "rgba(90,125,98,0.08)", borderColor: "rgba(90,125,98,0.2)" }}
-                >
-                  <span>Code <strong>{coupon.code}</strong> appliqué</span>
-                  <button type="button" onClick={removeCoupon} style={{ color: "var(--color-text-mute)" }}>✕</button>
-                </div>
-              ) : (
-                <>
-                  <div className="flex gap-2">
-                    <input
-                      value={couponInput}
-                      onChange={e => { setCouponInput(e.target.value); setCouponError(""); }}
-                      onKeyDown={e => e.key === "Enter" && handleApplyCoupon()}
-                      placeholder="Code promo"
-                      className="flex-1 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-1 transition-shadow"
-                      style={{
-                        background: "var(--color-bg-soft)",
-                        border: "1px solid var(--color-border)",
-                        color: "var(--color-text)",
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={handleApplyCoupon}
-                      disabled={couponLoading}
-                      className="px-3 py-2 rounded-lg text-sm transition-colors border"
-                      style={{
-                        borderColor: "var(--color-border)",
-                        color: "var(--color-text)",
-                        background: "var(--color-bg-card-alt)",
-                      }}
-                    >
-                      {couponLoading ? "…" : "Appliquer"}
-                    </button>
-                  </div>
-                  {couponError && <p className="text-xs text-red-600">{couponError}</p>}
-                </>
-              )}
+            {/* Note code promo */}
+            <div
+              className="flex items-start gap-2 text-xs rounded-lg px-3 py-2.5 border"
+              style={{
+                color: "var(--color-text-mute)",
+                background: "var(--color-bg-soft)",
+                borderColor: "var(--color-border)",
+              }}
+            >
+              <span className="shrink-0 mt-0.5">🏷️</span>
+              <span>Vous avez un code promo ? Entrez-le directement sur la page de paiement Stripe.</span>
             </div>
 
             <div
@@ -320,7 +272,9 @@ export default function CartPage() {
             </div>
 
             <CheckoutButton className="btn-accent block w-full py-3.5 text-center disabled:opacity-60 disabled:cursor-not-allowed" />
-            <p className="text-center text-xs" style={{ color: "var(--color-text-mute)" }}>Paiement sécurisé (Stripe)</p>
+            <p className="text-center text-xs" style={{ color: "var(--color-text-mute)" }}>
+              Paiement sécurisé (Stripe)
+            </p>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProduct, getAllProducts } from "@/lib/products-data";
+import type { Metadata } from "next";
+import { getProduct, getAllProducts, formatPrice } from "@/lib/products-data";
 import ProductConfigurator from "./ProductConfigurator";
 import ProductImage from "@/components/ProductImage";
 import ReviewSection from "@/components/ReviewSection";
@@ -8,6 +9,25 @@ import ProductCard from "@/components/ProductCard";
 
 export function generateStaticParams() {
   return getAllProducts().map(p => ({ slug: p.slug }));
+}
+
+export async function generateMetadata(
+  { params }: { params: Promise<{ slug: string }> },
+): Promise<Metadata> {
+  const { slug } = await params;
+  const product  = getProduct(slug);
+  if (!product) return {};
+  const price = formatPrice(product.price);
+  return {
+    title:       `${product.name} — ${price} | Axion Pad`,
+    description: product.description,
+    openGraph: {
+      title:       `${product.name} — ${price}`,
+      description: product.description,
+      images:      [{ url: product.imagePath }],
+      type:        "website",
+    },
+  };
 }
 
 function productEmoji(slug: string): string {

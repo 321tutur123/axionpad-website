@@ -6,15 +6,12 @@ import { CartItem, api } from "@/lib/api";
 
 interface CartStore {
   items: CartItem[];
-  coupon: { code: string; discount: number } | null;
   loading: boolean;
   fetch: () => Promise<void>;
   add: (productId: string, quantity?: number, variantId?: string) => Promise<void>;
   update: (itemId: string, quantity: number) => Promise<void>;
   remove: (itemId: string) => Promise<void>;
   clear: () => Promise<void>;
-  applyCoupon: (code: string) => Promise<void>;
-  removeCoupon: () => void;
   subtotal: () => number;
   count: () => number;
 }
@@ -29,7 +26,6 @@ export const useCart = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
-      coupon: null,
       loading: false,
 
       fetch: async () => {
@@ -37,7 +33,7 @@ export const useCart = create<CartStore>()(
         try {
           const res = await api.cart.get();
           const data = res.cart || res;
-          set({ items: (data as any).items || [], coupon: (data as any).coupon || null });
+          set({ items: (data as any).items || [] });
         } catch {
           // keep local state on API failure
         } finally {
@@ -71,20 +67,12 @@ export const useCart = create<CartStore>()(
 
       clear: async () => {
         await api.cart.clear().catch(() => null);
-        set({ items: [], coupon: null });
+        set({ items: [] });
       },
-
-      applyCoupon: async (code) => {
-        const res = await api.cart.applyCoupon(code);
-        const coupon = (res as any).coupon || { code, discount: (res as any).discount || 0 };
-        set({ coupon });
-      },
-
-      removeCoupon: () => set({ coupon: null }),
 
       subtotal: () => get().items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0),
-      count: () => get().items.reduce((s, i) => s + (i.quantity || 1), 0),
+      count:    () => get().items.reduce((s, i) => s + (i.quantity || 1), 0),
     }),
-    { name: "axionpad-cart", partialize: (s) => ({ items: s.items, coupon: s.coupon }) }
+    { name: "axionpad-cart", partialize: (s) => ({ items: s.items }) }
   )
 );

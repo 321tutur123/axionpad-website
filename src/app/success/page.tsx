@@ -1,22 +1,233 @@
+import Stripe from "stripe";
 import Link from "next/link";
+import type { Metadata } from "next";
 
-export default function SuccessPage() {
+export const runtime = "edge";
+
+export const metadata: Metadata = {
+  title: "Commande confirmée — Axion Pad",
+};
+
+interface Props {
+  searchParams: Promise<{ session_id?: string }>;
+}
+
+interface SessionData {
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  amountTotal: number;
+  currency: string;
+  items: Array<{ description: string; quantity: number; amountTotal: number }>;
+}
+
+async function fetchSession(sessionId: string): Promise<SessionData | null> {
+  const secret = process.env.STRIPE_SECRET_KEY;
+  if (!secret || !sessionId.startsWith("cs_")) return null;
+  try {
+    const stripe = new Stripe(secret);
+    const [session, { data: lineItems }] = await Promise.all([
+      stripe.checkout.sessions.retrieve(sessionId),
+      stripe.checkout.sessions.listLineItems(sessionId, { limit: 100 }),
+    ]);
+    return {
+      orderNumber:   session.metadata?.orderId ?? "",
+      customerName:  session.customer_details?.name  ?? "",
+      customerEmail: session.customer_details?.email ?? "",
+      amountTotal:   session.amount_total ?? 0,
+      currency:      (session.currency ?? "eur").toUpperCase(),
+      items: lineItems.map(i => ({
+        description: i.description ?? "Article",
+        quantity:    i.quantity    ?? 1,
+        amountTotal: i.amount_total ?? 0,
+      })),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function maskEmail(email: string): string {
+  const [local, domain] = email.split("@");
+  if (!domain || local.length <= 2) return email;
+  return `${local.slice(0, 2)}***@${domain}`;
+}
+
+export default async function SuccessPage({ searchParams }: Props) {
+  const { session_id } = await searchParams;
+  const data = session_id ? await fetchSession(session_id) : null;
+
+  const trackUrl = data?.orderNumber && data?.customerEmail
+    ? `/track?order=${encodeURIComponent(data.orderNumber)}&email=${encodeURIComponent(data.customerEmail)}`
+    : "/track";
+
   return (
-    <main className="min-h-screen bg-black flex items-center justify-center px-6">
-      <div className="text-center max-w-md">
-        <div className="w-20 h-20 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center text-4xl mx-auto mb-8">
-          ✓
+    <main
+      className="min-h-screen pt-24 pb-16 flex items-center justify-center px-6"
+      style={{ background: "transparent" }}
+    >
+      <div className="w-full max-w-lg">
+
+        {/* Checkmark */}
+        <div className="flex justify-center mb-8">
+          <div
+            className="w-20 h-20 rounded-full flex items-center justify-center text-3xl border"
+            style={{
+              background: "rgba(107,146,116,0.12)",
+              borderColor: "rgba(107,146,116,0.3)",
+              color: "#4a8f5b",
+            }}
+          >
+            ✓
+          </div>
         </div>
 
-        <h1 className="text-3xl font-bold text-white mb-3">Thank you!</h1>
-        <p className="text-zinc-400 text-lg mb-10">Your Axion Pad is on the way.</p>
-
-        <Link
-          href="/shop"
-          className="inline-block px-8 py-3 rounded-full border border-white/20 text-zinc-300 hover:text-white hover:border-violet-500 transition-all text-sm font-medium"
+        <h1
+          className="text-3xl font-semibold text-center mb-2"
+          style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}
         >
-          Continue shopping
-        </Link>
+          Commande confirmée !
+        </h1>
+        <p className="text-center mb-8" style={{ color: "var(--color-text-mute)" }}>
+          Merci pour votre achat — on s&apos;en occupe dès maintenant.
+        </p>
+
+        {/* Order card */}
+        <div
+          className="rounded-2xl border overflow-hidden mb-6"
+          style={{ borderColor: "var(--color-border)", background: "var(--color-bg-card)" }}
+        >
+          {/* Header */}
+          {data && (
+            <div
+              className="px-6 py-5 flex items-center justify-between border-b"
+              style={{ borderColor: "var(--color-border)" }}
+            >
+              <div>
+                <p
+                  className="text-xs uppercase tracking-wider mb-1"
+                  style={{ color: "var(--color-text-mute)" }}
+                >
+                  Référence commande
+                </p>
+                <p
+                  className="font-mono text-lg font-bold"
+                  style={{ color: "var(--color-accent)" }}
+                >
+                  {data.orderNumber}
+                </p>
+              </div>
+              {data.customerName && (
+                <p className="text-sm" style={{ color: "var(--color-text-mute)" }}>
+                  {data.customerName}
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Items */}
+          {data && data.items.length > 0 && (
+            <div className="px-6 py-4 space-y-3">
+              {data.items.map((item, i) => (
+                <div key={i} className="flex justify-between items-baseline text-sm">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-xs shrink-0" style={{ color: "var(--color-text-mute)" }}>
+                      ×{item.quantity}
+                    </span>
+                    <span className="truncate" style={{ color: "var(--color-text)" }}>
+                      {item.description}
+                    </span>
+                  </div>
+                  <span
+                    className="ml-4 shrink-0 tabular-nums"
+                    style={{ color: "var(--color-text-mute)" }}
+                  >
+                    {(item.amountTotal / 100).toFixed(2)} €
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Total */}
+          {data && (
+            <div
+              className="px-6 py-4 flex justify-between items-center border-t"
+              style={{ borderColor: "var(--color-border)" }}
+            >
+              <span className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>
+                Total payé
+              </span>
+              <span className="font-bold" style={{ color: "var(--color-text)" }}>
+                {(data.amountTotal / 100).toFixed(2)} {data.currency}
+              </span>
+            </div>
+          )}
+
+          {/* Fallback si pas de données Stripe */}
+          {!data && (
+            <div className="px-6 py-8 text-center">
+              <p className="text-sm" style={{ color: "var(--color-text-mute)" }}>
+                Votre paiement a bien été reçu.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Email notice */}
+        {data?.customerEmail && (
+          <p className="text-center text-sm mb-6" style={{ color: "var(--color-text-mute)" }}>
+            Un e-mail de confirmation a été envoyé à{" "}
+            <strong style={{ color: "var(--color-text)" }}>
+              {maskEmail(data.customerEmail)}
+            </strong>
+          </p>
+        )}
+
+        {/* Actions */}
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
+          <Link
+            href={trackUrl}
+            className="btn-accent flex-1 py-3 text-center font-semibold text-sm rounded-full"
+          >
+            Suivre ma commande →
+          </Link>
+          <Link
+            href="/shop"
+            className="flex-1 py-3 rounded-full text-center text-sm transition-colors"
+            style={{ border: "1px solid var(--color-border)", color: "var(--color-text-mute)" }}
+          >
+            Retour à la boutique
+          </Link>
+        </div>
+
+        {/* Delivery info */}
+        <div
+          className="rounded-xl px-5 py-4 text-sm mb-8 border"
+          style={{
+            background: "var(--color-accent-lt)",
+            borderColor: "rgba(184,118,92,0.2)",
+          }}
+        >
+          <p className="font-medium mb-1" style={{ color: "var(--color-accent)" }}>
+            📦 Expédition sous 3–5 jours ouvrés
+          </p>
+          <p style={{ color: "var(--color-text-mute)", fontSize: "13px" }}>
+            Vous recevrez un e-mail avec votre numéro de suivi dès que votre colis est parti.
+          </p>
+        </div>
+
+        <p className="text-center text-xs" style={{ color: "var(--color-text-mute)" }}>
+          Une question ?{" "}
+          <a
+            href="mailto:bonjour@axionpad.com"
+            className="underline hover:opacity-80 transition-opacity"
+            style={{ color: "var(--color-accent)" }}
+          >
+            bonjour@axionpad.com
+          </a>
+        </p>
+
       </div>
     </main>
   );
