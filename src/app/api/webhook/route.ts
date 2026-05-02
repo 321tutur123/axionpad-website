@@ -20,15 +20,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Missing stripe-signature header" }, { status: 400 });
   }
 
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    return NextResponse.json({ error: "STRIPE_WEBHOOK_SECRET not configured" }, { status: 500 });
+  }
+
   let event: Stripe.Event;
   try {
-    event = await stripe.webhooks.constructEventAsync(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET!,
-    );
-  } catch {
-    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+    event = await stripe.webhooks.constructEventAsync(body, signature, webhookSecret);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ error: `Signature verification failed: ${msg}` }, { status: 400 });
   }
 
   if (event.type !== "checkout.session.completed") {
