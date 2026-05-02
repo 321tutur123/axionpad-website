@@ -332,8 +332,8 @@ function TrackContent() {
 
             <p className="text-center text-xs pt-2" style={{ color: "var(--color-text-mute)" }}>
               Une question ?{" "}
-              <a href="mailto:contact@axionpad.com" className="underline transition-opacity hover:opacity-80" style={{ color: "var(--color-accent)" }}>
-                contact@axionpad.com
+              <a href="mailto:contact@axionpad.fr" className="underline transition-opacity hover:opacity-80" style={{ color: "var(--color-accent)" }}>
+                contact@axionpad.fr
               </a>
             </p>
           </div>

@@ -102,7 +102,7 @@ export async function PATCH(
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
         body: JSON.stringify({
-          from: "AxionPad <bonjour@axionpad.com>",
+          from: "AxionPad <contact@axionpad.fr>",
           to:   order.customer_email,
           subject: `Votre commande est expédiée ! — ${order.order_number}`,
           html: `<!DOCTYPE html>
@@ -152,7 +152,7 @@ export async function PATCH(
 
   <tr><td style="padding:20px 36px;background:#faf8f5;border-top:1px solid #e8e0d0">
     <p style="margin:0;font-size:12px;color:#9b8e85;text-align:center">
-      Une question ? <a href="mailto:bonjour@axionpad.com" style="color:#b8765c;text-decoration:none">bonjour@axionpad.com</a><br>
+      Une question ? <a href="mailto:contact@axionpad.fr" style="color:#b8765c;text-decoration:none">contact@axionpad.fr</a><br>
       AxionPad — Assemblé à Orléans, France
     </p>
   </td></tr>

@@ -172,8 +172,8 @@ export default function AboutPage() {
             n'hésite pas à écrire directement.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="mailto:contact@axionpad.com" className="btn-accent w-full sm:w-auto text-center">
-              contact@axionpad.com
+            <a href="mailto:contact@axionpad.fr" className="btn-accent w-full sm:w-auto text-center">
+              contact@axionpad.fr
             </a>
             <Link href="/shop" className="btn-ghost">
               Voir la boutique →

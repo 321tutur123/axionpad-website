@@ -26,14 +26,14 @@ export default function CgvPage() {
 
         <h1 className="text-3xl font-bold text-white mb-2">Conditions Générales de Vente</h1>
         <p className="text-zinc-500 text-sm mb-12">
-          Les présentes CGV régissent les ventes réalisées sur axionpad.com entre Axion Pad
+          Les présentes CGV régissent les ventes réalisées sur axionpad.fr entre Axion Pad
           (vendeur) et tout acheteur (client).
         </p>
 
         <Section title="1. Objet">
           <p>
             Les présentes Conditions Générales de Vente s'appliquent à toutes les ventes de produits
-            effectuées par Axion Pad via le site internet axionpad.com.
+            effectuées par Axion Pad via le site internet axionpad.fr.
           </p>
           <p>
             Toute commande implique l'acceptation pleine et entière des présentes CGV.
@@ -121,8 +121,8 @@ export default function CgvPage() {
           </p>
           <p>
             Pour exercer ce droit, le client doit notifier sa décision par email à{" "}
-            <a href="mailto:contact@axionpad.com" className="text-violet-400 hover:text-violet-300">
-              contact@axionpad.com
+            <a href="mailto:contact@axionpad.fr" className="text-violet-400 hover:text-violet-300">
+              contact@axionpad.fr
             </a>{" "}
             avant l'expiration du délai.
           </p>
@@ -155,8 +155,8 @@ export default function CgvPage() {
         <Section title="10. Service client">
           <p>
             Pour toute question ou réclamation :{" "}
-            <a href="mailto:contact@axionpad.com" className="text-violet-400 hover:text-violet-300">
-              contact@axionpad.com
+            <a href="mailto:contact@axionpad.fr" className="text-violet-400 hover:text-violet-300">
+              contact@axionpad.fr
             </a>
           </p>
         </Section>

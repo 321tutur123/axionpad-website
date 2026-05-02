@@ -1,11 +1,11 @@
-import Stripe from "stripe";
+﻿import Stripe from "stripe";
 import Link from "next/link";
 import type { Metadata } from "next";
 
 export const runtime = "edge";
 
 export const metadata: Metadata = {
-  title: "Commande confirmée — Axion Pad",
+  title: "Commande confirmÃ©e â€” Axion Pad",
 };
 
 interface Props {
@@ -78,7 +78,7 @@ export default async function SuccessPage({ searchParams }: Props) {
               color: "#4a8f5b",
             }}
           >
-            ✓
+            âœ“
           </div>
         </div>
 
@@ -86,10 +86,10 @@ export default async function SuccessPage({ searchParams }: Props) {
           className="text-3xl font-semibold text-center mb-2"
           style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}
         >
-          Commande confirmée !
+          Commande confirmÃ©e !
         </h1>
         <p className="text-center mb-8" style={{ color: "var(--color-text-mute)" }}>
-          Merci pour votre achat — on s&apos;en occupe dès maintenant.
+          Merci pour votre achat â€” on s&apos;en occupe dÃ¨s maintenant.
         </p>
 
         {/* Order card */}
@@ -108,7 +108,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                   className="text-xs uppercase tracking-wider mb-1"
                   style={{ color: "var(--color-text-mute)" }}
                 >
-                  Référence commande
+                  RÃ©fÃ©rence commande
                 </p>
                 <p
                   className="font-mono text-lg font-bold"
@@ -132,7 +132,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                 <div key={i} className="flex justify-between items-baseline text-sm">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="text-xs shrink-0" style={{ color: "var(--color-text-mute)" }}>
-                      ×{item.quantity}
+                      Ã—{item.quantity}
                     </span>
                     <span className="truncate" style={{ color: "var(--color-text)" }}>
                       {item.description}
@@ -142,7 +142,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                     className="ml-4 shrink-0 tabular-nums"
                     style={{ color: "var(--color-text-mute)" }}
                   >
-                    {(item.amountTotal / 100).toFixed(2)} €
+                    {(item.amountTotal / 100).toFixed(2)} â‚¬
                   </span>
                 </div>
               ))}
@@ -156,7 +156,7 @@ export default async function SuccessPage({ searchParams }: Props) {
               style={{ borderColor: "var(--color-border)" }}
             >
               <span className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>
-                Total payé
+                Total payÃ©
               </span>
               <span className="font-bold" style={{ color: "var(--color-text)" }}>
                 {(data.amountTotal / 100).toFixed(2)} {data.currency}
@@ -164,11 +164,11 @@ export default async function SuccessPage({ searchParams }: Props) {
             </div>
           )}
 
-          {/* Fallback si pas de données Stripe */}
+          {/* Fallback si pas de donnÃ©es Stripe */}
           {!data && (
             <div className="px-6 py-8 text-center">
               <p className="text-sm" style={{ color: "var(--color-text-mute)" }}>
-                Votre paiement a bien été reçu.
+                Votre paiement a bien Ã©tÃ© reÃ§u.
               </p>
             </div>
           )}
@@ -177,7 +177,7 @@ export default async function SuccessPage({ searchParams }: Props) {
         {/* Email notice */}
         {data?.customerEmail && (
           <p className="text-center text-sm mb-6" style={{ color: "var(--color-text-mute)" }}>
-            Un e-mail de confirmation a été envoyé à{" "}
+            Un e-mail de confirmation a Ã©tÃ© envoyÃ© Ã {" "}
             <strong style={{ color: "var(--color-text)" }}>
               {maskEmail(data.customerEmail)}
             </strong>
@@ -190,14 +190,14 @@ export default async function SuccessPage({ searchParams }: Props) {
             href={trackUrl}
             className="btn-accent flex-1 py-3 text-center font-semibold text-sm rounded-full"
           >
-            Suivre ma commande →
+            Suivre ma commande â†’
           </Link>
           <Link
             href="/shop"
             className="flex-1 py-3 rounded-full text-center text-sm transition-colors"
             style={{ border: "1px solid var(--color-border)", color: "var(--color-text-mute)" }}
           >
-            Retour à la boutique
+            Retour Ã  la boutique
           </Link>
         </div>
 
@@ -210,21 +210,21 @@ export default async function SuccessPage({ searchParams }: Props) {
           }}
         >
           <p className="font-medium mb-1" style={{ color: "var(--color-accent)" }}>
-            📦 Expédition sous 3–5 jours ouvrés
+            ðŸ“¦ ExpÃ©dition sous 3â€“5 jours ouvrÃ©s
           </p>
           <p style={{ color: "var(--color-text-mute)", fontSize: "13px" }}>
-            Vous recevrez un e-mail avec votre numéro de suivi dès que votre colis est parti.
+            Vous recevrez un e-mail avec votre numÃ©ro de suivi dÃ¨s que votre colis est parti.
           </p>
         </div>
 
         <p className="text-center text-xs" style={{ color: "var(--color-text-mute)" }}>
           Une question ?{" "}
           <a
-            href="mailto:bonjour@axionpad.com"
+            href="mailto:contact@axionpad.fr"
             className="underline hover:opacity-80 transition-opacity"
             style={{ color: "var(--color-accent)" }}
           >
-            bonjour@axionpad.com
+            contact@axionpad.fr
           </a>
         </p>
 

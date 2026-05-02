@@ -31,19 +31,19 @@ export default function MentionsLegalesPage() {
         </p>
 
         <Section title="1. Éditeur du site">
-          <p>Le site axionpad.com est édité par :</p>
+          <p>Le site axionpad.fr est édité par :</p>
           <p>
             <strong className="text-zinc-200">Arthur Delacour</strong><br />
             Activité : vente en ligne de matériel électronique<br />
             Statut : Auto-entrepreneur / Micro-entrepreneur<br />
             SIRET : <span className="text-zinc-500">[À COMPLÉTER]</span><br />
             Adresse : <span className="text-zinc-500">[À COMPLÉTER]</span><br />
-            Email : <a href="mailto:contact@axionpad.com" className="text-violet-400 hover:text-violet-300">contact@axionpad.com</a>
+            Email : <a href="mailto:contact@axionpad.fr" className="text-violet-400 hover:text-violet-300">contact@axionpad.fr</a>
           </p>
         </Section>
 
         <Section title="2. Directeur de la publication">
-          <p>Arthur Delacour — contact@axionpad.com</p>
+          <p>Arthur Delacour — contact@axionpad.fr</p>
         </Section>
 
         <Section title="3. Hébergement">

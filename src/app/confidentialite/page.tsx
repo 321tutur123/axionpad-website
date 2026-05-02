@@ -34,8 +34,8 @@ export default function ConfidentialitePage() {
           <p>
             <strong className="text-zinc-200">Arthur Delacour — Axion Pad</strong><br />
             Email :{" "}
-            <a href="mailto:contact@axionpad.com" className="text-violet-400 hover:text-violet-300">
-              contact@axionpad.com
+            <a href="mailto:contact@axionpad.fr" className="text-violet-400 hover:text-violet-300">
+              contact@axionpad.fr
             </a><br />
             Adresse : <span className="text-zinc-500">[À COMPLÉTER]</span>
           </p>
@@ -146,8 +146,8 @@ export default function ConfidentialitePage() {
           </div>
           <p>
             Pour exercer ces droits, contactez-nous :{" "}
-            <a href="mailto:contact@axionpad.com" className="text-violet-400 hover:text-violet-300">
-              contact@axionpad.com
+            <a href="mailto:contact@axionpad.fr" className="text-violet-400 hover:text-violet-300">
+              contact@axionpad.fr
             </a>.
             Nous répondrons dans un délai maximum de 30 jours.
           </p>

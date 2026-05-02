@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useCallback } from "react";
 
-/* ── Types ─────────────────────────────────────────────────────────────── */
+/* â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 interface ShippingAddress {
   line1?: string;
@@ -36,7 +36,7 @@ interface Order {
   created_at: number;
 }
 
-/* ── Helpers ────────────────────────────────────────────────────────────── */
+/* â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function safeJSON<T>(str: string, fallback: T): T {
   try { return JSON.parse(str) as T; } catch { return fallback; }
@@ -49,7 +49,7 @@ function fmtDate(ts: number) {
 }
 
 
-/* ── Status badge ───────────────────────────────────────────────────────── */
+/* â”€â”€ Status badge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, { cls: string; label: string }> = {
@@ -66,7 +66,7 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-/* ── Packing slip printer ───────────────────────────────────────────────── */
+/* â”€â”€ Packing slip printer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function printPackingSlip(order: Order) {
   const address = safeJSON<ShippingAddress>(order.shipping_address, {});
@@ -77,7 +77,7 @@ function printPackingSlip(order: Order) {
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Bon de préparation — ${order.order_number}</title>
+<title>Bon de préparation â€” ${order.order_number}</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:48px;color:#111;background:#fff;font-size:14px}
@@ -103,7 +103,7 @@ function printPackingSlip(order: Order) {
 </head>
 <body>
   <div class="logo">AxionPad</div>
-  <div class="sub">axionpad.com — bonjour@axionpad.com</div>
+  <div class=”sub”>axionpad.fr — contact@axionpad.fr</div>
   <hr>
   <div class="row">
     <span class="order-num">Commande <strong>${order.order_number}</strong></span>
@@ -146,7 +146,7 @@ function printPackingSlip(order: Order) {
 
   ${order.tracking_number ? `<div class="track">N° de suivi : <strong>${escHtml(order.tracking_number)}</strong></div>` : ""}
 
-  <p class="footer">Merci pour votre commande AxionPad ! Pour toute question : bonjour@axionpad.com</p>
+  <p class="footer">Merci pour votre commande AxionPad ! Pour toute question : contact@axionpad.fr</p>
 </body>
 </html>`;
 
@@ -166,7 +166,7 @@ function escHtml(str: string | undefined): string {
     .replace(/"/g, "&quot;");
 }
 
-/* ── Order detail modal ─────────────────────────────────────────────────── */
+/* â”€â”€ Order detail modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 interface ModalProps {
   order: Order;
@@ -213,7 +213,7 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <StatusBadge status={order.status} />
-            <button onClick={onClose} className="text-zinc-500 hover:text-white transition-colors text-xl leading-none w-7 h-7 flex items-center justify-center">✕</button>
+            <button onClick={onClose} className="text-zinc-500 hover:text-white transition-colors text-xl leading-none w-7 h-7 flex items-center justify-center">âœ•</button>
           </div>
         </div>
 
@@ -291,7 +291,7 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
                   disabled={saving}
                   className="px-5 py-2.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors disabled:opacity-60 whitespace-nowrap"
                 >
-                  {saving ? "…" : "Expédiée ✓"}
+                  {saving ? "â€¦" : "Expédiée âœ“"}
                 </button>
               </div>
             </section>
@@ -299,7 +299,7 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
 
           {isShipped && order.tracking_number && (
             <section className="flex items-center gap-2 text-sm text-green-400 bg-green-500/10 border border-green-500/20 rounded-xl px-4 py-3">
-              <span>✓</span>
+              <span>âœ“</span>
               <span>Suivi : <strong>{order.tracking_number}</strong></span>
             </section>
           )}
@@ -311,7 +311,7 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
             onClick={() => printPackingSlip(order)}
             className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/10 text-zinc-300 hover:text-white hover:border-white/30 text-sm transition-colors"
           >
-            <span>🖨</span> Imprimer le bon de préparation
+            <span>ðŸ–¨</span> Imprimer le bon de préparation
           </button>
         </div>
       </div>
@@ -319,7 +319,7 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
   );
 }
 
-/* ── Main page ──────────────────────────────────────────────────────────── */
+/* â”€â”€ Main page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 export default function AdminOrdersPage() {
   const [authState,   setAuthState]   = useState<"loading" | "logged-in" | "logged-out">("loading");
@@ -372,7 +372,7 @@ export default function AdminOrdersPage() {
     setSelected(prev => prev?.id === id ? { ...prev, ...patch } : prev);
   };
 
-  /* ── Loading screen ───────────────────────────────────────────────────── */
+  /* â”€â”€ Loading screen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   if (authState === "loading") {
     return (
       <main className="min-h-screen bg-zinc-950 flex items-center justify-center">
@@ -381,7 +381,7 @@ export default function AdminOrdersPage() {
     );
   }
 
-  /* ── Login screen ─────────────────────────────────────────────────────── */
+  /* â”€â”€ Login screen â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   if (authState === "logged-out") {
     return (
       <main className="min-h-screen bg-zinc-950 flex items-center justify-center px-6">
@@ -404,14 +404,14 @@ export default function AdminOrdersPage() {
             disabled={authLoading}
             className="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold transition-colors disabled:opacity-60"
           >
-            {authLoading ? "Connexion…" : "Accéder"}
+            {authLoading ? "Connexionâ€¦" : "Accéder"}
           </button>
         </form>
       </main>
     );
   }
 
-  /* ── Filtered list ────────────────────────────────────────────────────── */
+  /* â”€â”€ Filtered list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   const filtered = orders.filter(o => {
     if (statusFilter !== "all" && o.status !== statusFilter) return false;
     if (search) {
@@ -431,7 +431,7 @@ export default function AdminOrdersPage() {
     shipped:   orders.filter(o => o.status === "shipped").length,
   };
 
-  /* ── Orders table ─────────────────────────────────────────────────────── */
+  /* â”€â”€ Orders table â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
   return (
     <>
       <main className="min-h-screen bg-zinc-950 px-6 py-8">
@@ -475,7 +475,7 @@ export default function AdminOrdersPage() {
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Rechercher nom, email, n° commande…"
+              placeholder="Rechercher nom, email, n° commandeâ€¦"
               className="flex-1 min-w-48 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-violet-500 placeholder-zinc-600"
             />
             <button
@@ -483,7 +483,7 @@ export default function AdminOrdersPage() {
               className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-400 hover:text-white text-sm transition-colors"
               title="Rafraîchir"
             >
-              ↻
+              â†»
             </button>
           </div>
 
@@ -516,7 +516,7 @@ export default function AdminOrdersPage() {
                     >
                       <td className="px-5 py-4 text-zinc-500 whitespace-nowrap text-xs">{fmtDate(order.created_at)}</td>
                       <td className="px-5 py-4 text-zinc-300 font-mono text-xs">{order.order_number}</td>
-                      <td className="px-5 py-4 text-white font-medium">{order.customer_name || "—"}</td>
+                      <td className="px-5 py-4 text-white font-medium">{order.customer_name || "â€”"}</td>
                       <td className="px-5 py-4 text-zinc-500 hidden md:table-cell">{order.customer_email}</td>
                       <td className="px-5 py-4 text-right text-white font-semibold whitespace-nowrap">
                         {(order.amount_total / 100).toFixed(2)} €

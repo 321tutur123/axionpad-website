@@ -91,18 +91,18 @@ export async function POST(request: Request) {
 
     const itemsRows = items.map(i => `
       <tr>
-        <td style="padding:10px 0;border-bottom:1px solid #f0ece6;font-size:14px;color:#3d3530">${esc(i.name)} <span style="color:#9b8e85">×${i.quantity}</span></td>
-        <td style="padding:10px 0;border-bottom:1px solid #f0ece6;font-size:14px;color:#3d3530;text-align:right;white-space:nowrap">${i.subtotal.toFixed(2)} €</td>
+        <td style="padding:10px 0;border-bottom:1px solid #f0ece6;font-size:14px;color:#3d3530">${esc(i.name)} <span style="color:#9b8e85">x${i.quantity}</span></td>
+        <td style="padding:10px 0;border-bottom:1px solid #f0ece6;font-size:14px;color:#3d3530;text-align:right;white-space:nowrap">${i.subtotal.toFixed(2)} EUR</td>
       </tr>`).join("");
 
-    // ── E-mail de confirmation immédiat ──────────────────────────────────────
+    // E-mail de confirmation immediat
     await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
       body: JSON.stringify({
-        from: "AxionPad <bonjour@axionpad.com>",
+        from: "AxionPad <contact@axionpad.fr>",
         to:   customerEmail,
-        subject: `Commande confirmée — ${orderNumber}`,
+        subject: `Commande confirmee -- ${orderNumber}`,
         html: `<!DOCTYPE html>
 <html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#faf8f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
@@ -112,50 +112,50 @@ export async function POST(request: Request) {
 
   <tr><td style="background:#1a1614;padding:28px 36px">
     <p style="margin:0;font-size:22px;font-weight:700;letter-spacing:-0.5px;color:#fff">AxionPad</p>
-    <p style="margin:4px 0 0;font-size:13px;color:#9b8e85">Macro pad fabriqué en France</p>
+    <p style="margin:4px 0 0;font-size:13px;color:#9b8e85">Macro pad fabrique en France</p>
   </td></tr>
 
   <tr><td style="padding:36px 36px 24px;text-align:center">
     <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:rgba(107,146,116,0.12);border:1.5px solid rgba(107,146,116,0.3);margin-bottom:20px">
-      <span style="font-size:24px;color:#4a8f5b">✓</span>
+      <span style="font-size:24px;color:#4a8f5b">&#10003;</span>
     </div>
-    <h1 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#1a1614;letter-spacing:-0.5px">Commande confirmée !</h1>
-    <p style="margin:0;font-size:15px;color:#6b5f58">Bonjour${firstName ? " " + esc(firstName) : ""},<br>merci pour votre commande. On s'en occupe dès maintenant.</p>
+    <h1 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#1a1614;letter-spacing:-0.5px">Commande confirm&#233;e !</h1>
+    <p style="margin:0;font-size:15px;color:#6b5f58">Bonjour${firstName ? " " + esc(firstName) : ""},<br>merci pour votre commande. On s'en occupe d&#232;s maintenant.</p>
   </td></tr>
 
   <tr><td style="padding:0 36px 24px">
     <div style="background:#faf8f5;border:1px solid #e8e0d0;border-radius:10px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between">
-      <span style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#9b8e85">Référence commande</span>
+      <span style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#9b8e85">R&#233;f&#233;rence commande</span>
       <span style="font-family:monospace;font-size:16px;font-weight:700;color:#b8765c">${esc(orderNumber)}</span>
     </div>
   </td></tr>
 
   <tr><td style="padding:0 36px 24px">
-    <p style="margin:0 0 12px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#9b8e85">Articles commandés</p>
+    <p style="margin:0 0 12px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#9b8e85">Articles command&#233;s</p>
     <table width="100%" cellpadding="0" cellspacing="0">
       ${itemsRows}
       <tr>
-        <td style="padding:14px 0 0;font-size:15px;font-weight:700;color:#1a1614">Total payé</td>
-        <td style="padding:14px 0 0;font-size:15px;font-weight:700;color:#1a1614;text-align:right">${totalFormatted} €</td>
+        <td style="padding:14px 0 0;font-size:15px;font-weight:700;color:#1a1614">Total pay&#233;</td>
+        <td style="padding:14px 0 0;font-size:15px;font-weight:700;color:#1a1614;text-align:right">${totalFormatted} &#8364;</td>
       </tr>
     </table>
   </td></tr>
 
   <tr><td style="padding:0 36px 28px">
     <div style="background:#fdf8f0;border:1px solid #e8d8b8;border-radius:10px;padding:14px 18px">
-      <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#8b6a3a">📦 Expédition sous 3–5 jours ouvrés</p>
-      <p style="margin:0;font-size:13px;color:#9b8e85">Vous recevrez un e-mail avec votre numéro de suivi dès que votre colis est parti.</p>
+      <p style="margin:0 0 4px;font-size:13px;font-weight:600;color:#8b6a3a">&#128230; Exp&#233;dition sous 3&#8211;5 jours ouvr&#233;s</p>
+      <p style="margin:0;font-size:13px;color:#9b8e85">Vous recevrez un e-mail avec votre num&#233;ro de suivi d&#232;s que votre colis est parti.</p>
     </div>
   </td></tr>
 
   <tr><td style="padding:0 36px 36px;text-align:center">
-    <a href="${esc(trackUrl)}" style="display:inline-block;padding:14px 32px;background:#b8765c;color:#fff;text-decoration:none;border-radius:999px;font-weight:600;font-size:14px">Suivre ma commande →</a>
+    <a href="${esc(trackUrl)}" style="display:inline-block;padding:14px 32px;background:#b8765c;color:#fff;text-decoration:none;border-radius:999px;font-weight:600;font-size:14px">Suivre ma commande &#8594;</a>
   </td></tr>
 
   <tr><td style="padding:20px 36px;background:#faf8f5;border-top:1px solid #e8e0d0">
     <p style="margin:0;font-size:12px;color:#9b8e85;text-align:center">
-      Une question ? <a href="mailto:bonjour@axionpad.com" style="color:#b8765c;text-decoration:none">bonjour@axionpad.com</a><br>
-      AxionPad — Assemblé à Orléans, France
+      Une question ? <a href="mailto:contact@axionpad.fr" style="color:#b8765c;text-decoration:none">contact@axionpad.fr</a><br>
+      AxionPad &#8212; Assembl&#233; &#224; Orl&#233;ans, France
     </p>
   </td></tr>
 
@@ -165,7 +165,7 @@ export async function POST(request: Request) {
       }),
     }).catch(() => null);
 
-    // ── Demande d'avis J+7 ──────────────────────────────────────────────────
+    // Demande d'avis J+7
     const scheduledAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     const reviewUrl   = productSlug ? `${origin}/shop/${productSlug}#reviews` : `${origin}/shop`;
 
@@ -173,15 +173,15 @@ export async function POST(request: Request) {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.RESEND_API_KEY}` },
       body: JSON.stringify({
-        from: "AxionPad <bonjour@axionpad.com>",
+        from: "AxionPad <contact@axionpad.fr>",
         to:   customerEmail,
-        subject: "Votre avis nous intéresse !",
+        subject: "Votre avis nous interesse !",
         scheduledAt,
         html: `<p>Bonjour,</p>
-<p>Nous espérons que vous êtes satisfait(e) de votre commande AxionPad !</p>
-<p>Votre retour aide d'autres passionnés à faire le bon choix. Cela ne prend qu'une minute.</p>
-<p><a href="${esc(reviewUrl)}" style="display:inline-block;padding:12px 24px;background:#b8765c;color:#fff;text-decoration:none;border-radius:999px;font-weight:600;">Laisser un avis →</a></p>
-<p style="color:#9b8e85;font-size:12px;">Vous recevez cet e-mail car vous avez passé commande sur axionpad.com.</p>`,
+<p>Nous esp&#233;rons que vous &#234;tes satisfait(e) de votre commande AxionPad !</p>
+<p>Votre retour aide d'autres passionn&#233;s &#224; faire le bon choix. Cela ne prend qu'une minute.</p>
+<p><a href="${esc(reviewUrl)}" style="display:inline-block;padding:12px 24px;background:#b8765c;color:#fff;text-decoration:none;border-radius:999px;font-weight:600;">Laisser un avis &#8594;</a></p>
+<p style="color:#9b8e85;font-size:12px;">Vous recevez cet e-mail car vous avez pass&#233; commande sur axionpad.fr.</p>`,
       }),
     }).catch(() => null);
   }

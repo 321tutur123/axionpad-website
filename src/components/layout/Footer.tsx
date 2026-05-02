@@ -17,7 +17,7 @@ const NAV = [
       { href: "/track",        label: "Suivi de commande" },
       { href: "/software",     label: "Logiciel configurateur" },
       { href: "/about",        label: "À propos" },
-      { href: "mailto:contact@axionpad.com", label: "Contact" },
+      { href: "mailto:contact@axionpad.fr", label: "Contact" },
       { href: "/cgv#7",        label: "Retours & remboursements" },
     ],
   },
