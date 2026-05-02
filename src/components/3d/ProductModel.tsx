@@ -4,7 +4,8 @@ import { useRef, useEffect, useMemo } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import {
-  Group, Box3, Vector3, Matrix4,
+  Group, Box3, Vector3,
+  Quaternion,
   MeshStandardMaterial,
   CanvasTexture, PlaneGeometry, MeshBasicMaterial, Mesh,
 } from "three";
@@ -148,8 +149,19 @@ export default function ProductModel({
       plane.name = "__lid_overlay";
       // Position légèrement au-dessus de la surface du couvercle
       plane.position.set(localTop.x, localTop.y + 0.008 / autoScale, localTop.z);
-      // Angle horizontal (-90°) + inclinaison de 6° du couvercle (axe Z)
-      plane.rotation.set(-Math.PI / 2, 0, LID_TILT_RAD);
+
+      // Orientation : aligne le plan sur la normale réelle du couvercle
+      // La face supérieure du mesh box_top a pour normale +Y dans son espace local
+      const lidWorldQuat  = new Quaternion();
+      lidMesh.getWorldQuaternion(lidWorldQuat);
+      // La normale du dessus du couvercle en world space
+      const topNormal = new Vector3(0, 1, 0).applyQuaternion(lidWorldQuat);
+      // PlaneGeometry a sa normale sur +Z par défaut → on tourne pour l'aligner sur topNormal
+      const worldPlaneQuat = new Quaternion().setFromUnitVectors(new Vector3(0, 0, 1), topNormal);
+      // Convertit en espace local du groupRef
+      const groupQuat = new Quaternion();
+      groupRef.current!.getWorldQuaternion(groupQuat);
+      plane.quaternion.copy(worldPlaneQuat.premultiply(groupQuat.invert()));
 
       groupRef.current!.add(plane);
     };
