@@ -10,8 +10,9 @@ import {
 } from "three";
 import { gsap } from "@/lib/gsap";
 
-const MODEL_PATH = "/models/axionpad.glb";
-const LID_MESH   = "box_top";
+const MODEL_PATH   = "/models/axionpad.glb";
+const LID_MESH     = "box_top";
+const LID_TILT_RAD = 6 * Math.PI / 180;
 
 interface ProductModelProps {
   modelPath?:      string;
@@ -130,9 +131,8 @@ export default function ProductModel({
       plane.name = "__lid_overlay";
       // Centré sur la face supérieure du couvercle, légèrement au-dessus
       plane.position.set(lidCenter.x, topY + 0.001, lidCenter.z);
-      // Face vers le haut dans l'espace local du couvercle
-      // L'angle 6° est automatiquement hérité du mesh parent
-      plane.rotation.x = -Math.PI / 2;
+      // Angles inversés car héritage du parent box_top inverse les transforms
+      plane.rotation.set(-Math.PI / 2, -LID_TILT_RAD, -Math.PI / 2);
       // Ajout comme enfant du couvercle
       lidMesh.add(plane);
     };
