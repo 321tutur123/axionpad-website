@@ -4,6 +4,7 @@ import { getProduct, getAllProducts, formatPrice } from "@/lib/products-data";
 import ProductConfigurator from "./ProductConfigurator";
 import ProductImage from "@/components/ProductImage";
 import ReviewSection from "@/components/ReviewSection";
+import ProductCard from "@/components/ProductCard";
 
 export function generateStaticParams() {
   return getAllProducts().map(p => ({ slug: p.slug }));
@@ -193,26 +194,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {related.map(p => (
-                <Link
-                  key={p.slug}
-                  href={`/shop/${p.slug}`}
-                  className="card p-4 group"
-                >
-                  <div className="text-2xl mb-2">{productEmoji(p.slug)}</div>
-                  <div
-                    className="text-sm font-medium leading-tight mb-1 transition-colors"
-                    style={{ color: "var(--color-text)" }}
-                    onMouseEnter={(e: React.MouseEvent<HTMLDivElement>) =>
-                      (e.currentTarget.style.color = "var(--color-accent)")
-                    }
-                    onMouseLeave={(e: React.MouseEvent<HTMLDivElement>) =>
-                      (e.currentTarget.style.color = "var(--color-text)")
-                    }
-                  >
-                    {p.name}
-                  </div>
-                  <div className="text-xs" style={{ color: "var(--color-text-mute)" }}>{formatPrice(p.price)}</div>
-                </Link>
+                <ProductCard key={p.slug} product={p} />
               ))}
             </div>
           </div>
