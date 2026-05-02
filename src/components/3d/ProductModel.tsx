@@ -3,46 +3,68 @@
 import { useRef, useEffect, useMemo } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { Group, Box3, Vector3, MeshStandardMaterial } from "three";
+import {
+  Group, Box3, Vector3,
+  MeshStandardMaterial,
+  CanvasTexture, PlaneGeometry, MeshBasicMaterial, Mesh,
+} from "three";
 import { gsap } from "@/lib/gsap";
 
 const MODEL_PATH = "/models/axionpad.glb";
+const LID_MESH   = "box_top";
 
 interface ProductModelProps {
-  modelPath?: string;
-  targetSize?: number;
-  position?: [number, number, number];
-  autoRotate?: boolean;
-  color?: string;
+  modelPath?:      string;
+  targetSize?:     number;
+  position?:       [number, number, number];
+  autoRotate?:     boolean;
+  color?:          string;
+  engravingText?:  string;
+  engravingImage?: string; // data URL
+}
+
+function makeEngravingCanvas(text?: string, imageDataUrl?: string): HTMLCanvasElement {
+  const w = 1024, h = 512;
+  const canvas = document.createElement("canvas");
+  canvas.width  = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d")!;
+  ctx.clearRect(0, 0, w, h);
+
+  if (text) {
+    ctx.fillStyle = "rgba(0,0,0,0.18)";
+    ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    ctx.font = `bold ${Math.min(120, Math.max(40, Math.floor(800 / text.length)))}px ui-monospace, monospace`;
+    ctx.textAlign    = "center";
+    ctx.textBaseline = "middle";
+    ctx.letterSpacing = "8px";
+    ctx.fillText(text.toUpperCase(), w / 2, h / 2);
+  }
+  return canvas;
 }
 
 export default function ProductModel({
-  modelPath = MODEL_PATH,
-  targetSize = 2.8,
-  position = [0, 0, 0],
-  autoRotate = true,
+  modelPath    = MODEL_PATH,
+  targetSize   = 2.8,
+  position     = [0, 0, 0],
+  autoRotate   = true,
   color,
+  engravingText,
+  engravingImage,
 }: ProductModelProps) {
   const groupRef = useRef<Group>(null);
   const { scene, animations } = useGLTF(modelPath);
   const { actions } = useAnimations(animations, groupRef);
 
-  // Auto-scale : calcule le ratio pour que la dimension max = targetSize
   const autoScale = useMemo(() => {
     const box = new Box3().setFromObject(scene);
     const size = new Vector3();
     box.getSize(size);
     const maxDim = Math.max(size.x, size.y, size.z);
-    if (maxDim === 0) return 1;
-    const s = targetSize / maxDim;
-    console.log(`[ProductModel] loaded "${modelPath}" — bbox ${size.x.toFixed(2)}×${size.y.toFixed(2)}×${size.z.toFixed(2)}, autoScale=${s.toFixed(3)}`);
-    const meshNames: string[] = [];
-    scene.traverse((child: any) => { if (child.isMesh) meshNames.push(child.name); });
-    console.log("[ProductModel] meshes:", meshNames);
-    return s;
+    return maxDim === 0 ? 1 : targetSize / maxDim;
   }, [scene, modelPath, targetSize]);
 
-  // Centre le modèle sur son pivot
   const centerOffset = useMemo(() => {
     const box = new Box3().setFromObject(scene);
     const center = new Vector3();
@@ -50,10 +72,9 @@ export default function ProductModel({
     return center.multiplyScalar(-1);
   }, [scene]);
 
+  // Couleur + animation initiale
   useEffect(() => {
-    if (actions && Object.keys(actions).length > 0) {
-      Object.values(actions)[0]?.play();
-    }
+    if (actions && Object.keys(actions).length > 0) Object.values(actions)[0]?.play();
     if (color && groupRef.current) {
       groupRef.current.traverse((child: any) => {
         if (child.isMesh) {
@@ -65,17 +86,84 @@ export default function ProductModel({
 
   useEffect(() => {
     if (!groupRef.current) return;
-    gsap.from(groupRef.current.scale, {
-      x: 0, y: 0, z: 0,
-      duration: 1.2,
-      ease: "elastic.out(1, 0.5)",
-    });
+    gsap.from(groupRef.current.scale, { x: 0, y: 0, z: 0, duration: 1.2, ease: "elastic.out(1, 0.5)" });
   }, []);
 
-  useFrame((_, delta) => {
-    if (autoRotate && groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.5;
+  // Overlay gravure sur box_top
+  useEffect(() => {
+    if (!groupRef.current) return;
+
+    // Supprime l'overlay existant
+    const old = groupRef.current.getObjectByName("__lid_overlay");
+    if (old) {
+      groupRef.current.remove(old);
+      (old as Mesh).geometry?.dispose();
+      ((old as Mesh).material as MeshBasicMaterial)?.map?.dispose();
+      ((old as Mesh).material as MeshBasicMaterial)?.dispose();
     }
+
+    const hasText  = engravingText  && engravingText.trim().length > 0;
+    const hasImage = !!engravingImage;
+    if (!hasText && !hasImage) return;
+
+    // Trouve box_top
+    let lidMesh: any = null;
+    groupRef.current.traverse((child: any) => {
+      if (child.isMesh && child.name === LID_MESH) lidMesh = child;
+    });
+    if (!lidMesh) return;
+
+    const applyOverlay = (canvas: HTMLCanvasElement) => {
+      if (!groupRef.current) return;
+      const texture = new CanvasTexture(canvas);
+
+      // Bounding box en world space
+      const bbox = new Box3().setFromObject(lidMesh);
+      const size = new Vector3();
+      bbox.getSize(size);
+      const center = new Vector3();
+      bbox.getCenter(center);
+
+      // Convertit en local space du groupRef
+      const localCenter = groupRef.current!.worldToLocal(center.clone());
+      const localMax    = groupRef.current!.worldToLocal(new Vector3(bbox.max.x, bbox.max.y, bbox.max.z));
+
+      const planeW = size.x / autoScale * 0.82;
+      const planeD = size.z / autoScale * 0.82;
+
+      const geo = new PlaneGeometry(planeW, planeD);
+      const mat = new MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false, opacity: 0.88 });
+      const plane = new Mesh(geo, mat);
+      plane.name = "__lid_overlay";
+      plane.position.set(localCenter.x, localMax.y + 0.01 / autoScale, localCenter.z);
+      plane.rotation.x = -Math.PI / 2;
+
+      groupRef.current!.add(plane);
+    };
+
+    if (hasImage) {
+      const img = new Image();
+      img.onload = () => {
+        const w = 1024, h = 512;
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext("2d")!;
+        ctx.clearRect(0, 0, w, h);
+        const ratio = Math.min((w * 0.85) / img.width, (h * 0.85) / img.height);
+        const iw = img.width * ratio, ih = img.height * ratio;
+        ctx.globalAlpha = 0.45;
+        ctx.filter = "grayscale(100%)";
+        ctx.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
+        applyOverlay(canvas);
+      };
+      img.src = engravingImage!;
+    } else {
+      applyOverlay(makeEngravingCanvas(engravingText));
+    }
+  }, [engravingText, engravingImage, autoScale]);
+
+  useFrame((_, delta) => {
+    if (autoRotate && groupRef.current) groupRef.current.rotation.y += delta * 0.5;
   });
 
   return (
@@ -87,5 +175,4 @@ export default function ProductModel({
   );
 }
 
-// Préchargement global
 useGLTF.preload(MODEL_PATH);

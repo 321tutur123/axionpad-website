@@ -13,7 +13,15 @@ import {
 import { useCart } from "@/store/cart";
 import { api, type CartItem } from "@/lib/api";
 
-export default function ProductConfigurator({ product }: { product: ProductVariantFull }) {
+import type { EngravingPreview } from "./ProductPageClient";
+
+export default function ProductConfigurator({
+  product,
+  onEngravingChange,
+}: {
+  product: ProductVariantFull;
+  onEngravingChange?: (p: EngravingPreview) => void;
+}) {
   const [selections, setSelections] = useState<Record<string, string>>(() => {
     const defaults: Record<string, string> = {};
     product.options.forEach(opt => {
@@ -25,9 +33,10 @@ export default function ProductConfigurator({ product }: { product: ProductVaria
     });
     return defaults;
   });
-  const [qty,    setQty]    = useState(1);
-  const [adding, setAdding] = useState(false);
-  const [done,   setDone]   = useState(false);
+  const [qty,         setQty]         = useState(1);
+  const [adding,      setAdding]      = useState(false);
+  const [done,        setDone]        = useState(false);
+  const [logoDataUrl, setLogoDataUrl] = useState<string>("");
 
   const computedTotal = useMemo(() => {
     return product.options.reduce((sum, opt) => {
@@ -144,15 +153,20 @@ export default function ProductConfigurator({ product }: { product: ProductVaria
             option={opt}
             mode={selections[opt.id] ?? "none"}
             textValue={selections[opt.textFieldId ?? "lid_engraving_text"] ?? ""}
-            onModeChange={val =>
-              setSelections(prev => ({ ...prev, [opt.id]: val }))
-            }
-            onTextChange={text =>
-              setSelections(prev => ({
-                ...prev,
-                [opt.textFieldId ?? "lid_engraving_text"]: text,
-              }))
-            }
+            logoDataUrl={logoDataUrl}
+            onModeChange={val => {
+              setSelections(prev => ({ ...prev, [opt.id]: val }));
+              if (val !== "logo-custom") { setLogoDataUrl(""); onEngravingChange?.({}); }
+              if (val !== "text") onEngravingChange?.({});
+            }}
+            onTextChange={text => {
+              setSelections(prev => ({ ...prev, [opt.textFieldId ?? "lid_engraving_text"]: text }));
+              onEngravingChange?.({ text: text || undefined });
+            }}
+            onLogoChange={dataUrl => {
+              setLogoDataUrl(dataUrl);
+              onEngravingChange?.({ image: dataUrl || undefined });
+            }}
           />
         ) : (
           <OptionPicker
@@ -249,18 +263,29 @@ function LidEngravingPicker({
   option,
   mode,
   textValue,
+  logoDataUrl,
   onModeChange,
   onTextChange,
+  onLogoChange,
 }: {
   option: ProductOption;
   mode: string;
   textValue: string;
+  logoDataUrl: string;
   onModeChange: (val: string) => void;
   onTextChange: (text: string) => void;
+  onLogoChange: (dataUrl: string) => void;
 }) {
   if (option.type !== "lidEngraving") return null;
   const maxLen = option.textMaxLength ?? 16;
   const textOk = mode !== "text" || isValidLidEngravingText(normalizeLidEngravingText(textValue), maxLen);
+
+  const handleFileDrop = (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = e => onLogoChange(e.target?.result as string);
+    reader.readAsDataURL(file);
+  };
 
   return (
     <div>
@@ -268,8 +293,8 @@ function LidEngravingPicker({
         {option.label}
       </p>
       <p className="text-xs mb-3 leading-relaxed" style={{ color: "var(--color-text-mute)" }}>
-        Gravure mécanique en creux sur le couvercle (pas d’impression couleur). Texte court ou logo ;
-        pour un logo perso, envoi d’un fichier vectoriel (SVG / DXF) après commande.
+        Gravure m&#233;canique en creux sur le couvercle. Tapez un texte ou d&#233;posez votre logo
+        &#8212; la pr&#233;visualisation 3D se met &#224; jour en temps r&#233;el.
       </p>
       <div className="space-y-2">
         {option.choices.map(choice => {
@@ -317,14 +342,12 @@ function LidEngravingPicker({
         })}
       </div>
 
+      {/* Texte */}
       {mode === "text" && (
         <div className="mt-4">
-          <label
-            className="text-xs font-medium block mb-1.5"
-            style={{ color: "var(--color-text)" }}
-            htmlFor={`lid-text-${option.id}`}
-          >
-            Texte à graver
+          <label className="text-xs font-medium block mb-1.5" style={{ color: "var(--color-text)" }}
+            htmlFor={`lid-text-${option.id}`}>
+            Texte &#224; graver
           </label>
           <input
             id={`lid-text-${option.id}`}
@@ -345,12 +368,44 @@ function LidEngravingPicker({
           />
           <div className="flex justify-between mt-1.5 gap-2">
             <span className="text-xs" style={{ color: "var(--color-text-mute)" }}>
-              Lettres, chiffres, espaces, tiret ou apostrophe — {maxLen} caractères max.
+              Lettres, chiffres, espaces, tiret ou apostrophe &#8212; {maxLen} caract&#232;res max.
             </span>
             <span className="text-xs tabular-nums shrink-0" style={{ color: "var(--color-text-mute)" }}>
               {normalizeLidEngravingText(textValue).length}/{maxLen}
             </span>
           </div>
+        </div>
+      )}
+
+      {/* Logo custom — drop zone */}
+      {mode === "logo-custom" && (
+        <div className="mt-4">
+          <div
+            onDragOver={e => e.preventDefault()}
+            onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleFileDrop(f); }}
+            onClick={() => { const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*,.svg,.pdf"; inp.onchange = () => { if (inp.files?.[0]) handleFileDrop(inp.files[0]); }; inp.click(); }}
+            className="rounded-xl border-2 border-dashed p-6 text-center cursor-pointer transition-all"
+            style={{ borderColor: logoDataUrl ? "var(--color-accent)" : "var(--color-border)", background: "var(--color-bg-card)" }}
+          >
+            {logoDataUrl ? (
+              <div className="flex items-center justify-center gap-3">
+                <img src={logoDataUrl} alt="Logo" className="h-12 object-contain rounded" style={{ maxWidth: "120px" }} />
+                <div className="text-left">
+                  <p className="text-xs font-medium" style={{ color: "var(--color-text)" }}>Logo charg&#233; &#10003;</p>
+                  <p className="text-xs" style={{ color: "var(--color-text-mute)" }}>Cliquer pour changer</p>
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p className="text-2xl mb-1">&#128196;</p>
+                <p className="text-xs font-medium" style={{ color: "var(--color-text)" }}>Glissez votre logo ici</p>
+                <p className="text-xs mt-0.5" style={{ color: "var(--color-text-mute)" }}>PNG, SVG, JPEG &#8212; la gravure finale se fera sur votre fichier vectoriel</p>
+              </div>
+            )}
+          </div>
+          <p className="text-xs mt-2" style={{ color: "var(--color-text-mute)" }}>
+            &#8505; Pr&#233;visualisation indicative. Vous enverrez le fichier SVG/DXF d&#233;finitif apr&#232;s commande.
+          </p>
         </div>
       )}
     </div>
