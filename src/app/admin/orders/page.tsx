@@ -164,12 +164,35 @@ interface ModalProps {
   onClose: () => void;
 }
 
+function buildAddressText(name: string, address: ShippingAddress): string {
+  return [
+    name,
+    address.line1,
+    address.line2,
+    [address.postal_code, address.city].filter(Boolean).join(" "),
+    address.country,
+  ].filter(Boolean).join("\n");
+}
+
 function OrderModal({ order, onUpdate, onClose }: ModalProps) {
   const address = safeJSON<ShippingAddress>(order.shipping_address, {});
   const items   = safeJSON<OrderItem[]>(order.items, []);
   const [tracking, setTracking] = useState(order.tracking_number ?? "");
   const [saving, setSaving]     = useState(false);
+  const [copied, setCopied]     = useState<"mr" | "col" | null>(null);
   const isShipped = order.status === "shipped";
+
+  const openCarrier = (carrier: "mr" | "col") => {
+    const name = order.shipping_name || order.customer_name || "";
+    const text = buildAddressText(name, address);
+    navigator.clipboard.writeText(text).catch(() => null);
+    setCopied(carrier);
+    setTimeout(() => setCopied(null), 2500);
+    const url = carrier === "mr"
+      ? "https://www.mondialrelay.fr/envoi-de-colis/"
+      : "https://www.laposte.fr/colissimo/proteger-et-envoyer-un-colis";
+    window.open(url, "_blank", "noopener");
+  };
 
   const markShipped = async () => {
     setSaving(true);
@@ -289,12 +312,28 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
           )}
         </div>
 
-        <div className="px-6 py-4 border-t border-white/10 flex justify-end shrink-0">
+        <div className="px-6 py-4 border-t border-white/10 flex flex-wrap gap-2 justify-between items-center shrink-0">
+          <div className="flex gap-2">
+            <button
+              onClick={() => openCarrier("mr")}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-colors"
+              style={{ background: copied === "mr" ? "#16a34a" : "#ec6608", color: "#fff" }}
+            >
+              {copied === "mr" ? "&#10003; Adresse copi&#233;e !" : "&#128230; Mondial Relay"}
+            </button>
+            <button
+              onClick={() => openCarrier("col")}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-colors"
+              style={{ background: copied === "col" ? "#16a34a" : "#005ca9", color: "#fff" }}
+            >
+              {copied === "col" ? "&#10003; Adresse copi&#233;e !" : "&#128230; Colissimo"}
+            </button>
+          </div>
           <button
             onClick={() => printPackingSlip(order)}
             className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/10 text-zinc-300 hover:text-white hover:border-white/30 text-sm transition-colors"
           >
-            <span>&#128424;</span> Imprimer le bon de pr&#233;paration
+            <span>&#128424;</span> Bon de pr&#233;paration
           </button>
         </div>
       </div>
