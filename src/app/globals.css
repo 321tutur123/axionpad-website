@@ -37,10 +37,28 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Fond derrière le Canvas 3D — dégradés doux, non uniformes */
+/* Fond derrière le Canvas 3D — dégradé animé + halos en mouvement (pastel, discret) */
 .scene-3d-shell {
   position: relative;
   isolation: isolate;
+}
+
+@keyframes scene-3d-bg-shift {
+  0% { background-position: 12% 28%; }
+  50% { background-position: 88% 72%; }
+  100% { background-position: 12% 28%; }
+}
+
+@keyframes scene-3d-blob-a {
+  0%, 100% { transform: translate(-6%, 4%) scale(1); }
+  40% { transform: translate(14%, -10%) scale(1.12); }
+  70% { transform: translate(4%, 12%) scale(0.96); }
+}
+
+@keyframes scene-3d-blob-b {
+  0%, 100% { transform: translate(4%, -6%) scale(1.05); }
+  45% { transform: translate(-16%, 8%) scale(1); }
+  80% { transform: translate(8%, -4%) scale(1.08); }
 }
 
 .scene-3d-atmosphere {
@@ -48,12 +66,59 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  overflow: hidden;
+  /* Grande toile pour que le déplacement du fond reste doux et non uniforme */
   background:
-    radial-gradient(ellipse 85% 65% at 22% 38%, rgba(232, 218, 245, 0.55) 0%, transparent 58%),
-    radial-gradient(ellipse 75% 55% at 78% 62%, rgba(255, 228, 212, 0.5) 0%, transparent 52%),
-    radial-gradient(ellipse 90% 70% at 50% 95%, rgba(214, 228, 218, 0.4) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 45% at 92% 18%, rgba(220, 236, 252, 0.35) 0%, transparent 45%),
-    linear-gradient(168deg, #faf7f2 0%, #f3ebe4 42%, #eef3ee 78%, #f7f2ec 100%);
+    radial-gradient(ellipse 100% 80% at 30% 40%, rgba(232, 218, 245, 0.5) 0%, transparent 55%),
+    radial-gradient(ellipse 90% 70% at 75% 65%, rgba(255, 228, 212, 0.45) 0%, transparent 50%),
+    radial-gradient(ellipse 85% 60% at 55% 90%, rgba(214, 228, 218, 0.38) 0%, transparent 48%),
+    radial-gradient(ellipse 70% 50% at 95% 20%, rgba(220, 236, 252, 0.32) 0%, transparent 42%),
+    linear-gradient(155deg, #faf7f2 0%, #f3ebe4 38%, #eef3ee 72%, #f7f2ec 100%);
+  background-size: 220% 220%;
+  background-repeat: no-repeat;
+  animation: scene-3d-bg-shift 32s ease-in-out infinite;
+}
+
+.scene-3d-atmosphere::before,
+.scene-3d-atmosphere::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(56px);
+  opacity: 0.92;
+  will-change: transform;
+}
+
+/* Halo lavande — lent */
+.scene-3d-atmosphere::before {
+  width: min(72vw, 520px);
+  height: min(72vw, 520px);
+  left: -8%;
+  top: 18%;
+  background: radial-gradient(circle, rgba(232, 210, 248, 0.55) 0%, rgba(232, 210, 248, 0) 68%);
+  animation: scene-3d-blob-a 26s ease-in-out infinite;
+}
+
+/* Halo pêche — autre rythme pour éviter la synchronie */
+.scene-3d-atmosphere::after {
+  width: min(68vw, 480px);
+  height: min(68vw, 480px);
+  right: -12%;
+  bottom: 8%;
+  background: radial-gradient(circle, rgba(255, 218, 200, 0.5) 0%, rgba(255, 218, 200, 0) 65%);
+  animation: scene-3d-blob-b 34s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-3d-atmosphere {
+    animation: none;
+    background-size: 100% 100%;
+    background-position: 50% 50%;
+  }
+  .scene-3d-atmosphere::before,
+  .scene-3d-atmosphere::after {
+    animation: none;
+  }
 }
 
 .scene-3d-canvas-wrap {

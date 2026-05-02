@@ -12,8 +12,12 @@ export interface ProductChoice {
 export interface ProductOption {
   id: string;
   label: string;
-  type: "select" | "color" | "radio";
+  type: "select" | "color" | "radio" | "lidEngraving";
   choices: ProductChoice[];
+  /** Option `lidEngraving` : clé dans `selections` pour le texte gravé (mode `text`). */
+  textFieldId?: string;
+  /** Longueur max du texte gravé (après normalisation). Défaut 16. */
+  textMaxLength?: number;
 }
 
 export interface ProductSpec {
@@ -53,6 +57,64 @@ export function formatPriceAdd(cents: number): string {
   return cents >= 0 ? `+${display}` : `−${display}`;
 }
 
+/** Texte gravé couvercle : trim + espaces consécutifs. */
+export function normalizeLidEngravingText(input: string): string {
+  return input.trim().replace(/\s+/g, " ");
+}
+
+/**
+ * Lettres (toutes langues), chiffres, espace, tiret, apostrophe typographique ou ASCII.
+ * Pas d’émojis ni ponctuation « spéciale » (évite abus en fabrication).
+ */
+export function isValidLidEngravingText(text: string, maxLen: number): boolean {
+  const n = normalizeLidEngravingText(text);
+  if (n.length === 0 || n.length > maxLen) return false;
+  return /^[\p{L}\d \-'\u2019]+$/u.test(n);
+}
+
+/** Segment libellé panier / Stripe pour une option gravure couvercle (null si « sans »). */
+export function formatLidVariantSegment(
+  opt: ProductOption,
+  selections: Record<string, string>,
+): string | null {
+  if (opt.type !== "lidEngraving") return null;
+  const mode = selections[opt.id];
+  if (!mode || mode === "none") return null;
+  if (mode === "text" && opt.textFieldId) {
+    const t = normalizeLidEngravingText(selections[opt.textFieldId] ?? "");
+    return t ? `Couvercle : « ${t} »` : null;
+  }
+  const choice = opt.choices.find(c => c.value === mode);
+  return choice ? `Couvercle : ${choice.label}` : `Couvercle : ${mode}`;
+}
+
+/** Description courte pour métadonnées Stripe (gravure creuse). */
+export function buildCheckoutEngravingDescription(
+  product: ProductVariantFull,
+  selections: Record<string, string> | undefined,
+): string | undefined {
+  if (!selections) return undefined;
+  const parts: string[] = [];
+  for (const opt of product.options) {
+    if (opt.type !== "lidEngraving") continue;
+    const mode = selections[opt.id];
+    if (!mode || mode === "none") continue;
+    const textKey = opt.textFieldId ?? "lid_engraving_text";
+    const maxLen = opt.textMaxLength ?? 16;
+    if (mode === "text") {
+      const t = normalizeLidEngravingText(selections[textKey] ?? "");
+      if (isValidLidEngravingText(t, maxLen)) {
+        parts.push(`Gravure en creux sur couvercle — texte : ${t}`);
+      }
+    } else {
+      const c = opt.choices.find(x => x.value === mode);
+      parts.push(`Gravure en creux sur couvercle — ${c?.label ?? mode}`);
+    }
+  }
+  if (parts.length === 0) return undefined;
+  return parts.join(". ").slice(0, 450);
+}
+
 type RawProduct = Omit<ProductVariantFull, "inStock">;
 
 const PRODUCTS: Record<string, ProductVariantFull> = Object.fromEntries(
@@ -86,6 +148,12 @@ export function computeUnitPriceFromSelections(
     if (val == null || val === "") return null;
     const choice = opt.choices.find(c => c.value === val);
     if (!choice || choice.available === false) return null;
+    if (opt.type === "lidEngraving" && val === "text") {
+      const textKey = opt.textFieldId ?? "lid_engraving_text";
+      const maxLen = opt.textMaxLength ?? 16;
+      const text = normalizeLidEngravingText(selections[textKey] ?? "");
+      if (!isValidLidEngravingText(text, maxLen)) return null;
+    }
     total += choice.priceAdd ?? 0;
   }
   return total;

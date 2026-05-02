@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import {
+  buildCheckoutEngravingDescription,
   computeUnitPriceFromSelections,
   getProduct,
 } from "@/lib/products-data";
@@ -103,15 +104,19 @@ export async function POST(request: Request) {
       );
     }
 
+    const variantName = item.variantLabel
+      ? `${product.name} — ${item.variantLabel}`
+      : product.name;
+    const engravingDesc = buildCheckoutEngravingDescription(product, item.selections);
+
     lineItems.push({
       quantity: qty,
       price_data: {
         currency: "eur",
         unit_amount: unitCents,
         product_data: {
-          name: item.variantLabel
-            ? `${product.name} — ${item.variantLabel}`
-            : product.name,
+          name: variantName.slice(0, 250),
+          ...(engravingDesc ? { description: engravingDesc } : {}),
         },
       },
     });
