@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import dynamic from "next/dynamic";
 import {
   type ProductVariantFull,
   type ProductOption,
@@ -13,288 +14,204 @@ import {
 import { useCart } from "@/store/cart";
 import { api, type CartItem } from "@/lib/api";
 
-import type { EngravingPreview } from "./ProductPageClient";
+const EngravingModal = dynamic(() => import("./ProductPageClient"), { ssr: false });
 
-export default function ProductConfigurator({
-  product,
-  onEngravingChange,
-}: {
-  product: ProductVariantFull;
-  onEngravingChange?: (p: EngravingPreview) => void;
-}) {
+export default function ProductConfigurator({ product }: { product: ProductVariantFull }) {
   const [selections, setSelections] = useState<Record<string, string>>(() => {
     const defaults: Record<string, string> = {};
     product.options.forEach(opt => {
       const first = opt.choices.find(c => c.available !== false) ?? opt.choices[0];
       defaults[opt.id] = first.value;
-      if (opt.type === "lidEngraving" && opt.textFieldId) {
-        defaults[opt.textFieldId] = "";
-      }
+      if (opt.type === "lidEngraving" && opt.textFieldId) defaults[opt.textFieldId] = "";
     });
     return defaults;
   });
   const [qty,         setQty]         = useState(1);
   const [adding,      setAdding]      = useState(false);
   const [done,        setDone]        = useState(false);
-  const [logoDataUrl, setLogoDataUrl] = useState<string>("");
+  const [logoDataUrl, setLogoDataUrl] = useState("");
+  const [modalOpt,    setModalOpt]    = useState<ProductOption | null>(null);
 
-  const computedTotal = useMemo(() => {
-    return product.options.reduce((sum, opt) => {
+  const computedTotal = useMemo(() =>
+    product.options.reduce((sum, opt) => {
       const choice = opt.choices.find(c => c.value === selections[opt.id]);
       return sum + (choice?.priceAdd ?? 0);
-    }, product.price);
-  }, [product, selections]);
+    }, product.price),
+  [product, selections]);
 
-  const variantLabel = useMemo(() => {
-    return product.options
+  const variantLabel = useMemo(() =>
+    product.options
       .map(opt => {
-        if (opt.type === "lidEngraving") {
-          const seg = formatLidVariantSegment(opt, selections);
-          return seg ?? "";
-        }
-        const choice = opt.choices.find(c => c.value === selections[opt.id]);
-        return choice?.label ?? selections[opt.id] ?? "";
+        if (opt.type === "lidEngraving") return formatLidVariantSegment(opt, selections) ?? "";
+        return opt.choices.find(c => c.value === selections[opt.id])?.label ?? selections[opt.id] ?? "";
       })
-      .filter(Boolean)
-      .join(" · ");
-  }, [product, selections]);
+      .filter(Boolean).join(" · "),
+  [product, selections]);
 
   const lidEngravingInvalid = useMemo(() => {
     for (const opt of product.options) {
       if (opt.type !== "lidEngraving") continue;
       if (selections[opt.id] !== "text") continue;
-      const max = opt.textMaxLength ?? 16;
       const t = normalizeLidEngravingText(selections[opt.textFieldId ?? ""] ?? "");
-      if (!isValidLidEngravingText(t, max)) return true;
+      if (!isValidLidEngravingText(t, opt.textMaxLength ?? 16)) return true;
     }
     return false;
   }, [product.options, selections]);
 
-  /** Identifie une même variante pour fusionner les quantités dans le panier. */
-  const selectionSignature = useMemo(
-    () =>
-      product.options
-        .map(o => {
-          if (o.type === "lidEngraving" && o.textFieldId) {
-            const text = normalizeLidEngravingText(selections[o.textFieldId] ?? "");
-            return `${selections[o.id] ?? "\0"}\u001e${text}`;
-          }
-          return selections[o.id] ?? "\0";
-        })
-        .join("\u001f"),
-    [product.options, selections],
-  );
+  const selectionSignature = useMemo(() =>
+    product.options.map(o => {
+      if (o.type === "lidEngraving" && o.textFieldId) {
+        const text = normalizeLidEngravingText(selections[o.textFieldId] ?? "");
+        return `${selections[o.id] ?? "\0"}${text}`;
+      }
+      return selections[o.id] ?? "\0";
+    }).join(""),
+  [product.options, selections]);
 
   const handleAddToCart = async () => {
     if (!product.inStock || adding || lidEngravingInvalid) return;
     setAdding(true);
-    try {
-      await api.cart.add(product.slug, qty);
-    } catch {
-      /* panier API distant optionnel */
-    }
-
+    try { await api.cart.add(product.slug, qty); } catch { /* optionnel */ }
     const sel: Record<string, string> = { ...selections };
     for (const opt of product.options) {
-      if (opt.type === "lidEngraving" && opt.textFieldId) {
+      if (opt.type === "lidEngraving" && opt.textFieldId)
         sel[opt.textFieldId] = normalizeLidEngravingText(sel[opt.textFieldId] ?? "");
-      }
     }
     const unitEuros = computedTotal / 100;
     useCart.setState(state => {
       const idx = state.items.findIndex(i => {
         if (i.productId !== product.slug) return false;
-        const sig = product.options
-          .map(o => {
-            if (o.type === "lidEngraving" && o.textFieldId) {
-              const text = normalizeLidEngravingText(i.selections?.[o.textFieldId] ?? "");
-              return `${i.selections?.[o.id] ?? "\0"}\u001e${text}`;
-            }
-            return i.selections?.[o.id] ?? "\0";
-          })
-          .join("\u001f");
+        const sig = product.options.map(o => {
+          if (o.type === "lidEngraving" && o.textFieldId) {
+            const text = normalizeLidEngravingText(i.selections?.[o.textFieldId] ?? "");
+            return `${i.selections?.[o.id] ?? "\0"}${text}`;
+          }
+          return i.selections?.[o.id] ?? "\0";
+        }).join("");
         return sig === selectionSignature;
       });
       if (idx >= 0) {
         const next = [...state.items];
-        const cur = next[idx];
-        next[idx] = {
-          ...cur,
-          quantity: (cur.quantity || 1) + qty,
-          price: unitEuros,
-          variantLabel,
-          selections: sel,
-        };
+        next[idx] = { ...next[idx], quantity: (next[idx].quantity || 1) + qty, price: unitEuros, variantLabel, selections: sel };
         return { items: next };
       }
-      const item: CartItem = {
-        _id: `local-${Date.now()}`,
-        productId: product.slug,
-        name: product.name,
-        price: unitEuros,
-        quantity: qty,
-        variantLabel,
-        selections: sel,
-      };
-      return { items: [...state.items, item] };
+      return { items: [...state.items, { _id: `local-${Date.now()}`, productId: product.slug, name: product.name, price: unitEuros, quantity: qty, variantLabel, selections: sel } as CartItem] };
     });
-
     setDone(true);
     setAdding(false);
     setTimeout(() => setDone(false), 2500);
   };
 
+  // Résumé gravure pour affichage sous les options
+  const engravingOpt    = product.options.find(o => o.type === "lidEngraving");
+  const engravingMode   = engravingOpt ? selections[engravingOpt.id] : "none";
+  const engravingText   = engravingOpt?.textFieldId ? selections[engravingOpt.textFieldId] ?? "" : "";
+  const hasCustomization = engravingMode && engravingMode !== "none";
+
   return (
-    <div className="space-y-6">
-      {product.options.map(opt =>
-        opt.type === "lidEngraving" ? (
-          <LidEngravingPicker
-            key={opt.id}
-            option={opt}
-            mode={selections[opt.id] ?? "none"}
-            textValue={selections[opt.textFieldId ?? "lid_engraving_text"] ?? ""}
-            logoDataUrl={logoDataUrl}
-            onModeChange={val => {
-              setSelections(prev => ({ ...prev, [opt.id]: val }));
-              if (val !== "logo-custom") { setLogoDataUrl(""); onEngravingChange?.({}); }
-              if (val !== "text") onEngravingChange?.({});
-            }}
-            onTextChange={text => {
-              setSelections(prev => ({ ...prev, [opt.textFieldId ?? "lid_engraving_text"]: text }));
-              onEngravingChange?.({ text: text || undefined });
-            }}
-            onLogoChange={dataUrl => {
-              setLogoDataUrl(dataUrl);
-              onEngravingChange?.({ image: dataUrl || undefined });
-            }}
-          />
-        ) : (
-          <OptionPicker
-            key={opt.id}
-            option={opt}
-            selected={selections[opt.id]}
-            onChange={val => setSelections(prev => ({ ...prev, [opt.id]: val }))}
-          />
-        ),
-      )}
+    <>
+      <div className="space-y-6">
+        {product.options.map(opt =>
+          opt.type === "lidEngraving" ? (
+            <LidEngravingSection
+              key={opt.id}
+              option={opt}
+              mode={engravingMode}
+              textValue={engravingText}
+              logoDataUrl={logoDataUrl}
+              onModeChange={val => {
+                setSelections(prev => ({ ...prev, [opt.id]: val }));
+                if (val !== "logo-custom") setLogoDataUrl("");
+                if (val !== "text") setSelections(prev => ({ ...prev, [opt.textFieldId ?? "lid_engraving_text"]: "" }));
+              }}
+              onOpenModal={() => setModalOpt(opt)}
+            />
+          ) : (
+            <OptionPicker
+              key={opt.id}
+              option={opt}
+              selected={selections[opt.id]}
+              onChange={val => setSelections(prev => ({ ...prev, [opt.id]: val }))}
+            />
+          )
+        )}
 
-      <div className="pt-6" style={{ borderTop: "0.5px solid var(--color-border)" }}>
-        <div className="flex items-end justify-between mb-5">
-          <div>
-            <p
-              className="text-xs mb-1 uppercase tracking-wider"
-              style={{ color: "var(--color-text-mute)" }}
-            >
-              Prix total
-            </p>
-            <p className="text-4xl font-semibold" style={{ color: "var(--color-text)" }}>
-              {formatPrice(computedTotal)}
-            </p>
-            {product.comparePrice && computedTotal === product.price && (
-              <p className="text-sm line-through mt-0.5" style={{ color: "var(--color-text-mute)" }}>
-                {formatPrice(product.comparePrice)}
-              </p>
-            )}
+        <div className="pt-6" style={{ borderTop: "0.5px solid var(--color-border)" }}>
+          <div className="flex items-end justify-between mb-5">
+            <div>
+              <p className="text-xs mb-1 uppercase tracking-wider" style={{ color: "var(--color-text-mute)" }}>Prix total</p>
+              <p className="text-4xl font-semibold" style={{ color: "var(--color-text)" }}>{formatPrice(computedTotal)}</p>
+              {product.comparePrice && computedTotal === product.price && (
+                <p className="text-sm line-through mt-0.5" style={{ color: "var(--color-text-mute)" }}>{formatPrice(product.comparePrice)}</p>
+              )}
+            </div>
+            <div className="flex items-center gap-1 rounded-full px-1 py-0.5" style={{ border: "0.5px solid var(--color-border)" }}>
+              <button onClick={() => setQty(q => Math.max(1, q - 1))} className="w-8 h-8 rounded-full flex items-center justify-center text-xl" style={{ color: "var(--color-text-mute)" }}>−</button>
+              <span className="text-sm font-medium w-5 text-center" style={{ color: "var(--color-text)" }}>{qty}</span>
+              <button onClick={() => setQty(q => Math.min(10, q + 1))} className="w-8 h-8 rounded-full flex items-center justify-center text-xl" style={{ color: "var(--color-text-mute)" }}>+</button>
+            </div>
           </div>
 
-          <div
-            className="flex items-center gap-1 rounded-full px-1 py-0.5"
-            style={{ border: "0.5px solid var(--color-border)" }}
+          <button
+            onClick={handleAddToCart}
+            disabled={product.comingSoon || !product.inStock || adding || lidEngravingInvalid}
+            className="w-full py-4 font-semibold text-base transition-all rounded-full"
+            style={{
+              background: product.comingSoon || !product.inStock ? "var(--color-border)" : done ? "#16a34a" : "var(--color-accent)",
+              color: product.comingSoon || !product.inStock ? "var(--color-text-mute)" : "#fff",
+              cursor: product.comingSoon || !product.inStock ? "not-allowed" : "pointer",
+              opacity: adding ? 0.7 : 1,
+            }}
           >
-            <button
-              onClick={() => setQty(q => Math.max(1, q - 1))}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-xl leading-none transition-colors"
-              style={{ color: "var(--color-text-mute)" }}
-            >
-              −
-            </button>
-            <span className="text-sm font-medium w-5 text-center select-none" style={{ color: "var(--color-text)" }}>
-              {qty}
-            </span>
-            <button
-              onClick={() => setQty(q => Math.min(10, q + 1))}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-xl leading-none transition-colors"
-              style={{ color: "var(--color-text-mute)" }}
-            >
-              +
-            </button>
-          </div>
+            {product.comingSoon ? "Bient&#244;t disponible"
+              : !product.inStock ? "Rupture de stock"
+              : lidEngravingInvalid ? "Indiquez un texte grav&#233; valide"
+              : done ? "&#10003; Ajout&#233; au panier"
+              : adding ? "Ajout en cours&#8230;"
+              : qty > 1 ? `Ajouter ${qty} &#215; au panier &#8212; ${formatPrice(computedTotal * qty)}`
+              : `Ajouter au panier &#8212; ${formatPrice(computedTotal)}`}
+          </button>
+
+          <p className="text-center text-xs mt-3" style={{ color: "var(--color-text-mute)" }}>
+            Livraison gratuite d&#232;s 100 &#8364; &#183; Exp&#233;dition 3&#8211;5 jours ouvr&#233;s
+          </p>
         </div>
-
-        <button
-          onClick={handleAddToCart}
-          disabled={product.comingSoon || !product.inStock || adding || lidEngravingInvalid}
-          className="w-full py-4 font-semibold text-base transition-all rounded-full"
-          style={{
-            background: product.comingSoon || !product.inStock
-              ? "var(--color-border)"
-              : done
-              ? "#16a34a"
-              : "var(--color-accent)",
-            color: product.comingSoon || !product.inStock ? "var(--color-text-mute)" : "#fff",
-            cursor: product.comingSoon || !product.inStock ? "not-allowed" : "pointer",
-            opacity: adding ? 0.7 : 1,
-          }}
-        >
-          {product.comingSoon
-            ? "Bientôt disponible"
-            : !product.inStock
-            ? "Rupture de stock"
-            : lidEngravingInvalid
-            ? "Indique un texte gravé valide"
-            : done
-            ? "✓ Ajouté au panier"
-            : adding
-            ? "Ajout en cours…"
-            : qty > 1
-            ? `Ajouter ${qty} × au panier — ${formatPrice(computedTotal * qty)}`
-            : `Ajouter au panier — ${formatPrice(computedTotal)}`}
-        </button>
-
-        <p className="text-center text-xs mt-3" style={{ color: "var(--color-text-mute)" }}>
-          Livraison gratuite dès 100 € · Expédition 3–5 jours ouvrés
-        </p>
       </div>
-    </div>
+
+      {/* Modal personnalisation 3D */}
+      {modalOpt && (
+        <EngravingModal
+          mode={engravingMode}
+          textValue={engravingText}
+          initialLogo={logoDataUrl}
+          onConfirm={(preview, logo) => {
+            if (preview.text !== undefined)
+              setSelections(prev => ({ ...prev, [modalOpt.textFieldId ?? "lid_engraving_text"]: preview.text! }));
+            if (logo !== undefined) setLogoDataUrl(logo);
+            setModalOpt(null);
+          }}
+          onClose={() => setModalOpt(null)}
+        />
+      )}
+    </>
   );
 }
 
-function LidEngravingPicker({
-  option,
-  mode,
-  textValue,
-  logoDataUrl,
-  onModeChange,
-  onTextChange,
-  onLogoChange,
-}: {
+function LidEngravingSection({ option, mode, textValue, logoDataUrl, onModeChange, onOpenModal }: {
   option: ProductOption;
   mode: string;
   textValue: string;
   logoDataUrl: string;
   onModeChange: (val: string) => void;
-  onTextChange: (text: string) => void;
-  onLogoChange: (dataUrl: string) => void;
+  onOpenModal: () => void;
 }) {
   if (option.type !== "lidEngraving") return null;
-  const maxLen = option.textMaxLength ?? 16;
-  const textOk = mode !== "text" || isValidLidEngravingText(normalizeLidEngravingText(textValue), maxLen);
-
-  const handleFileDrop = (file: File) => {
-    if (!file.type.startsWith("image/")) return;
-    const reader = new FileReader();
-    reader.onload = e => onLogoChange(e.target?.result as string);
-    reader.readAsDataURL(file);
-  };
 
   return (
     <div>
-      <p className="text-sm font-medium mb-1" style={{ color: "var(--color-text)" }}>
-        {option.label}
-      </p>
+      <p className="text-sm font-medium mb-1" style={{ color: "var(--color-text)" }}>{option.label}</p>
       <p className="text-xs mb-3 leading-relaxed" style={{ color: "var(--color-text-mute)" }}>
-        Gravure m&#233;canique en creux sur le couvercle. Tapez un texte ou d&#233;posez votre logo
-        &#8212; la pr&#233;visualisation 3D se met &#224; jour en temps r&#233;el.
+        Gravure m&#233;canique en creux sur le couvercle &#8212; texte ou logo personnalis&#233;.
       </p>
       <div className="space-y-2">
         {option.choices.map(choice => {
@@ -308,7 +225,7 @@ function LidEngravingPicker({
               disabled={isDisabled}
               className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all text-left"
               style={{
-                border: isSelected ? `1.5px solid var(--color-accent)` : "0.5px solid var(--color-border)",
+                border: isSelected ? "1.5px solid var(--color-accent)" : "0.5px solid var(--color-border)",
                 background: isSelected ? "var(--color-accent-lt)" : "var(--color-bg-card)",
                 color: isDisabled ? "var(--color-text-mute)" : "var(--color-text)",
                 cursor: isDisabled ? "not-allowed" : "pointer",
@@ -316,24 +233,15 @@ function LidEngravingPicker({
               }}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <div
-                  className="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors"
-                  style={{ borderColor: isSelected ? "var(--color-accent)" : "var(--color-border)" }}
-                >
-                  {isSelected && (
-                    <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-accent)" }} />
-                  )}
+                <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0"
+                  style={{ borderColor: isSelected ? "var(--color-accent)" : "var(--color-border)" }}>
+                  {isSelected && <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-accent)" }} />}
                 </div>
                 <span className="min-w-0">{choice.label}</span>
-                {choice.badge && (
-                  <span className="badge shrink-0 text-xs">{choice.badge}</span>
-                )}
+                {choice.badge && <span className="badge shrink-0 text-xs">{choice.badge}</span>}
               </div>
               {choice.priceAdd !== undefined && choice.priceAdd !== 0 && (
-                <span
-                  className="text-xs shrink-0 ml-3"
-                  style={{ color: isSelected ? "var(--color-accent)" : "var(--color-text-mute)" }}
-                >
+                <span className="text-xs shrink-0 ml-3" style={{ color: isSelected ? "var(--color-accent)" : "var(--color-text-mute)" }}>
                   {formatPriceAdd(choice.priceAdd)}
                 </span>
               )}
@@ -342,70 +250,32 @@ function LidEngravingPicker({
         })}
       </div>
 
-      {/* Texte */}
-      {mode === "text" && (
+      {/* Bouton personnaliser + résumé */}
+      {mode !== "none" && (
         <div className="mt-4">
-          <label className="text-xs font-medium block mb-1.5" style={{ color: "var(--color-text)" }}
-            htmlFor={`lid-text-${option.id}`}>
-            Texte &#224; graver
-          </label>
-          <input
-            id={`lid-text-${option.id}`}
-            type="text"
-            value={textValue}
-            onChange={e => onTextChange(e.target.value.slice(0, maxLen))}
-            maxLength={maxLen}
-            placeholder="Ex. Axion Studio"
-            className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none focus:ring-2 transition-shadow"
-            style={{
-              background: "var(--color-bg-card)",
-              border: `0.5px solid ${textOk ? "var(--color-border)" : "#c45c5c"}`,
-              color: "var(--color-text)",
-              boxShadow: textOk ? "none" : "0 0 0 1px rgba(196, 92, 92, 0.25)",
-            }}
-            autoComplete="off"
-            spellCheck={false}
-          />
-          <div className="flex justify-between mt-1.5 gap-2">
-            <span className="text-xs" style={{ color: "var(--color-text-mute)" }}>
-              Lettres, chiffres, espaces, tiret ou apostrophe &#8212; {maxLen} caract&#232;res max.
-            </span>
-            <span className="text-xs tabular-nums shrink-0" style={{ color: "var(--color-text-mute)" }}>
-              {normalizeLidEngravingText(textValue).length}/{maxLen}
-            </span>
-          </div>
-        </div>
-      )}
-
-      {/* Logo custom — drop zone */}
-      {mode === "logo-custom" && (
-        <div className="mt-4">
-          <div
-            onDragOver={e => e.preventDefault()}
-            onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) handleFileDrop(f); }}
-            onClick={() => { const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*,.svg,.pdf"; inp.onchange = () => { if (inp.files?.[0]) handleFileDrop(inp.files[0]); }; inp.click(); }}
-            className="rounded-xl border-2 border-dashed p-6 text-center cursor-pointer transition-all"
-            style={{ borderColor: logoDataUrl ? "var(--color-accent)" : "var(--color-border)", background: "var(--color-bg-card)" }}
+          {(mode === "text" || mode === "logo-custom") && (
+            <div
+              className="flex items-center justify-between px-4 py-3 rounded-xl mb-3 text-sm"
+              style={{ background: "var(--color-bg-soft)", border: "0.5px solid var(--color-border)" }}
+            >
+              <span style={{ color: "var(--color-text-mute)" }}>
+                {mode === "text"
+                  ? textValue ? `&#171; ${textValue} &#187;` : "Aucun texte saisi"
+                  : logoDataUrl ? "Logo charg&#233; &#10003;" : "Aucun logo d&#233;pos&#233;"}
+              </span>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={onOpenModal}
+            className="w-full py-3 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2"
+            style={{ background: "var(--color-accent-lt)", color: "var(--color-accent)", border: "1.5px solid var(--color-accent)" }}
           >
-            {logoDataUrl ? (
-              <div className="flex items-center justify-center gap-3">
-                <img src={logoDataUrl} alt="Logo" className="h-12 object-contain rounded" style={{ maxWidth: "120px" }} />
-                <div className="text-left">
-                  <p className="text-xs font-medium" style={{ color: "var(--color-text)" }}>Logo charg&#233; &#10003;</p>
-                  <p className="text-xs" style={{ color: "var(--color-text-mute)" }}>Cliquer pour changer</p>
-                </div>
-              </div>
-            ) : (
-              <div>
-                <p className="text-2xl mb-1">&#128196;</p>
-                <p className="text-xs font-medium" style={{ color: "var(--color-text)" }}>Glissez votre logo ici</p>
-                <p className="text-xs mt-0.5" style={{ color: "var(--color-text-mute)" }}>PNG, SVG, JPEG &#8212; la gravure finale se fera sur votre fichier vectoriel</p>
-              </div>
-            )}
-          </div>
-          <p className="text-xs mt-2" style={{ color: "var(--color-text-mute)" }}>
-            &#8505; Pr&#233;visualisation indicative. Vous enverrez le fichier SVG/DXF d&#233;finitif apr&#232;s commande.
-          </p>
+            <span>&#10024;</span>
+            {mode === "text" || mode === "logo-custom"
+              ? "Modifier la personnalisation en 3D &#8594;"
+              : "Pr&#233;visualiser en 3D &#8594;"}
+          </button>
         </div>
       )}
     </div>
@@ -425,27 +295,13 @@ function OptionPicker({ option, selected, onChange }: {
       <div>
         <p className="text-sm font-medium mb-3" style={{ color: "var(--color-text)" }}>
           {option.label}
-          {selectedChoice && (
-            <span className="font-normal ml-1.5" style={{ color: "var(--color-text-mute)" }}>
-              — {selectedChoice.label}
-            </span>
-          )}
+          {selectedChoice && <span className="font-normal ml-1.5" style={{ color: "var(--color-text-mute)" }}>&#8212; {selectedChoice.label}</span>}
         </p>
         <div className="flex flex-wrap gap-2.5">
           {option.choices.map(choice => (
-            <button
-              key={choice.value}
-              onClick={() => choice.available !== false && onChange(choice.value)}
-              title={choice.label}
+            <button key={choice.value} onClick={() => choice.available !== false && onChange(choice.value)} title={choice.label}
               className="w-8 h-8 rounded-full transition-all focus:outline-none"
-              style={{
-                background: choice.color ?? "#555",
-                outline: selected === choice.value ? `2px solid var(--color-accent)` : "none",
-                outlineOffset: "2px",
-                transform: selected === choice.value ? "scale(1.1)" : "scale(1)",
-                opacity: choice.available === false ? 0.25 : 1,
-                cursor: choice.available === false ? "not-allowed" : "pointer",
-              }}
+              style={{ background: choice.color ?? "#555", outline: selected === choice.value ? "2px solid var(--color-accent)" : "none", outlineOffset: "2px", transform: selected === choice.value ? "scale(1.1)" : "scale(1)", opacity: choice.available === false ? 0.25 : 1, cursor: choice.available === false ? "not-allowed" : "pointer" }}
             />
           ))}
         </div>
@@ -456,34 +312,18 @@ function OptionPicker({ option, selected, onChange }: {
   if (option.type === "select") {
     return (
       <div>
-        <label className="text-sm font-medium mb-2 block" style={{ color: "var(--color-text)" }}>
-          {option.label}
-        </label>
+        <label className="text-sm font-medium mb-2 block" style={{ color: "var(--color-text)" }}>{option.label}</label>
         <div className="relative">
-          <select
-            value={selected}
-            onChange={e => onChange(e.target.value)}
+          <select value={selected} onChange={e => onChange(e.target.value)}
             className="w-full px-4 py-3 rounded-xl text-sm focus:outline-none appearance-none cursor-pointer pr-8"
-            style={{
-              background: "var(--color-bg-card)",
-              border: "0.5px solid var(--color-border)",
-              color: "var(--color-text)",
-            }}
-          >
+            style={{ background: "var(--color-bg-card)", border: "0.5px solid var(--color-border)", color: "var(--color-text)" }}>
             {option.choices.map(c => (
               <option key={c.value} value={c.value} disabled={c.available === false}>
-                {c.label}
-                {c.badge ? ` [${c.badge}]` : ""}
-                {c.priceAdd ? ` (${formatPriceAdd(c.priceAdd)})` : ""}
+                {c.label}{c.badge ? ` [${c.badge}]` : ""}{c.priceAdd ? ` (${formatPriceAdd(c.priceAdd)})` : ""}
               </option>
             ))}
           </select>
-          <div
-            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs"
-            style={{ color: "var(--color-text-mute)" }}
-          >
-            ▾
-          </div>
+          <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-xs" style={{ color: "var(--color-text-mute)" }}>&#9662;</div>
         </div>
       </div>
     );
@@ -497,38 +337,19 @@ function OptionPicker({ option, selected, onChange }: {
           const isSelected = selected === choice.value;
           const isDisabled = choice.available === false;
           return (
-            <button
-              key={choice.value}
-              onClick={() => !isDisabled && onChange(choice.value)}
-              disabled={isDisabled}
+            <button key={choice.value} onClick={() => !isDisabled && onChange(choice.value)} disabled={isDisabled}
               className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm transition-all text-left"
-              style={{
-                border: isSelected ? `1.5px solid var(--color-accent)` : "0.5px solid var(--color-border)",
-                background: isSelected ? "var(--color-accent-lt)" : "var(--color-bg-card)",
-                color: isDisabled ? "var(--color-text-mute)" : "var(--color-text)",
-                cursor: isDisabled ? "not-allowed" : "pointer",
-                opacity: isDisabled ? 0.5 : 1,
-              }}
-            >
+              style={{ border: isSelected ? "1.5px solid var(--color-accent)" : "0.5px solid var(--color-border)", background: isSelected ? "var(--color-accent-lt)" : "var(--color-bg-card)", color: isDisabled ? "var(--color-text-mute)" : "var(--color-text)", cursor: isDisabled ? "not-allowed" : "pointer", opacity: isDisabled ? 0.5 : 1 }}>
               <div className="flex items-center gap-3 min-w-0">
-                <div
-                  className="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 transition-colors"
-                  style={{ borderColor: isSelected ? "var(--color-accent)" : "var(--color-border)" }}
-                >
-                  {isSelected && (
-                    <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-accent)" }} />
-                  )}
+                <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0"
+                  style={{ borderColor: isSelected ? "var(--color-accent)" : "var(--color-border)" }}>
+                  {isSelected && <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-accent)" }} />}
                 </div>
                 <span className="truncate">{choice.label}</span>
-                {choice.badge && (
-                  <span className="badge shrink-0 text-xs">{choice.badge}</span>
-                )}
+                {choice.badge && <span className="badge shrink-0 text-xs">{choice.badge}</span>}
               </div>
               {choice.priceAdd !== undefined && choice.priceAdd !== 0 && (
-                <span
-                  className="text-xs shrink-0 ml-3"
-                  style={{ color: isSelected ? "var(--color-accent)" : "var(--color-text-mute)" }}
-                >
+                <span className="text-xs shrink-0 ml-3" style={{ color: isSelected ? "var(--color-accent)" : "var(--color-text-mute)" }}>
                   {formatPriceAdd(choice.priceAdd)}
                 </span>
               )}
