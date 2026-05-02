@@ -4,14 +4,16 @@ import { useRef, useEffect, useMemo } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import {
-  Group, Box3, Vector3,
+  Group, Box3, Vector3, Matrix4,
   MeshStandardMaterial,
   CanvasTexture, PlaneGeometry, MeshBasicMaterial, Mesh,
 } from "three";
 import { gsap } from "@/lib/gsap";
 
-const MODEL_PATH = "/models/axionpad.glb";
-const LID_MESH   = "box_top";
+const MODEL_PATH    = "/models/axionpad.glb";
+const LID_MESH      = "box_top";
+const LID_TILT_DEG  = 6;
+const LID_TILT_RAD  = LID_TILT_DEG * Math.PI / 180;
 
 interface ProductModelProps {
   modelPath?:      string;
@@ -117,26 +119,37 @@ export default function ProductModel({
       if (!groupRef.current) return;
       const texture = new CanvasTexture(canvas);
 
-      // Bounding box en world space
-      const bbox = new Box3().setFromObject(lidMesh);
-      const size = new Vector3();
-      bbox.getSize(size);
-      const center = new Vector3();
-      bbox.getCenter(center);
+      // Hauteur exacte depuis la géométrie locale du mesh
+      lidMesh.updateWorldMatrix(true, false);
+      lidMesh.geometry.computeBoundingBox();
+      const geoBBox = lidMesh.geometry.boundingBox!;
 
-      // Convertit en local space du groupRef
-      const localCenter = groupRef.current!.worldToLocal(center.clone());
-      const localMax    = groupRef.current!.worldToLocal(new Vector3(bbox.max.x, bbox.max.y, bbox.max.z));
+      // Point central du dessus du couvercle en espace local du mesh
+      const topCenterLocal = new Vector3(
+        (geoBBox.min.x + geoBBox.max.x) / 2,
+        geoBBox.max.y,
+        (geoBBox.min.z + geoBBox.max.z) / 2,
+      );
+      // Transforme en world space (inclut rotation 6°, scale, etc.)
+      topCenterLocal.applyMatrix4(lidMesh.matrixWorld);
+      // Puis en local space du groupRef
+      const localTop = groupRef.current!.worldToLocal(topCenterLocal);
 
-      const planeW = size.x / autoScale * 0.82;
-      const planeD = size.z / autoScale * 0.82;
+      // Taille de la surface en world space → local space
+      const worldBBox = new Box3().setFromObject(lidMesh);
+      const worldSize = new Vector3();
+      worldBBox.getSize(worldSize);
+      const planeW = (worldSize.x / autoScale) * 0.85;
+      const planeD = (worldSize.z / autoScale) * 0.85;
 
       const geo = new PlaneGeometry(planeW, planeD);
       const mat = new MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false, opacity: 0.88 });
       const plane = new Mesh(geo, mat);
       plane.name = "__lid_overlay";
-      plane.position.set(localCenter.x, localMax.y + 0.01 / autoScale, localCenter.z);
-      plane.rotation.x = -Math.PI / 2;
+      // Position légèrement au-dessus de la surface du couvercle
+      plane.position.set(localTop.x, localTop.y + 0.008 / autoScale, localTop.z);
+      // Angle horizontal (-90°) + inclinaison de 6° du couvercle
+      plane.rotation.x = -Math.PI / 2 + LID_TILT_RAD;
 
       groupRef.current!.add(plane);
     };

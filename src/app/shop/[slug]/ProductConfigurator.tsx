@@ -251,30 +251,27 @@ function LidEngravingSection({ option, mode, textValue, logoDataUrl, onModeChang
       </div>
 
       {/* Bouton personnaliser + résumé */}
-      {mode !== "none" && (
+      {(mode === "text" || mode === "logo-custom") && (
         <div className="mt-4">
-          {(mode === "text" || mode === "logo-custom") && (
-            <div
-              className="flex items-center justify-between px-4 py-3 rounded-xl mb-3 text-sm"
-              style={{ background: "var(--color-bg-soft)", border: "0.5px solid var(--color-border)" }}
-            >
-              <span style={{ color: "var(--color-text-mute)" }}>
-                {mode === "text"
-                  ? textValue ? `&#171; ${textValue} &#187;` : "Aucun texte saisi"
-                  : logoDataUrl ? "Logo charg&#233; &#10003;" : "Aucun logo d&#233;pos&#233;"}
-              </span>
-            </div>
-          )}
+          <div
+            className="flex items-center justify-between px-4 py-3 rounded-xl mb-3 text-sm"
+            style={{ background: "var(--color-bg-soft)", border: "0.5px solid var(--color-border)" }}
+          >
+            <span style={{ color: "var(--color-text-mute)" }}>
+              {mode === "text"
+                ? textValue ? `&#171; ${textValue} &#187;` : "Aucun texte saisi"
+                : logoDataUrl ? "Logo charg&#233; &#10003;" : "Aucun logo d&#233;pos&#233;"}
+            </span>
+          </div>
           <button
             type="button"
             onClick={onOpenModal}
-            className="w-full py-3 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-xl text-sm font-semibold transition-all"
             style={{ background: "var(--color-accent-lt)", color: "var(--color-accent)", border: "1.5px solid var(--color-accent)" }}
           >
-            <span>&#10024;</span>
-            {mode === "text" || mode === "logo-custom"
+            {textValue || logoDataUrl
               ? "Modifier la personnalisation en 3D &#8594;"
-              : "Pr&#233;visualiser en 3D &#8594;"}
+              : "Personnaliser en 3D &#8594;"}
           </button>
         </div>
       )}
