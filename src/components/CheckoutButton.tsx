@@ -32,7 +32,19 @@ export default function CheckoutButton({ className, label = "Payer avec Stripe �
         }),
       });
 
-      const data = await res.json() as { url?: string; error?: string };
+      let data: { url?: string; error?: string } = {};
+      const contentType = res.headers.get("content-type") ?? "";
+      if (contentType.includes("application/json")) {
+        data = (await res.json()) as { url?: string; error?: string };
+      } else {
+        const raw = await res.text();
+        if (!res.ok) {
+          // Évite l'erreur "Unexpected token <" quand une erreur HTML revient du runtime.
+          throw new Error(raw.includes("Internal Server Error")
+            ? "Erreur serveur Stripe. Vérifie la configuration des variables Cloudflare."
+            : "Erreur serveur inattendue (réponse non JSON).");
+        }
+      }
       if (!res.ok || !data.url) throw new Error(data.error ?? "Erreur inattendue");
 
       window.location.href = data.url;
