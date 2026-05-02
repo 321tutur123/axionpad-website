@@ -148,8 +148,8 @@ export default function ProductModel({
       plane.name = "__lid_overlay";
       // Position légèrement au-dessus de la surface du couvercle
       plane.position.set(localTop.x, localTop.y + 0.008 / autoScale, localTop.z);
-      // Angle horizontal (-90°) + inclinaison de 6° du couvercle
-      plane.rotation.x = -Math.PI / 2 + LID_TILT_RAD;
+      // Angle horizontal (-90°) + inclinaison de 6° du couvercle (axe Z)
+      plane.rotation.set(-Math.PI / 2, 0, LID_TILT_RAD);
 
       groupRef.current!.add(plane);
     };
