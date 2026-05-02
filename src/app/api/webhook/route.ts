@@ -57,6 +57,17 @@ export async function POST(request: Request) {
   const customerName  = session.customer_details?.name  ?? "";
   const productSlug   = session.metadata?.productSlug   ?? "";
 
+  // Récupère le transporteur choisi via l'ID du shipping rate
+  let shippingMethod = "";
+  const rateRef = (session.shipping_cost as { shipping_rate?: string } | null)?.shipping_rate;
+  if (typeof rateRef === "string" && rateRef.startsWith("shr_")) {
+    try {
+      const stripe2 = new Stripe(process.env.STRIPE_SECRET_KEY!);
+      const rate    = await stripe2.shippingRates.retrieve(rateRef);
+      shippingMethod = rate.display_name ?? "";
+    } catch { /* non-critique */ }
+  }
+
   try {
     const { env } = getRequestContext();
     await env.DB.prepare(`
@@ -65,8 +76,8 @@ export async function POST(request: Request) {
         customer_email, customer_name,
         amount_total, currency,
         shipping_name, shipping_address,
-        items, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        items, shipping_method, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       session.id,
       event.id,
@@ -80,6 +91,7 @@ export async function POST(request: Request) {
       session.shipping_details?.name  ?? "",
       JSON.stringify(session.shipping_details?.address ?? null),
       JSON.stringify(items),
+      shippingMethod,
       session.created,
     ).run();
   } catch (dbErr) {

@@ -31,6 +31,7 @@ interface Order {
   shipping_address: string;
   items: string;
   tracking_number: string;
+  shipping_method: string;
   created_at: number;
 }
 
@@ -43,6 +44,23 @@ function fmtDate(ts: number) {
   return new Date(ts * 1000).toLocaleDateString("fr-FR", {
     day: "numeric", month: "short", year: "numeric",
   });
+}
+
+function CarrierBadge({ method }: { method: string }) {
+  if (!method) return null;
+  const isMR  = method.toLowerCase().includes("mondial");
+  const isCol = method.toLowerCase().includes("colissimo");
+  const label = isMR ? "Mondial Relay" : isCol ? "Colissimo" : method;
+  const style = isMR
+    ? { background: "rgba(236,102,8,0.15)",  color: "#ec6608", borderColor: "rgba(236,102,8,0.3)" }
+    : isCol
+    ? { background: "rgba(0,92,169,0.15)",   color: "#005ca9", borderColor: "rgba(0,92,169,0.3)"  }
+    : { background: "rgba(120,120,120,0.15)", color: "#888",    borderColor: "rgba(120,120,120,0.3)" };
+  return (
+    <span className="inline-flex items-center text-[11px] font-semibold px-2 py-0.5 rounded-full border" style={style}>
+      {label}
+    </span>
+  );
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -244,6 +262,13 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
               {address.country && <p className="text-zinc-500 text-sm">{address.country}</p>}
             </div>
           </section>
+
+          {order.shipping_method && (
+            <section className="flex items-center gap-3">
+              <p className="text-[10px] text-zinc-600 uppercase tracking-widest shrink-0">Transporteur</p>
+              <CarrierBadge method={order.shipping_method} />
+            </section>
+          )}
 
           <section>
             <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-3">Articles command&#233;s</p>
@@ -520,6 +545,7 @@ export default function AdminOrdersPage() {
                     <th className="text-left px-5 py-3.5 font-medium">Client</th>
                     <th className="text-left px-5 py-3.5 font-medium hidden md:table-cell">Email</th>
                     <th className="text-right px-5 py-3.5 font-medium">Montant</th>
+                    <th className="text-left px-5 py-3.5 font-medium">Transporteur</th>
                     <th className="text-left px-5 py-3.5 font-medium">Statut</th>
                   </tr>
                 </thead>
@@ -536,6 +562,9 @@ export default function AdminOrdersPage() {
                       <td className="px-5 py-4 text-zinc-500 hidden md:table-cell">{order.customer_email}</td>
                       <td className="px-5 py-4 text-right text-white font-semibold whitespace-nowrap">
                         {(order.amount_total / 100).toFixed(2)} &#8364;
+                      </td>
+                      <td className="px-5 py-4">
+                        <CarrierBadge method={order.shipping_method ?? ""} />
                       </td>
                       <td className="px-5 py-4">
                         <StatusBadge status={order.status} />

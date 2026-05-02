@@ -16,7 +16,7 @@ export async function GET(request: Request) {
               customer_email, customer_name,
               amount_total, currency,
               shipping_name, shipping_address,
-              items, tracking_number, created_at
+              items, tracking_number, shipping_method, created_at
        FROM orders
        ORDER BY created_at DESC
        LIMIT 500`,
