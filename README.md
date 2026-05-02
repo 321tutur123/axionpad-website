@@ -1,42 +1,159 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Axion Pad — Website
 
-## Catalogue : ajouter / changer les photos produits
+Site e-commerce du projet **Axion Pad** : macro pads fabriqués en France.
 
-1. Place le fichier image sous **`public/`** (ex. `public/images/products/mon-produit.jpg`). Les URLs du site commencent toujours par `/`, donc un chemin type **`/images/products/mon-produit.jpg`** est servi depuis `public/images/products/`.
-2. Dans **`src/data/products.json`**, sur chaque entrée de `products`, mets ce chemin dans le champ **`imagePath`** (voir les exemples existants comme `"/images/products/axion-pad-standard.jpg"`).
-3. Redémarre ou rafraîchis le dev server si besoin. Pour plusieurs visuels futurs, le modèle TypeScript prévoit aussi un tableau **`images`** sur `Product` côté API générique ; le catalogue embarqué utilise aujourd’hui surtout **`imagePath`**.
+## Stack
 
-## Getting Started
+| Couche | Technologie |
+|--------|-------------|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript 5 |
+| Styles | Tailwind CSS 4 |
+| 3D / Animations | Three.js · @react-three/fiber · GSAP |
+| État global | Zustand 5 |
+| Paiement | Stripe |
+| Base de données | Cloudflare D1 (SQLite) |
+| Déploiement | Cloudflare Pages (`next-on-pages`) |
 
-First, run the development server:
+## Structure du projet
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+src/
+├── app/
+│   ├── api/                 # Routes API (checkout, reviews, auth, track, webhook…)
+│   ├── admin/orders/        # Interface d'administration
+│   ├── shop/                # Boutique + pages produit dynamiques
+│   ├── cart/                # Panier
+│   ├── checkout/ · success/ # Tunnel de commande
+│   └── …                   # about, cgv, login, register, track, upload…
+├── components/
+│   ├── 3d/                  # Scènes Three.js (HeroScene, ProductModel, ScrollScene…)
+│   ├── animations/          # ScrollReveal
+│   ├── cart/                # CheckoutButton
+│   ├── layout/              # Navbar, Footer
+│   ├── products/            # ProductCard, ProductImage
+│   └── reviews/             # ReviewSection
+├── data/
+│   └── products.json        # Catalogue produits (source de vérité)
+├── hooks/                   # Custom hooks (useScrollAnimation)
+├── lib/                     # Utilitaires (products-data, api, auth, gsap, three…)
+├── store/
+│   └── cart.ts              # Store Zustand du panier
+└── types/
+    └── index.ts             # Types TypeScript partagés
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```
+migrations/                  # Migrations Cloudflare D1
+public/
+├── fonts/
+├── images/products/         # Photos produits (ajout manuel)
+├── models/                  # Modèle 3D (axionpad.glb)
+└── textures/
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Démarrage rapide
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prérequis
 
-## Learn More
+- Node.js ≥ 18
+- Compte Stripe (clés API test/live)
+- Compte Cloudflare (Workers + D1) pour la prod
 
-To learn more about Next.js, take a look at the following resources:
+### Variables d'environnement
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Créer `.env.local` à la racine :
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
 
-## Deploy on Vercel
+# Stripe
+STRIPE_SECRET_KEY=sk_test_…
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_…
+STRIPE_WEBHOOK_SECRET=whsec_…
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Authentification
+ADMIN_PASSWORD_HASH=…
+JWT_SECRET=…
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Lancer le dev server
+
+```bash
+npm install
+npm run dev
+# → http://localhost:3000
+```
+
+## Catalogue produits
+
+### Ajouter ou modifier un produit
+
+1. Placer l'image sous `public/images/products/` (ex. `axion-pad-standard.jpg`).
+2. Éditer `src/data/products.json` — ajouter ou modifier l'entrée :
+
+```jsonc
+{
+  "slug": "axion-pad-standard",
+  "name": "Axion Pad Standard",
+  "category": "macro-pads",   // "macro-pads" | "kits" | "accessories"
+  "price": 8900,              // centimes (89,00 €)
+  "imagePath": "/images/products/axion-pad-standard.jpg",
+  "inStock": true,
+  "badge": "Nouveau",         // optionnel
+  "tagline": "…",
+  "description": "…",
+  "longDescription": "…",
+  "specs": [{ "label": "Switch", "value": "Gateron Yellow" }],
+  "includes": ["1× Axion Pad Standard", "Câble USB-C"]
+}
+```
+
+3. Redémarrer le dev server si nécessaire.
+
+## Base de données (Cloudflare D1)
+
+| Migration | Contenu |
+|-----------|---------|
+| `0001_orders.sql` | Table des commandes |
+| `0002_reviews.sql` | Avis clients |
+| `0003_add_tracking.sql` | Suivi de livraison |
+| `0004_idempotency.sql` | Clés d'idempotence Stripe |
+
+Appliquer les migrations en local :
+
+```bash
+wrangler d1 migrations apply axionpad-db --local
+```
+
+En production :
+
+```bash
+wrangler d1 migrations apply axionpad-db
+```
+
+## Déploiement
+
+### Cloudflare Pages (production)
+
+```bash
+npm run pages:build        # Build compatible Cloudflare
+wrangler pages deploy      # Push sur Cloudflare Pages
+```
+
+Configuration dans `wrangler.toml` — binding D1 : `axionpad-db`.
+
+### Vercel (alternatif)
+
+```bash
+vercel --prod
+```
+
+## Commandes
+
+```bash
+npm run dev          # Dev server (localhost:3000, Turbopack)
+npm run build        # Build Next.js standard
+npm run pages:build  # Build Cloudflare Pages
+npm run lint         # ESLint
+```

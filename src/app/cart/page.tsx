@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useCart, getShipping, FREE_SHIPPING_THRESHOLD } from "@/store/cart";
-import CheckoutButton from "@/components/CheckoutButton";
+import CheckoutButton from "@/components/cart/CheckoutButton";
 import { getProduct, getAllProducts } from "@/lib/products-data";
 
 export default function CartPage() {

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { getAllProducts, formatPrice, type ProductVariantFull } from "@/lib/products-data";
 import { useCart } from "@/store/cart";
 import ScrollReveal from "@/components/animations/ScrollReveal";
-import ProductImage from "@/components/ProductImage";
+import ProductImage from "@/components/products/ProductImage";
 
 const CATEGORIES = [
   { value: "",             label: "Tous les produits" },

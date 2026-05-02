@@ -3,9 +3,9 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getProduct, getAllProducts, formatPrice } from "@/lib/products-data";
 import ProductConfigurator from "./ProductConfigurator";
-import ProductImage from "@/components/ProductImage";
-import ReviewSection from "@/components/ReviewSection";
-import ProductCard from "@/components/ProductCard";
+import ProductImage from "@/components/products/ProductImage";
+import ReviewSection from "@/components/reviews/ReviewSection";
+import ProductCard from "@/components/products/ProductCard";
 
 export function generateStaticParams() {
   return getAllProducts().map(p => ({ slug: p.slug }));
