@@ -1,11 +1,11 @@
-﻿import Stripe from "stripe";
+import Stripe from "stripe";
 import Link from "next/link";
 import type { Metadata } from "next";
 
 export const runtime = "edge";
 
 export const metadata: Metadata = {
-  title: "Commande confirmÃ©e â€” Axion Pad",
+  title: "Commande confirmée — Axion Pad",
 };
 
 interface Props {
@@ -78,7 +78,7 @@ export default async function SuccessPage({ searchParams }: Props) {
               color: "#4a8f5b",
             }}
           >
-            âœ“
+            &#10003;
           </div>
         </div>
 
@@ -86,10 +86,10 @@ export default async function SuccessPage({ searchParams }: Props) {
           className="text-3xl font-semibold text-center mb-2"
           style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}
         >
-          Commande confirmÃ©e !
+          Commande confirm&#233;e&#160;!
         </h1>
         <p className="text-center mb-8" style={{ color: "var(--color-text-mute)" }}>
-          Merci pour votre achat â€” on s&apos;en occupe dÃ¨s maintenant.
+          Merci pour votre achat &#8212; on s&apos;en occupe d&#232;s maintenant.
         </p>
 
         {/* Order card */}
@@ -97,7 +97,6 @@ export default async function SuccessPage({ searchParams }: Props) {
           className="rounded-2xl border overflow-hidden mb-6"
           style={{ borderColor: "var(--color-border)", background: "var(--color-bg-card)" }}
         >
-          {/* Header */}
           {data && (
             <div
               className="px-6 py-5 flex items-center justify-between border-b"
@@ -108,7 +107,7 @@ export default async function SuccessPage({ searchParams }: Props) {
                   className="text-xs uppercase tracking-wider mb-1"
                   style={{ color: "var(--color-text-mute)" }}
                 >
-                  RÃ©fÃ©rence commande
+                  R&#233;f&#233;rence commande
                 </p>
                 <p
                   className="font-mono text-lg font-bold"
@@ -125,38 +124,33 @@ export default async function SuccessPage({ searchParams }: Props) {
             </div>
           )}
 
-          {/* Items */}
           {data && data.items.length > 0 && (
             <div className="px-6 py-4 space-y-3">
               {data.items.map((item, i) => (
                 <div key={i} className="flex justify-between items-baseline text-sm">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="text-xs shrink-0" style={{ color: "var(--color-text-mute)" }}>
-                      Ã—{item.quantity}
+                      x{item.quantity}
                     </span>
                     <span className="truncate" style={{ color: "var(--color-text)" }}>
                       {item.description}
                     </span>
                   </div>
-                  <span
-                    className="ml-4 shrink-0 tabular-nums"
-                    style={{ color: "var(--color-text-mute)" }}
-                  >
-                    {(item.amountTotal / 100).toFixed(2)} â‚¬
+                  <span className="ml-4 shrink-0 tabular-nums" style={{ color: "var(--color-text-mute)" }}>
+                    {(item.amountTotal / 100).toFixed(2)} &#8364;
                   </span>
                 </div>
               ))}
             </div>
           )}
 
-          {/* Total */}
           {data && (
             <div
               className="px-6 py-4 flex justify-between items-center border-t"
               style={{ borderColor: "var(--color-border)" }}
             >
               <span className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>
-                Total payÃ©
+                Total pay&#233;
               </span>
               <span className="font-bold" style={{ color: "var(--color-text)" }}>
                 {(data.amountTotal / 100).toFixed(2)} {data.currency}
@@ -164,56 +158,49 @@ export default async function SuccessPage({ searchParams }: Props) {
             </div>
           )}
 
-          {/* Fallback si pas de donnÃ©es Stripe */}
           {!data && (
             <div className="px-6 py-8 text-center">
               <p className="text-sm" style={{ color: "var(--color-text-mute)" }}>
-                Votre paiement a bien Ã©tÃ© reÃ§u.
+                Votre paiement a bien &#233;t&#233; re&#231;u.
               </p>
             </div>
           )}
         </div>
 
-        {/* Email notice */}
         {data?.customerEmail && (
           <p className="text-center text-sm mb-6" style={{ color: "var(--color-text-mute)" }}>
-            Un e-mail de confirmation a Ã©tÃ© envoyÃ© Ã {" "}
+            Un e-mail de confirmation a &#233;t&#233; envoy&#233; &#224;{" "}
             <strong style={{ color: "var(--color-text)" }}>
               {maskEmail(data.customerEmail)}
             </strong>
           </p>
         )}
 
-        {/* Actions */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <Link
             href={trackUrl}
             className="btn-accent flex-1 py-3 text-center font-semibold text-sm rounded-full"
           >
-            Suivre ma commande â†’
+            Suivre ma commande &#8594;
           </Link>
           <Link
             href="/shop"
             className="flex-1 py-3 rounded-full text-center text-sm transition-colors"
             style={{ border: "1px solid var(--color-border)", color: "var(--color-text-mute)" }}
           >
-            Retour Ã  la boutique
+            Retour &#224; la boutique
           </Link>
         </div>
 
-        {/* Delivery info */}
         <div
           className="rounded-xl px-5 py-4 text-sm mb-8 border"
-          style={{
-            background: "var(--color-accent-lt)",
-            borderColor: "rgba(184,118,92,0.2)",
-          }}
+          style={{ background: "var(--color-accent-lt)", borderColor: "rgba(184,118,92,0.2)" }}
         >
           <p className="font-medium mb-1" style={{ color: "var(--color-accent)" }}>
-            ðŸ“¦ ExpÃ©dition sous 3â€“5 jours ouvrÃ©s
+            &#128230; Exp&#233;dition sous 3&#8211;5 jours ouvr&#233;s
           </p>
           <p style={{ color: "var(--color-text-mute)", fontSize: "13px" }}>
-            Vous recevrez un e-mail avec votre numÃ©ro de suivi dÃ¨s que votre colis est parti.
+            Vous recevrez un e-mail avec votre num&#233;ro de suivi d&#232;s que votre colis est parti.
           </p>
         </div>
 
