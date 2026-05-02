@@ -97,6 +97,32 @@ export async function POST(request: Request) {
         <td style="padding:10px 0;border-bottom:1px solid #f0ece6;font-size:14px;color:#3d3530;text-align:right;white-space:nowrap">${i.subtotal.toFixed(2)} EUR</td>
       </tr>`).join("");
 
+    const allNames = items.map(i => i.name).join(" ");
+    const hasCustomLogo = allNames.includes("logo-custom") || allNames.toLowerCase().includes("vectoriel") || allNames.toLowerCase().includes("logo perso");
+    const hasTextEngraving = allNames.includes("Couvercle :") && !hasCustomLogo;
+
+    const engravingBlock = hasCustomLogo ? `
+  <tr><td style="padding:0 36px 24px">
+    <div style="background:#fdf4e7;border:1.5px solid #f0c070;border-radius:10px;padding:16px 20px">
+      <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#92600a">&#128274; Action requise &#8212; Logo personnalis&#233;</p>
+      <p style="margin:0;font-size:13px;color:#6b5030;line-height:1.6">
+        Vous avez choisi une gravure avec votre logo. Veuillez envoyer votre fichier vectoriel
+        <strong>(SVG ou DXF)</strong> &#224; l'adresse suivante en r&#233;ponse &#224; cet e-mail :<br>
+        <a href="mailto:contact@axionpad.fr" style="color:#b8765c;font-weight:600">contact@axionpad.fr</a><br>
+        <span style="font-size:12px;color:#9b8e85">Fabrication lanc&#233;e d&#232;s r&#233;ception du fichier.</span>
+      </p>
+    </div>
+  </td></tr>` : hasTextEngraving ? `
+  <tr><td style="padding:0 36px 24px">
+    <div style="background:#f0f7ff;border:1.5px solid #b0d0f0;border-radius:10px;padding:16px 20px">
+      <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#1a4a7a">&#9997;&#65039; Gravure texte confirm&#233;e</p>
+      <p style="margin:0;font-size:13px;color:#2d5a8a;line-height:1.6">
+        Le texte demand&#233; sera grav&#233; en creux sur le couvercle exactement comme indiqu&#233;.<br>
+        <span style="font-size:12px;color:#9b8e85">Une question sur votre gravure ? R&#233;pondez &#224; cet e-mail.</span>
+      </p>
+    </div>
+  </td></tr>` : "";
+
     // E-mail de confirmation immediat
     await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -142,6 +168,8 @@ export async function POST(request: Request) {
       </tr>
     </table>
   </td></tr>
+
+  ${engravingBlock}
 
   <tr><td style="padding:0 36px 28px">
     <div style="background:#fdf8f0;border:1px solid #e8d8b8;border-radius:10px;padding:14px 18px">
