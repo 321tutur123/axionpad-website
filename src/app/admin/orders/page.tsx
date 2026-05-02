@@ -34,7 +34,8 @@ interface Order {
   created_at: number;
 }
 
-function safeJSON<T>(str: string, fallback: T): T {
+function safeJSON<T>(str: string | null | undefined, fallback: T): T {
+  if (!str || str === "null") return fallback;
   try { return JSON.parse(str) as T; } catch { return fallback; }
 }
 
