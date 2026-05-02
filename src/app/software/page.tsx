@@ -65,7 +65,7 @@ const STEPS = [
 
 export default function SoftwarePage() {
   return (
-    <main className="min-h-screen pb-12" style={{ background: "var(--color-bg)", paddingTop: "5.5rem" }}>
+    <main className="min-h-screen pb-12" style={{ background: "transparent", paddingTop: "5.5rem" }}>
 
       {/* ── Hero ───────────────────────────────────────────────────────── */}
       <section className="pb-20 px-6 max-w-6xl mx-auto">
@@ -193,8 +193,8 @@ export default function SoftwarePage() {
           className="rounded-3xl border p-10 md:p-14"
           style={{
             borderColor: "var(--color-border)",
-            background: "linear-gradient(145deg, #ebe4dc 0%, var(--color-bg-card) 40%, #e8eced 100%)",
-            boxShadow: "0 8px 40px rgba(58,54,51,0.06)",
+            background: "linear-gradient(145deg, var(--color-accent-lt) 0%, var(--color-bg-card) 40%, rgba(108,92,231,0.06) 100%)",
+            boxShadow: "0 8px 40px rgba(0,0,0,0.35)",
           }}
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -537,7 +537,7 @@ function CodeSnippet() {
   ];
 
   return (
-    <div className="rounded-2xl overflow-hidden border shadow-xl" style={{ borderColor: "var(--color-border)", background: "#f4f1ec" }}>
+    <div className="rounded-2xl overflow-hidden border shadow-xl" style={{ borderColor: "var(--color-border)", background: "#1a1a2e" }}>
       <div
         className="flex items-center justify-between px-4 py-3 border-b"
         style={{ borderColor: "var(--color-border)", background: "var(--color-bg-soft)" }}
@@ -554,10 +554,10 @@ function CodeSnippet() {
         </div>
       </div>
 
-      <div className="p-4 font-mono text-xs leading-6 overflow-x-auto" style={{ background: "#faf8f5" }}>
+      <div className="p-4 font-mono text-xs leading-6 overflow-x-auto" style={{ background: "#14141f" }}>
         {lines.map((line, i) => (
           <div key={i} className="flex">
-            <span className="text-zinc-700 w-6 shrink-0 text-right mr-4 select-none">{i + 1}</span>
+            <span className="w-6 shrink-0 text-right mr-4 select-none" style={{ color: "rgba(255,255,255,0.2)" }}>{i + 1}</span>
             <span>
               {"  ".repeat(line.indent)}
               {line.tokens.map((tok, j) => (

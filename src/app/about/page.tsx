@@ -41,7 +41,7 @@ const VALUES = [
 
 export default function AboutPage() {
   return (
-    <main style={{ minHeight: "100vh", background: "var(--color-bg)", paddingTop: "80px" }}>
+    <main style={{ minHeight: "100vh", background: "transparent", paddingTop: "80px" }}>
 
       {/* Hero */}
       <section className="max-w-4xl mx-auto px-6 py-20 text-center">
@@ -74,7 +74,7 @@ export default function AboutPage() {
         }}
       >
         <div className="max-w-3xl mx-auto">
-          <div className="card p-8" style={{ background: "var(--color-bg-card-alt)", boxShadow: "0 4px 28px rgba(58,54,51,0.06)" }}>
+          <div className="card p-8" style={{ background: "var(--color-bg-card-alt)", boxShadow: "0 4px 28px rgba(0,0,0,0.35)" }}>
             <h2
               className="font-semibold mb-4"
               style={{ fontSize: "22px", color: "var(--color-text)" }}
@@ -105,7 +105,7 @@ export default function AboutPage() {
       </section>
 
       {/* Valeurs */}
-      <section style={{ padding: "80px 24px", background: "var(--color-bg)" }}>
+      <section style={{ padding: "80px 24px", background: "transparent" }}>
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {VALUES.map(v => (
@@ -168,7 +168,7 @@ export default function AboutPage() {
         className="text-center px-6"
         style={{
           padding: "80px 24px",
-          background: "linear-gradient(145deg, var(--color-accent-lt) 0%, #ebe4dc 50%, #e8dfd6 100%)",
+          background: "linear-gradient(145deg, var(--color-accent-lt) 0%, var(--color-bg-soft) 60%, var(--color-bg-muted) 100%)",
         }}
       >
         <div className="max-w-2xl mx-auto">

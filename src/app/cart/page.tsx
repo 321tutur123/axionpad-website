@@ -50,12 +50,12 @@ export default function CartPage() {
   const cardStyle = {
     borderColor: "var(--color-border)",
     background: "var(--color-bg-card)",
-    boxShadow: "0 2px 16px rgba(58,54,51,0.05)",
+    boxShadow: "0 2px 16px rgba(0,0,0,0.28)",
   } as const;
 
   if (!mounted || loading) {
     return (
-      <main className="min-h-screen pt-24 flex items-center justify-center" style={{ background: "var(--color-bg)" }}>
+      <main className="min-h-screen pt-24 flex items-center justify-center" style={{ background: "transparent" }}>
         <div
           className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin"
           style={{ borderColor: "var(--color-accent)", borderTopColor: "transparent" }}
@@ -66,7 +66,7 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <main className="min-h-screen pt-24 flex flex-col items-center justify-center text-center px-6" style={{ background: "var(--color-bg)" }}>
+      <main className="min-h-screen pt-24 flex flex-col items-center justify-center text-center px-6" style={{ background: "transparent" }}>
         <div className="text-7xl mb-6 opacity-35">🛒</div>
         <h1 className="text-2xl font-semibold mb-3" style={{ color: "var(--color-text)" }}>Votre panier est vide</h1>
         <p className="mb-8 max-w-sm" style={{ color: "var(--color-text-mute)" }}>Découvrez nos produits et commencez votre setup.</p>
@@ -78,7 +78,7 @@ export default function CartPage() {
   }
 
   return (
-    <main className="min-h-screen pt-24 pb-16" style={{ background: "var(--color-bg)" }}>
+    <main className="min-h-screen pt-24 pb-16" style={{ background: "transparent" }}>
       <div className="max-w-6xl mx-auto px-6 py-10">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-semibold" style={{ color: "var(--color-text)" }}>

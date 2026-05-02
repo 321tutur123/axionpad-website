@@ -61,13 +61,17 @@ export default function HomePage() {
   useEffect(() => {
     if (!scrollSectionRef.current) return;
 
-    const trigger = ScrollTrigger.create({
-      trigger: scrollSectionRef.current,
-      start: "top top",
-      end: "bottom bottom",
-      scrub: 0.6,
-      onUpdate: self => { scrollProgress.current = self.progress; },
-    });
+    const triggers: ReturnType<typeof ScrollTrigger.create>[] = [];
+
+    triggers.push(
+      ScrollTrigger.create({
+        trigger: scrollSectionRef.current,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.6,
+        onUpdate: self => { scrollProgress.current = self.progress; },
+      })
+    );
 
     labelRefs.current.forEach((el, i) => {
       if (!el) return;
@@ -75,26 +79,28 @@ export default function HomePage() {
       const start = step.at;
       const end   = start + 0.28;
 
-      ScrollTrigger.create({
-        trigger: scrollSectionRef.current,
-        start: `${start * 100}% top`,
-        end:   `${end   * 100}% top`,
-        scrub: true,
-        onUpdate: self => {
-          const p = self.progress;
-          const opacity = p < 0.5
-            ? gsap.utils.mapRange(0, 0.5, 0, 1, p)
-            : gsap.utils.mapRange(0.5, 1, 1, 0, p);
-          gsap.set(el, { opacity, y: gsap.utils.mapRange(0, 1, 20, 0, Math.min(p * 2, 1)) });
-        },
-      });
+      triggers.push(
+        ScrollTrigger.create({
+          trigger: scrollSectionRef.current,
+          start: `${start * 100}% top`,
+          end:   `${end   * 100}% top`,
+          scrub: true,
+          onUpdate: self => {
+            const p = self.progress;
+            const opacity = p < 0.5
+              ? gsap.utils.mapRange(0, 0.5, 0, 1, p)
+              : gsap.utils.mapRange(0.5, 1, 1, 0, p);
+            gsap.set(el, { opacity, y: gsap.utils.mapRange(0, 1, 20, 0, Math.min(p * 2, 1)) });
+          },
+        })
+      );
     });
 
-    return () => { trigger.kill(); ScrollTrigger.getAll().forEach(t => t.kill()); };
+    return () => { triggers.forEach(t => t.kill()); };
   }, []);
 
   return (
-    <main style={{ background: "var(--color-bg)" }}>
+    <main style={{ background: "transparent" }}>
 
       {/* ── Hero scrollytelling ──────────────────────────────────────── */}
       <section
@@ -194,7 +200,7 @@ export default function HomePage() {
       {/* ── Features ────────────────────────────────────────────────── */}
       <section
         className="px-6"
-        style={{ padding: "96px 24px", background: "var(--color-bg-card)" }}
+        style={{ padding: "96px 24px", background: "rgba(255,255,255,0.02)" }}
       >
         <div className="max-w-[1100px] mx-auto">
           <ScrollReveal>
@@ -238,7 +244,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Valeurs ─────────────────────────────────────────────────── */}
-      <section style={{ padding: "96px 24px", background: "var(--color-bg)" }}>
+      <section style={{ padding: "96px 24px", background: "transparent" }}>
         <div className="max-w-[1100px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {[

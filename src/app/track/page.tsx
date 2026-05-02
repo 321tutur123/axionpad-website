@@ -49,7 +49,7 @@ const panelStyle: React.CSSProperties = {
 
 export default function TrackPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen pt-24" style={{ background: "var(--color-bg)" }} />}>
+    <Suspense fallback={<div className="min-h-screen pt-24" style={{ background: "transparent" }} />}>
       <TrackContent />
     </Suspense>
   );
@@ -119,7 +119,7 @@ function TrackContent() {
   };
 
   return (
-    <main className="min-h-screen pt-24 pb-16" style={{ background: "var(--color-bg)" }}>
+    <main className="min-h-screen pt-24 pb-16" style={{ background: "transparent" }}>
       <div className="max-w-2xl mx-auto px-6 py-12">
 
         <div className="mb-10">

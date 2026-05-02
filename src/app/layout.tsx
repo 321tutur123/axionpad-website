@@ -25,6 +25,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="fr" className="scroll-smooth">
       <body className={`${inter.variable} antialiased`}>
+        {/* Fond animé — 3 orbes fixes qui dérivent lentement */}
+        <div className="bg-wrap" aria-hidden="true">
+          <div className="bg-orb bg-orb-1" />
+          <div className="bg-orb bg-orb-2" />
+          <div className="bg-orb bg-orb-3" />
+        </div>
         <Navbar />
         {children}
         <Footer />

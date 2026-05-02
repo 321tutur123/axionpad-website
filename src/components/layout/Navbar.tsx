@@ -118,7 +118,7 @@ export default function Navbar() {
       {menuOpen && (
         <div
           className="md:hidden absolute top-full left-0 right-0 flex flex-col gap-1 px-4 py-4"
-          style={{ background: "var(--color-bg)", borderBottom: "0.5px solid var(--color-border)" }}
+          style={{ background: "rgba(8, 8, 16, 0.98)", borderBottom: "0.5px solid var(--color-border)", backdropFilter: "blur(12px)" }}
         >
           {NAV_LINKS.map(l => (
             <Link

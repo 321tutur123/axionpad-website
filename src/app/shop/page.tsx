@@ -138,7 +138,7 @@ export default function ShopPage() {
   const resetPage = () => setPage(1);
 
   return (
-    <main style={{ minHeight: "100vh", background: "var(--color-bg)", paddingTop: "80px" }}>
+    <main style={{ minHeight: "100vh", background: "transparent", paddingTop: "80px" }}>
       <div className="max-w-7xl mx-auto px-6 py-10">
 
         <ScrollReveal>

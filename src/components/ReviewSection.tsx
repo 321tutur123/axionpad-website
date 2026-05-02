@@ -31,9 +31,11 @@ function Stars({
           onClick={() => interactive && onChange?.(n)}
           onMouseEnter={() => interactive && setHovered(n)}
           onMouseLeave={() => interactive && setHovered(0)}
-          className={`text-xl leading-none select-none transition-colors ${
-            n <= (hovered || rating) ? "text-yellow-400" : "text-zinc-700"
-          } ${interactive ? "cursor-pointer" : "cursor-default"}`}
+          className="text-xl leading-none select-none transition-colors"
+          style={{
+            color: n <= (hovered || rating) ? "#facc15" : "rgba(255,255,255,0.18)",
+            cursor: interactive ? "pointer" : "default",
+          }}
         >
           ★
         </span>
@@ -98,15 +100,24 @@ export default function ReviewSection({ productSlug }: { productSlug: string }) 
   };
 
   return (
-    <section id="reviews" className="mt-16 pt-10 border-t border-white/10">
+    <section
+      id="reviews"
+      className="mt-16 pt-10"
+      style={{ borderTop: "0.5px solid var(--color-border)" }}
+    >
       {/* Header */}
       <div className="flex items-start justify-between mb-8 gap-4">
         <div>
-          <h2 className="text-xl font-bold text-white">Avis clients</h2>
+          <h2
+            className="text-xl font-bold"
+            style={{ color: "var(--color-text)" }}
+          >
+            Avis clients
+          </h2>
           {reviews.length > 0 && (
             <div className="flex items-center gap-2 mt-1.5">
               <Stars rating={Math.round(avg)} />
-              <span className="text-zinc-400 text-sm">
+              <span className="text-sm" style={{ color: "var(--color-text-mute)" }}>
                 {avg.toFixed(1)}&nbsp;/ 5 &nbsp;·&nbsp; {reviews.length} avis
               </span>
             </div>
@@ -115,66 +126,111 @@ export default function ReviewSection({ productSlug }: { productSlug: string }) 
         {!submitted && !formOpen && (
           <button
             onClick={() => setFormOpen(true)}
-            className="shrink-0 px-4 py-2 rounded-full border border-violet-500/40 text-violet-300 text-sm hover:bg-violet-500/10 transition-colors"
+            className="shrink-0 px-4 py-2 rounded-full text-sm transition-colors"
+            style={{
+              border: "0.5px solid rgba(232, 98, 42, 0.35)",
+              color: "var(--color-accent)",
+              background: "transparent",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "var(--color-accent-lt)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "transparent")}
           >
             + Laisser un avis
           </button>
         )}
         {submitted && (
-          <span className="text-green-400 text-sm shrink-0">✓ Avis publié — merci !</span>
+          <span className="text-sm shrink-0" style={{ color: "#4ade80" }}>
+            ✓ Avis publié — merci !
+          </span>
         )}
       </div>
 
-      {/* Review form */}
+      {/* Formulaire */}
       {formOpen && (
         <form
           onSubmit={handleSubmit}
-          className="mb-8 p-5 rounded-2xl border border-white/10 bg-white/5 space-y-4"
+          className="mb-8 p-5 rounded-2xl space-y-4"
+          style={{
+            border: "0.5px solid var(--color-border)",
+            background: "var(--color-bg-card)",
+            backdropFilter: "blur(12px)",
+          }}
         >
-          <p className="text-white font-semibold text-sm">Votre avis</p>
+          <p className="text-sm font-semibold" style={{ color: "var(--color-text)" }}>
+            Votre avis
+          </p>
 
           <div>
-            <p className="text-xs text-zinc-400 mb-1.5">Note *</p>
+            <p className="text-xs mb-1.5" style={{ color: "var(--color-text-mute)" }}>Note *</p>
             <Stars rating={rating} interactive onChange={setRating} />
           </div>
 
           <div>
-            <label className="text-xs text-zinc-400 block mb-1">Prénom / Pseudo *</label>
+            <label className="text-xs block mb-1" style={{ color: "var(--color-text-mute)" }}>
+              Prénom / Pseudo *
+            </label>
             <input
               value={name}
               onChange={e => setName(e.target.value)}
               maxLength={100}
               placeholder="Jean D."
-              className="w-full px-3 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-violet-500"
+              className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "0.5px solid var(--color-border)",
+                color: "var(--color-text)",
+              }}
             />
           </div>
 
           <div>
-            <label className="text-xs text-zinc-400 block mb-1">Commentaire</label>
+            <label className="text-xs block mb-1" style={{ color: "var(--color-text-mute)" }}>
+              Commentaire
+            </label>
             <textarea
               value={comment}
               onChange={e => setComment(e.target.value)}
               rows={3}
               maxLength={1000}
               placeholder="Partagez votre expérience…"
-              className="w-full px-3 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-violet-500 resize-none"
+              className="w-full px-3 py-2.5 rounded-lg text-sm focus:outline-none resize-none"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "0.5px solid var(--color-border)",
+                color: "var(--color-text)",
+              }}
             />
           </div>
 
-          {formError && <p className="text-xs text-red-400">{formError}</p>}
+          {formError && (
+            <p className="text-xs" style={{ color: "#f87171" }}>{formError}</p>
+          )}
 
           <div className="flex gap-3">
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium transition-colors disabled:opacity-60"
+              className="px-5 py-2 rounded-full text-white text-sm font-medium transition-colors"
+              style={{
+                background: "var(--color-accent)",
+                opacity: submitting ? 0.6 : 1,
+                cursor: submitting ? "not-allowed" : "pointer",
+              }}
+              onMouseEnter={e => { if (!submitting) e.currentTarget.style.background = "var(--color-accent-hover)"; }}
+              onMouseLeave={e => (e.currentTarget.style.background = "var(--color-accent)")}
             >
               {submitting ? "Envoi…" : "Publier"}
             </button>
             <button
               type="button"
               onClick={() => setFormOpen(false)}
-              className="px-5 py-2 rounded-full border border-white/10 text-zinc-400 text-sm hover:text-white transition-colors"
+              className="px-5 py-2 rounded-full text-sm transition-colors"
+              style={{
+                border: "0.5px solid var(--color-border)",
+                color: "var(--color-text-mute)",
+              }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--color-text)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--color-text-mute)")}
             >
               Annuler
             </button>
@@ -182,39 +238,72 @@ export default function ReviewSection({ productSlug }: { productSlug: string }) 
         </form>
       )}
 
-      {/* List */}
+      {/* Liste */}
       {loading ? (
         <div className="flex justify-center py-10">
-          <div className="w-6 h-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+          <div
+            className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin"
+            style={{ borderColor: "var(--color-accent)", borderTopColor: "transparent" }}
+          />
         </div>
       ) : reviews.length === 0 ? (
-        <p className="text-zinc-600 text-sm py-10 text-center">
+        <p
+          className="text-sm py-10 text-center"
+          style={{ color: "var(--color-text-mute)" }}
+        >
           Aucun avis pour l'instant — soyez le premier !
         </p>
       ) : (
         <div className="space-y-4">
           {reviews.map(review => (
-            <div key={review.id} className="p-4 rounded-xl border border-white/10 bg-white/[0.03]">
+            <div
+              key={review.id}
+              className="p-4 rounded-xl"
+              style={{
+                border: "0.5px solid var(--color-border)",
+                background: "rgba(255, 255, 255, 0.03)",
+              }}
+            >
               <div className="flex items-start justify-between mb-2 gap-3">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-white text-sm font-medium">{review.customer_name}</span>
+                    <span
+                      className="text-sm font-medium"
+                      style={{ color: "var(--color-text)" }}
+                    >
+                      {review.customer_name}
+                    </span>
                     {review.verified === 1 && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/20 text-green-400 border border-green-500/20">
+                      <span
+                        className="text-[10px] px-1.5 py-0.5 rounded-full"
+                        style={{
+                          background: "rgba(74, 222, 128, 0.15)",
+                          color: "#4ade80",
+                          border: "0.5px solid rgba(74, 222, 128, 0.25)",
+                        }}
+                      >
                         Achat vérifié
                       </span>
                     )}
                   </div>
                   <Stars rating={review.rating} />
                 </div>
-                <time className="text-xs text-zinc-600 shrink-0">
+                <time
+                  className="text-xs shrink-0"
+                  style={{ color: "var(--color-text-mute)" }}
+                >
                   {new Date(review.created_at * 1000).toLocaleDateString("fr-FR", {
                     day: "numeric", month: "short", year: "numeric",
                   })}
                 </time>
               </div>
               {review.comment && (
-                <p className="text-zinc-300 text-sm leading-relaxed mt-2">{review.comment}</p>
+                <p
+                  className="text-sm leading-relaxed mt-2"
+                  style={{ color: "var(--color-text-mute)" }}
+                >
+                  {review.comment}
+                </p>
               )}
             </div>
           ))}
