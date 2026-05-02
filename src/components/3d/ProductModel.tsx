@@ -36,6 +36,9 @@ export default function ProductModel({
     if (maxDim === 0) return 1;
     const s = targetSize / maxDim;
     console.log(`[ProductModel] loaded "${modelPath}" — bbox ${size.x.toFixed(2)}×${size.y.toFixed(2)}×${size.z.toFixed(2)}, autoScale=${s.toFixed(3)}`);
+    const meshNames: string[] = [];
+    scene.traverse((child: any) => { if (child.isMesh) meshNames.push(child.name); });
+    console.log("[ProductModel] meshes:", meshNames);
     return s;
   }, [scene, modelPath, targetSize]);
 
