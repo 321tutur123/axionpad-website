@@ -5,16 +5,13 @@ import { useGLTF, useAnimations } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import {
   Group, Box3, Vector3,
-  Quaternion,
   MeshStandardMaterial,
   CanvasTexture, PlaneGeometry, MeshBasicMaterial, Mesh,
 } from "three";
 import { gsap } from "@/lib/gsap";
 
-const MODEL_PATH    = "/models/axionpad.glb";
-const LID_MESH      = "box_top";
-const LID_TILT_DEG  = 6;
-const LID_TILT_RAD  = LID_TILT_DEG * Math.PI / 180;
+const MODEL_PATH = "/models/axionpad.glb";
+const LID_MESH   = "box_top";
 
 interface ProductModelProps {
   modelPath?:      string;
@@ -96,64 +93,48 @@ export default function ProductModel({
   useEffect(() => {
     if (!groupRef.current) return;
 
-    // Supprime l'overlay existant
-    const old = groupRef.current.getObjectByName("__lid_overlay");
-    if (old) {
-      groupRef.current.remove(old);
-      (old as Mesh).geometry?.dispose();
-      ((old as Mesh).material as MeshBasicMaterial)?.map?.dispose();
-      ((old as Mesh).material as MeshBasicMaterial)?.dispose();
-    }
+    // Supprime l'overlay existant (peut être enfant de n'importe quel mesh)
+    scene.traverse((child: any) => {
+      if (child.name === "__lid_overlay") {
+        child.parent?.remove(child);
+        (child as Mesh).geometry?.dispose();
+        ((child as Mesh).material as MeshBasicMaterial)?.map?.dispose();
+        ((child as Mesh).material as MeshBasicMaterial)?.dispose();
+      }
+    });
 
     const hasText  = engravingText  && engravingText.trim().length > 0;
     const hasImage = !!engravingImage;
     if (!hasText && !hasImage) return;
 
-    // Trouve box_top
+    // Trouve box_top dans la scene
     let lidMesh: any = null;
-    groupRef.current.traverse((child: any) => {
+    scene.traverse((child: any) => {
       if (child.isMesh && child.name === LID_MESH) lidMesh = child;
     });
     if (!lidMesh) return;
 
+    // Dimensions en espace LOCAL du couvercle (l'angle 6° est hérité du parent)
+    lidMesh.geometry.computeBoundingBox();
+    const geoBBox = lidMesh.geometry.boundingBox!;
+    const lidCenter = geoBBox.getCenter(new Vector3());
+    const topY  = geoBBox.max.y;
+    const planeW = (geoBBox.max.x - geoBBox.min.x) * 0.85;
+    const planeD = (geoBBox.max.z - geoBBox.min.z) * 0.85;
+
     const applyOverlay = (canvas: HTMLCanvasElement) => {
-      if (!groupRef.current) return;
       const texture = new CanvasTexture(canvas);
-
-      // Hauteur exacte depuis la géométrie locale du mesh
-      lidMesh.updateWorldMatrix(true, false);
-      lidMesh.geometry.computeBoundingBox();
-      const geoBBox = lidMesh.geometry.boundingBox!;
-
-      // Point central du dessus du couvercle en espace local du mesh
-      const topCenterLocal = new Vector3(
-        (geoBBox.min.x + geoBBox.max.x) / 2,
-        geoBBox.max.y,
-        (geoBBox.min.z + geoBBox.max.z) / 2,
-      );
-      // Transforme en world space (inclut rotation 6°, scale, etc.)
-      topCenterLocal.applyMatrix4(lidMesh.matrixWorld);
-      // Puis en local space du groupRef
-      const localTop = groupRef.current!.worldToLocal(topCenterLocal);
-
-      // Taille de la surface en world space → local space
-      const worldBBox = new Box3().setFromObject(lidMesh);
-      const worldSize = new Vector3();
-      worldBBox.getSize(worldSize);
-      const planeW = (worldSize.x / autoScale) * 0.85;
-      const planeD = (worldSize.z / autoScale) * 0.85;
-
       const geo = new PlaneGeometry(planeW, planeD);
       const mat = new MeshBasicMaterial({ map: texture, transparent: true, depthWrite: false, opacity: 0.88 });
       const plane = new Mesh(geo, mat);
       plane.name = "__lid_overlay";
-      // Position légèrement au-dessus de la surface du couvercle
-      plane.position.set(localTop.x, localTop.y + 0.008 / autoScale, localTop.z);
-
-      // Inclinaison 6° sur axe Y
-      plane.rotation.set(-Math.PI / 2, LID_TILT_RAD, Math.PI / 2);
-
-      groupRef.current!.add(plane);
+      // Centré sur la face supérieure du couvercle, légèrement au-dessus
+      plane.position.set(lidCenter.x, topY + 0.001, lidCenter.z);
+      // Face vers le haut dans l'espace local du couvercle
+      // L'angle 6° est automatiquement hérité du mesh parent
+      plane.rotation.x = -Math.PI / 2;
+      // Ajout comme enfant du couvercle
+      lidMesh.add(plane);
     };
 
     if (hasImage) {
