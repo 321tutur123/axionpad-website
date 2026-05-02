@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getRequestContext } from "@cloudflare/next-on-pages";
+import { signUploadToken } from "@/lib/uploadToken";
 
 export const runtime = "edge";
 
@@ -98,19 +99,30 @@ export async function POST(request: Request) {
       </tr>`).join("");
 
     const allNames = items.map(i => i.name).join(" ");
-    const hasCustomLogo = allNames.includes("logo-custom") || allNames.toLowerCase().includes("vectoriel") || allNames.toLowerCase().includes("logo perso");
+    const hasCustomLogo    = allNames.includes("logo-custom") || allNames.toLowerCase().includes("vectoriel") || allNames.toLowerCase().includes("logo perso");
     const hasTextEngraving = allNames.includes("Couvercle :") && !hasCustomLogo;
 
-    const engravingBlock = hasCustomLogo ? `
+    const uploadSig  = hasCustomLogo && process.env.AUTH_SECRET
+      ? await signUploadToken(orderNumber, process.env.AUTH_SECRET)
+      : "";
+    const uploadUrl  = uploadSig
+      ? `${origin}/upload?order=${encodeURIComponent(orderNumber)}&sig=${encodeURIComponent(uploadSig)}`
+      : "";
+
+    const engravingBlock = hasCustomLogo && uploadUrl ? `
   <tr><td style="padding:0 36px 24px">
     <div style="background:#fdf4e7;border:1.5px solid #f0c070;border-radius:10px;padding:16px 20px">
       <p style="margin:0 0 6px;font-size:13px;font-weight:700;color:#92600a">&#128274; Action requise &#8212; Logo personnalis&#233;</p>
-      <p style="margin:0;font-size:13px;color:#6b5030;line-height:1.6">
-        Vous avez choisi une gravure avec votre logo. Veuillez envoyer votre fichier vectoriel
-        <strong>(SVG ou DXF)</strong> &#224; l'adresse suivante en r&#233;ponse &#224; cet e-mail :<br>
-        <a href="mailto:contact@axionpad.fr" style="color:#b8765c;font-weight:600">contact@axionpad.fr</a><br>
-        <span style="font-size:12px;color:#9b8e85">Fabrication lanc&#233;e d&#232;s r&#233;ception du fichier.</span>
+      <p style="margin:0 0 12px;font-size:13px;color:#6b5030;line-height:1.6">
+        Vous avez choisi une gravure avec votre logo. D&#233;posez votre fichier vectoriel
+        <strong>(SVG ou DXF)</strong> en un clic via le lien ci-dessous &#8212; la fabrication sera lanc&#233;e d&#232;s validation.
       </p>
+      <div style="text-align:center">
+        <a href="${esc(uploadUrl)}" style="display:inline-block;padding:12px 28px;background:#b8765c;color:#fff;text-decoration:none;border-radius:999px;font-weight:600;font-size:13px">
+          D&#233;poser mon fichier &#8594;
+        </a>
+      </div>
+      <p style="margin:10px 0 0;font-size:11px;color:#9b8e85;text-align:center">Lien r&#233;serv&#233; &#224; votre commande ${esc(orderNumber)}</p>
     </div>
   </td></tr>` : hasTextEngraving ? `
   <tr><td style="padding:0 36px 24px">
