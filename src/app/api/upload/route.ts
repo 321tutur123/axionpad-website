@@ -1,12 +1,24 @@
 import { NextResponse } from "next/server";
 import { verifyUploadToken } from "@/lib/uploadToken";
+import { escapeHtml } from "@/lib/htmlEscape";
 
 export const runtime = "edge";
 
-const MAX_SIZE   = 5 * 1024 * 1024; // 5 MB
-const ALLOWED    = ["image/svg+xml", "image/x-dxf", "application/dxf", "application/pdf",
-                    "application/illustrator", "application/postscript"];
+const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+const ALLOWED = [
+  "image/svg+xml",
+  "image/x-dxf",
+  "application/dxf",
+  "application/pdf",
+  "application/illustrator",
+  "application/postscript",
+];
 const ALLOWED_EXT = [".svg", ".dxf", ".ai", ".eps", ".pdf"];
+
+function safeAttachmentFilename(name: string): string {
+  const cleaned = name.replace(/[^\w.\-()+ ]+/g, "_").trim().slice(0, 180);
+  return cleaned || "upload.bin";
+}
 
 export async function POST(request: Request) {
   const secret = process.env.AUTH_SECRET;
@@ -20,8 +32,8 @@ export async function POST(request: Request) {
   }
 
   const order = (form.get("order") as string | null)?.trim().toUpperCase();
-  const sig   = (form.get("sig")   as string | null)?.trim();
-  const file  = form.get("file") as File | null;
+  const sig = (form.get("sig") as string | null)?.trim();
+  const file = form.get("file") as File | null;
 
   if (!order || !sig || !file) {
     return NextResponse.json({ error: "Champs manquants" }, { status: 400 });
@@ -36,8 +48,8 @@ export async function POST(request: Request) {
   }
 
   const ext = "." + file.name.split(".").pop()?.toLowerCase();
-  const mimeOk = ALLOWED.includes(file.type) || ALLOWED.includes("image/svg+xml");
-  const extOk  = ALLOWED_EXT.includes(ext);
+  const mimeOk = ALLOWED.includes(file.type);
+  const extOk = ALLOWED_EXT.includes(ext);
   if (!mimeOk && !extOk) {
     return NextResponse.json({ error: "Format non accept&#233; (SVG, DXF, AI, PDF)" }, { status: 415 });
   }
@@ -47,20 +59,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Service d'envoi non configur&#233;" }, { status: 503 });
   }
 
-  const bytes  = await file.arrayBuffer();
+  const bytes = await file.arrayBuffer();
   const base64 = btoa(String.fromCharCode(...new Uint8Array(bytes)));
+
+  const displayName = escapeHtml(file.name);
+  const attachmentName = safeAttachmentFilename(file.name);
 
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${resendKey}` },
     body: JSON.stringify({
-      from:    "AxionPad Upload <contact@axionpad.fr>",
-      to:      "contact@axionpad.fr",
+      from: "AxionPad Upload <contact@axionpad.fr>",
+      to: "contact@axionpad.fr",
       subject: `[LOGO] Fichier gravure re&#231;u &#8212; ${order}`,
-      html: `<p>Un client vient d'envoyer son fichier de gravure pour la commande <strong>${order}</strong>.</p>
-             <p>Fichier : <strong>${file.name}</strong> (${(file.size / 1024).toFixed(0)} Ko)</p>
+      html: `<p>Un client vient d'envoyer son fichier de gravure pour la commande <strong>${escapeHtml(order)}</strong>.</p>
+             <p>Fichier : <strong>${displayName}</strong> (${(file.size / 1024).toFixed(0)} Ko)</p>
              <p>&#224; fabriquer d&#232;s validation du fichier joint.</p>`,
-      attachments: [{ filename: file.name, content: base64 }],
+      attachments: [{ filename: attachmentName, content: base64 }],
     }),
   });
 

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
+import { reviewPostRecord, reviewPostThrottleBlocked, throttleBucketId } from "@/lib/rateLimit";
+import { getProduct } from "@/lib/products-data";
 
 export const runtime = "edge";
 
@@ -45,8 +47,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Données invalides" }, { status: 400 });
   }
 
+  if (!getProduct(productId)) {
+    return NextResponse.json({ error: "Produit inconnu" }, { status: 404 });
+  }
+
   try {
     const { env } = getRequestContext();
+    const throttleSalt = process.env.JWT_SECRET || process.env.AUTH_SECRET;
+    const bucketId = throttleSalt ? await throttleBucketId("review_post", request, throttleSalt) : null;
+    if (bucketId) {
+      const retryAfter = await reviewPostThrottleBlocked(env.DB, bucketId);
+      if (retryAfter > 0) {
+        const res = NextResponse.json(
+          { error: "Limite temporaire atteinte. Réessayez plus tard." },
+          { status: 429 },
+        );
+        res.headers.set("Retry-After", String(retryAfter));
+        return res;
+      }
+    }
+
     await env.DB.prepare(
       "INSERT INTO reviews (id, product_id, customer_name, rating, comment, verified, created_at) VALUES (?, ?, ?, ?, ?, 0, ?)",
     ).bind(
@@ -57,6 +77,9 @@ export async function POST(request: Request) {
       comment.slice(0, 1000),
       Math.floor(Date.now() / 1000),
     ).run();
+
+    if (bucketId) await reviewPostRecord(env.DB, bucketId);
+
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });

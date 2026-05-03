@@ -2,14 +2,9 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { signUploadToken } from "@/lib/uploadToken";
+import { escapeHtml } from "@/lib/htmlEscape";
 
 export const runtime = "edge";
-
-function esc(s: string | undefined): string {
-  return (s ?? "")
-    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
 
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -62,8 +57,7 @@ export async function POST(request: Request) {
   const rateRef = (session.shipping_cost as { shipping_rate?: string } | null)?.shipping_rate;
   if (typeof rateRef === "string" && rateRef.startsWith("shr_")) {
     try {
-      const stripe2 = new Stripe(process.env.STRIPE_SECRET_KEY!);
-      const rate    = await stripe2.shippingRates.retrieve(rateRef);
+      const rate = await stripe.shippingRates.retrieve(rateRef);
       shippingMethod = rate.display_name ?? "";
     } catch { /* non-critique */ }
   }
@@ -106,7 +100,7 @@ export async function POST(request: Request) {
 
     const itemsRows = items.map(i => `
       <tr>
-        <td style="padding:10px 0;border-bottom:1px solid #f0ece6;font-size:14px;color:#3d3530">${esc(i.name)} <span style="color:#9b8e85">x${i.quantity}</span></td>
+        <td style="padding:10px 0;border-bottom:1px solid #f0ece6;font-size:14px;color:#3d3530">${escapeHtml(i.name)} <span style="color:#9b8e85">x${i.quantity}</span></td>
         <td style="padding:10px 0;border-bottom:1px solid #f0ece6;font-size:14px;color:#3d3530;text-align:right;white-space:nowrap">${i.subtotal.toFixed(2)} EUR</td>
       </tr>`).join("");
 
@@ -130,11 +124,11 @@ export async function POST(request: Request) {
         <strong>(SVG ou DXF)</strong> en un clic via le lien ci-dessous &#8212; la fabrication sera lanc&#233;e d&#232;s validation.
       </p>
       <div style="text-align:center">
-        <a href="${esc(uploadUrl)}" style="display:inline-block;padding:12px 28px;background:#b8765c;color:#fff;text-decoration:none;border-radius:999px;font-weight:600;font-size:13px">
+        <a href="${escapeHtml(uploadUrl)}" style="display:inline-block;padding:12px 28px;background:#b8765c;color:#fff;text-decoration:none;border-radius:999px;font-weight:600;font-size:13px">
           D&#233;poser mon fichier &#8594;
         </a>
       </div>
-      <p style="margin:10px 0 0;font-size:11px;color:#9b8e85;text-align:center">Lien r&#233;serv&#233; &#224; votre commande ${esc(orderNumber)}</p>
+      <p style="margin:10px 0 0;font-size:11px;color:#9b8e85;text-align:center">Lien r&#233;serv&#233; &#224; votre commande ${escapeHtml(orderNumber)}</p>
     </div>
   </td></tr>` : hasTextEngraving ? `
   <tr><td style="padding:0 36px 24px">
@@ -172,13 +166,13 @@ export async function POST(request: Request) {
       <span style="font-size:24px;color:#4a8f5b">&#10003;</span>
     </div>
     <h1 style="margin:0 0 8px;font-size:22px;font-weight:700;color:#1a1614;letter-spacing:-0.5px">Commande confirm&#233;e !</h1>
-    <p style="margin:0;font-size:15px;color:#6b5f58">Bonjour${firstName ? " " + esc(firstName) : ""},<br>merci pour votre commande. On s'en occupe d&#232;s maintenant.</p>
+    <p style="margin:0;font-size:15px;color:#6b5f58">Bonjour${firstName ? " " + escapeHtml(firstName) : ""},<br>merci pour votre commande. On s'en occupe d&#232;s maintenant.</p>
   </td></tr>
 
   <tr><td style="padding:0 36px 24px">
     <div style="background:#faf8f5;border:1px solid #e8e0d0;border-radius:10px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between">
       <span style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#9b8e85">R&#233;f&#233;rence commande</span>
-      <span style="font-family:monospace;font-size:16px;font-weight:700;color:#b8765c">${esc(orderNumber)}</span>
+      <span style="font-family:monospace;font-size:16px;font-weight:700;color:#b8765c">${escapeHtml(orderNumber)}</span>
     </div>
   </td></tr>
 
@@ -203,7 +197,7 @@ export async function POST(request: Request) {
   </td></tr>
 
   <tr><td style="padding:0 36px 36px;text-align:center">
-    <a href="${esc(trackUrl)}" style="display:inline-block;padding:14px 32px;background:#b8765c;color:#fff;text-decoration:none;border-radius:999px;font-weight:600;font-size:14px">Suivre ma commande &#8594;</a>
+    <a href="${escapeHtml(trackUrl)}" style="display:inline-block;padding:14px 32px;background:#b8765c;color:#fff;text-decoration:none;border-radius:999px;font-weight:600;font-size:14px">Suivre ma commande &#8594;</a>
   </td></tr>
 
   <tr><td style="padding:20px 36px;background:#faf8f5;border-top:1px solid #e8e0d0">
@@ -234,7 +228,7 @@ export async function POST(request: Request) {
         html: `<p>Bonjour,</p>
 <p>Nous esp&#233;rons que vous &#234;tes satisfait(e) de votre commande AxionPad !</p>
 <p>Votre retour aide d'autres passionn&#233;s &#224; faire le bon choix. Cela ne prend qu'une minute.</p>
-<p><a href="${esc(reviewUrl)}" style="display:inline-block;padding:12px 24px;background:#b8765c;color:#fff;text-decoration:none;border-radius:999px;font-weight:600;">Laisser un avis &#8594;</a></p>
+<p><a href="${escapeHtml(reviewUrl)}" style="display:inline-block;padding:12px 24px;background:#b8765c;color:#fff;text-decoration:none;border-radius:999px;font-weight:600;">Laisser un avis &#8594;</a></p>
 <p style="color:#9b8e85;font-size:12px;">Vous recevez cet e-mail car vous avez pass&#233; commande sur axionpad.fr.</p>`,
       }),
     }).catch(() => null);

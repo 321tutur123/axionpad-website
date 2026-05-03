@@ -40,7 +40,10 @@ export async function POST(request: Request) {
     .first<{ id: string }>();
 
   if (existing) {
-    return NextResponse.json({ error: "An account with this email already exists" }, { status: 409 });
+    return NextResponse.json(
+      { error: "Unable to complete registration. Please check your details." },
+      { status: 400 },
+    );
   }
 
   const id = crypto.randomUUID();

@@ -24,6 +24,10 @@ interface CloudflareEnv {
   STRIPE_SECRET_KEY: string;
   STRIPE_WEBHOOK_SECRET: string;
   RESEND_API_KEY?: string;
-  ADMIN_KEY: string;
+  AUTH_SECRET: string;
   JWT_SECRET: string;
+  /** PBKDF2 hash (salt:hash) — generate with `npm run hash-admin-password`. */
+  ADMIN_PASSWORD_HASH?: string;
+  /** Legacy plaintext fallback — remove once ADMIN_PASSWORD_HASH is set. */
+  ADMIN_PASSWORD?: string;
 }

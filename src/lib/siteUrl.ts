@@ -1,8 +1,8 @@
 /**
  * Origine HTTPS du site exposé aux clients : success/cancel Stripe, liens absolus.
  *
- * Ordre : NEXT_PUBLIC_SITE_URL → CF_PAGES_URL (Cloudflare Pages) → Referer (même onglet)
- * → domaine de production par défaut.
+ * Ordre : NEXT_PUBLIC_SITE_URL → CF_PAGES_URL (Cloudflare Pages) → domaines autorisés
+ * dérivés du Referer (jamais un Referer arbitraire seul).
  */
 export function getPublicSiteOrigin(request: Request): string {
   const trim = (s: string) => s.replace(/\/+$/, "");
@@ -28,8 +28,21 @@ export function getPublicSiteOrigin(request: Request): string {
   const ref = request.headers.get("referer");
   if (ref) {
     try {
-      const origin = new URL(ref).origin;
-      if (origin.startsWith("http://") || origin.startsWith("https://")) return trim(origin);
+      const u = new URL(ref);
+      const host = u.hostname.toLowerCase();
+      const allowedHosts = new Set([
+        "axionpad.fr",
+        "www.axionpad.fr",
+        "localhost",
+        "127.0.0.1",
+      ]);
+      const isCfPagesPreview = host.endsWith(".pages.dev") || host.endsWith(".cloudflarepages.com");
+      if (allowedHosts.has(host) || isCfPagesPreview) {
+        const origin = u.origin;
+        if (origin.startsWith("https://") || (host === "localhost" && origin.startsWith("http://"))) {
+          return trim(origin);
+        }
+      }
     } catch {
       /* ignore */
     }
