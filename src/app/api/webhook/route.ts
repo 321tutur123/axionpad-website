@@ -94,7 +94,7 @@ export async function POST(request: Request) {
       session.created,
     ).run();
     // changes === 0 means INSERT was ignored (duplicate event) — skip side effects
-    isNewOrder = (result.meta.changes ?? 0) > 0;
+    isNewOrder = ((result.meta.changes as number) ?? 0) > 0;
   } catch (dbErr) {
     console.error("D1 insert failed:", dbErr);
     // Retourner 500 pour que Stripe retente l'événement
