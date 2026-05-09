@@ -61,6 +61,19 @@ function ProductFallback({ slug, category }: { slug: string; category: string })
   return <span style={{ fontSize: "3.5rem", lineHeight: 1 }}>{emoji}</span>;
 }
 
+function shopCardCategoryLabel(category: string): string {
+  switch (category) {
+    case "macro-pads":
+      return "Macro Pad · 🇫🇷";
+    case "kits":
+      return "Kit DIY · 🇫🇷";
+    case "accessories":
+      return "Accessoire · 🇫🇷";
+    default:
+      return "Axion Pad · 🇫🇷";
+  }
+}
+
 function ShopCard({ product }: { product: ProductVariantFull }) {
   const add  = useCart(s => s.add);
   const [adding, setAdding] = useState(false);
@@ -98,7 +111,7 @@ function ShopCard({ product }: { product: ProductVariantFull }) {
 
       {/* Content */}
       <div className="shop-card-body">
-        <div className="shop-card-category">Macro Pad · 🇫🇷</div>
+        <div className="shop-card-category">{shopCardCategoryLabel(product.category)}</div>
         <Link href={`/shop/${product.slug}`}>
           <h2 className="shop-card-name">{product.name}</h2>
         </Link>
