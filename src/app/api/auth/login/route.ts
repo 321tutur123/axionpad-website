@@ -8,6 +8,7 @@ import {
   USER_COOKIE_NAME,
   USER_JWT_MAX_AGE_SECONDS,
 } from "@/lib/user-auth";
+import { throttleBucketId, loginThrottleBlocked, loginRecordFailure, loginClear } from "@/lib/rateLimit";
 
 interface LoginBody {
   email: string;
@@ -39,7 +40,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Email and password are required" }, { status: 400 });
   }
 
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+  }
+
   const { env } = getRequestContext();
+
+  const bucketId = await throttleBucketId("login", request, secret);
+  const retryAfter = await loginThrottleBlocked(env.DB, bucketId);
+  if (retryAfter > 0) {
+    return NextResponse.json(
+      { error: "Too many attempts. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(retryAfter) } },
+    );
+  }
 
   const user = await env.DB.prepare(
     "SELECT id, email, password_hash, first_name, last_name FROM users WHERE email = ?",
@@ -51,13 +66,11 @@ export async function POST(request: Request) {
   const validPassword = await verifyPassword(password, user?.password_hash ?? DUMMY_HASH);
 
   if (!user || !validPassword) {
+    await loginRecordFailure(env.DB, bucketId);
     return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
   }
 
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-  }
+  await loginClear(env.DB, bucketId);
 
   const token = await createUserToken(user.id, secret);
 

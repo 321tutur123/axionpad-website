@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { throttleBucketId, trackThrottleBlocked, trackThrottleRecord } from "@/lib/rateLimit";
 
 export const runtime = "edge";
 
@@ -79,6 +80,22 @@ export async function GET(request: Request) {
   if (!orderParam || !email) {
     return NextResponse.json({ error: "Paramètres manquants" }, { status: 400 });
   }
+
+  /* ── Throttle par IP ──────────────────────────────────────────────────── */
+  try {
+    const { getRequestContext } = await import("@cloudflare/next-on-pages");
+    const { env } = getRequestContext();
+    const salt = process.env.JWT_SECRET ?? "track";
+    const bucketId = await throttleBucketId("track", request, salt);
+    const retryAfter = await trackThrottleBlocked(env.DB, bucketId);
+    if (retryAfter > 0) {
+      return NextResponse.json(
+        { error: "Trop de requêtes. Réessayez dans quelques minutes." },
+        { status: 429, headers: { "Retry-After": String(retryAfter) } },
+      );
+    }
+    await trackThrottleRecord(env.DB, bucketId);
+  } catch { /* D1 indisponible — on laisse passer */ }
 
   /* ── Tentative D1 ─────────────────────────────────────────────────────── */
   try {

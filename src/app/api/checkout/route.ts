@@ -151,7 +151,8 @@ export async function POST(request: Request) {
       return sum + unit * qty;
     }, 0);
 
-    const orderId = `AXN-${Date.now().toString(36).toUpperCase()}`;
+    const rand = Array.from(crypto.getRandomValues(new Uint8Array(3)), b => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+    const orderId = `AXN-${Date.now().toString(36).toUpperCase()}-${rand}`;
     const origin = getPublicSiteOrigin(request);
 
     const session = await stripe.checkout.sessions.create({

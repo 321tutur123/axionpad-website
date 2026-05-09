@@ -90,6 +90,8 @@ export async function POST(request: Request) {
     ).run();
   } catch (dbErr) {
     console.error("D1 insert failed:", dbErr);
+    // Retourner 500 pour que Stripe retente l'événement
+    return NextResponse.json({ error: "Database unavailable" }, { status: 500 });
   }
 
   if (process.env.RESEND_API_KEY && customerEmail) {

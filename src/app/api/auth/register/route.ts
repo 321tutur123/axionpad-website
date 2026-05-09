@@ -50,11 +50,22 @@ export async function POST(request: Request) {
   const password_hash = await hashPassword(password);
   const now = Math.floor(Date.now() / 1000);
 
-  await env.DB.prepare(
-    "INSERT INTO users (id, email, password_hash, first_name, last_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
-  )
-    .bind(id, emailNorm, password_hash, first_name.trim(), last_name.trim(), now, now)
-    .run();
+  try {
+    await env.DB.prepare(
+      "INSERT INTO users (id, email, password_hash, first_name, last_name, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+    )
+      .bind(id, emailNorm, password_hash, first_name.trim(), last_name.trim(), now, now)
+      .run();
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : "";
+    if (msg.includes("UNIQUE constraint failed")) {
+      return NextResponse.json(
+        { error: "Unable to complete registration. Please check your details." },
+        { status: 409 },
+      );
+    }
+    throw err;
+  }
 
   return NextResponse.json({ success: true }, { status: 201 });
 }

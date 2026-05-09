@@ -59,8 +59,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Service d'envoi non configur&#233;" }, { status: 503 });
   }
 
-  const bytes = await file.arrayBuffer();
-  const base64 = btoa(String.fromCharCode(...new Uint8Array(bytes)));
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const CHUNK = 8192;
+  let binary = "";
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + CHUNK));
+  }
+  const base64 = btoa(binary);
 
   const displayName = escapeHtml(file.name);
   const attachmentName = safeAttachmentFilename(file.name);
