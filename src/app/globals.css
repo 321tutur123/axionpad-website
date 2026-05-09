@@ -3462,3 +3462,65 @@ body {
   margin-bottom: 20px;
   font-family: var(--font-mono);
 }
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE GLOBAL — fixes téléphone (ajouts ciblés)
+═══════════════════════════════════════════════════════════ */
+
+html, body { overflow-x: hidden; }
+
+@media (max-width: 640px) {
+  /* ── Console terminal ── */
+  .console-section   { padding: 56px 16px; }
+  .console-body      { padding: 16px; overflow-x: hidden; }
+  .console-line      { font-size: 11px; word-break: break-word; overflow-wrap: break-word; }
+  .console-cta-row   { flex-direction: column; gap: 10px; }
+  .console-cta-row .btn-terminal { text-align: center; justify-content: center; display: flex; }
+
+  /* ── Software preview window ── */
+  .software-section  { padding: 56px 12px 48px; }
+  .sw-device-pill    { display: none; }
+  .sw-status-pill    { font-size: 9px; padding: 3px 8px; }
+  .sw-tabs-bar       { overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .sw-tabs-bar::-webkit-scrollbar { display: none; }
+  .sw-key-simple-grid { grid-template-columns: repeat(3, 1fr); }
+  .sw-key-simple     { min-height: 58px; padding: 5px; }
+  .sw-faders-zone    { padding: 10px 8px; }
+  .software-cta-row  { flex-direction: column; gap: 10px; }
+  .software-cta-row .btn-terminal { text-align: center; justify-content: center; display: flex; }
+
+  /* ── Hero visual (macro pad CSS) ── */
+  .hero-visual       { margin-top: 32px; }
+  .macropad          { transform: rotate(3deg) scale(0.8); transform-origin: center top; }
+
+  /* ── Spec card ── */
+  .spec-card-section { padding: 56px 16px; }
+  .spec-card-row     { padding: 11px 18px; }
+  .spec-card-header  { padding: 16px 18px; }
+  .spec-card-footer  { padding: 16px 18px; }
+
+  /* ── Open source section ── */
+  .make-inner        { padding: 56px 16px; gap: 28px; }
+}
+
+@media (max-width: 480px) {
+  /* ── Réduction de la taille de police globale ── */
+  html { font-size: 100%; }
+
+  /* ── Hero ── */
+  .hero-section      { padding: 80px 4% 48px; }
+  .hero-sub          { font-size: 0.95rem; }
+  .hero-spec-pills   { gap: 6px; }
+  .hero-spec-pill    { padding: 5px 10px; font-size: 0.7rem; }
+
+  /* ── Products cards ── */
+  .product-card      { padding: 24px 20px; }
+
+  /* ── Software titlebar ── */
+  .sw-app-name       { display: none; }
+  .sw-status-pill    { display: none; }
+  .sw-titlebar       { padding: 10px 14px; }
+
+  /* ── Console ── */
+  .console-line      { font-size: 10.5px; }
+}
