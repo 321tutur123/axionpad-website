@@ -38,6 +38,8 @@ export interface ProductVariantFull {
   inStock: boolean;     // derived: stock > 0 && !comingSoon
   comingSoon?: boolean; // true = En développement, no purchase
   imagePath: string;    // drop file at public/ + imagePath
+  /** URLs additionnelles (public/) — même produit, autres angles ; la 1ère reste imagePath pour les listings. */
+  gallery?: string[];
   description: string;
   longDescription: string;
   options: ProductOption[];
@@ -130,6 +132,17 @@ export function getProduct(slug: string): ProductVariantFull | null {
 
 export function getAllProducts(): ProductVariantFull[] {
   return Object.values(PRODUCTS);
+}
+
+/** Liste des images fiche produit : principale puis galerie (sans doublon). */
+export function listProductImages(product: ProductVariantFull): string[] {
+  const extra = product.gallery ?? [];
+  const out: string[] = [];
+  if (product.imagePath) out.push(product.imagePath);
+  for (const u of extra) {
+    if (u && !out.includes(u)) out.push(u);
+  }
+  return out;
 }
 
 /**

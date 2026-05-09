@@ -317,12 +317,13 @@
       "slug": "kit-pcb",
       "name": "Kit PCB seul",
       "tagline": "PCB open source pour projets custom",
-      "description": "PCB RP2040 nu 2 couches — même base matérielle que la gamme Axion Pad, documentée sur GitHub. Soudage requis.",
-      "longDescription": "Le PCB seul pour les makers qui veulent un boîtier entièrement custom tout en restant aligné sur l’écosystème open source Axion Pad (firmware et configurator). Tout-monté côté SMD, tu n'as qu'à souder les switches et les potentiomètres.",
+      "description": "PCB 2 couches uniquement — même base que la gamme Axion Pad (MCU RP2040 non inclus par défaut). Conçue pour projet custom, docs sur GitHub. Soudage requis.",
+      "longDescription": "Le PCB nu pour les makers qui veulent un boîtier entièrement custom tout en restant alignés sur l’écosystème open source Axion Pad (firmware et configurator). Le RP2040 n’est pas fourni avec la carte : tu dois le souder (ou un module équivalent prévu par le design) ainsi que le reste des composants hors PCB selon ta config — switches, potentiomètres, USB-C, etc.",
       "price": 2299,
       "category": "kits",
       "stock": 30,
-      "imagePath": "/images/products/kit-pcb.jpg",
+      "imagePath": "/images/products/kit-pcb.png",
+      "gallery": [ "/images/products/kit-pcb-2.png" ],
       "options": [
         {
           "id": "pcb-version",
@@ -335,14 +336,13 @@
         }
       ],
       "specs": [
-        { "label": "MCU",     "value": "RP2040" },
-        { "label": "Couches", "value": "2 couches FR4" },
-        { "label": "Dims",    "value": "80 × 60 mm" },
-        { "label": "Flash",   "value": "2 MB QSPI" }
+        { "label": "MCU",       "value": "RP2040 à fournir (non inclus)" },
+        { "label": "Couches",   "value": "2 couches FR4" },
+        { "label": "Dims",      "value": "80 × 60 mm" },
+        { "label": "Flash",     "value": "2 MB QSPI (une fois RP2040 monté)" }
       ],
       "includes": [
-        "1 × PCB Axion Pad",
-        "1 × RP2040 pré-soudé"
+        "1 × PCB Axion Pad (MCU RP2040 non inclus)"
       ]
     },
     {

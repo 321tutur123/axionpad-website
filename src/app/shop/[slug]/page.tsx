@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getProduct, getAllProducts, formatPrice } from "@/lib/products-data";
+import { getProduct, getAllProducts, formatPrice, listProductImages } from "@/lib/products-data";
 import ProductConfigurator from "./ProductConfigurator";
-import ProductImage from "@/components/products/ProductImage";
+import ProductImageGallery from "@/components/products/ProductImageGallery";
 import ReviewSection from "@/components/reviews/ReviewSection";
 import ProductCard from "@/components/products/ProductCard";
 
@@ -23,7 +23,7 @@ export async function generateMetadata(
     openGraph: {
       title:       `${product.name} — ${formatPrice(product.price)}`,
       description: product.tagline,
-      images:      [{ url: product.imagePath }],
+      images:      listProductImages(product).map(url => ({ url })),
       type:        "website",
     },
   };
@@ -74,25 +74,22 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
           {/* Left — sticky image */}
           <div className="pdp-image-col">
-            <div className="pdp-image-wrap">
-              <ProductImage
-                src={product.imagePath}
-                alt={product.name}
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-contain p-10 h-full w-full"
-                priority
-                fallback={
-                  <div className="absolute inset-0 flex items-center justify-center text-9xl select-none">
-                    ⌨️
-                  </div>
-                }
-              />
-
-              {/* Open source badge */}
+            <ProductImageGallery
+              images={listProductImages(product)}
+              alt={product.name}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-contain p-10 h-full w-full"
+              priority
+              fallback={
+                <div className="absolute inset-0 flex items-center justify-center text-9xl select-none">
+                  ⌨️
+                </div>
+              }
+            >
               <div className="pdp-os-badge">
                 <span>◻</span> MIT Open Source
               </div>
-            </div>
+            </ProductImageGallery>
 
             {/* Shadow */}
             <div className="pdp-image-shadow" />
