@@ -128,7 +128,7 @@ export default function ReviewSection({ productSlug }: { productSlug: string }) 
             onClick={() => setFormOpen(true)}
             className="shrink-0 px-4 py-2 rounded-full text-sm transition-colors"
             style={{
-              border: "0.5px solid rgba(232, 98, 42, 0.35)",
+              border: "0.5px solid rgba(108, 99, 255, 0.35)",
               color: "var(--color-accent)",
               background: "transparent",
             }}

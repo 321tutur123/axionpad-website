@@ -40,8 +40,8 @@ export default function Navbar() {
       {/* Logo */}
       <Link
         href="/"
-        className="font-semibold text-lg tracking-tight"
-        style={{ color: "var(--color-text)", letterSpacing: "-0.01em" }}
+        className="font-bold text-base tracking-tight"
+        style={{ color: "var(--color-text)", letterSpacing: "0.04em", fontFamily: "var(--font-mono)", textTransform: "uppercase" }}
       >
         Axion<span style={{ color: "var(--color-accent)" }}>Pad</span>
       </Link>
@@ -90,9 +90,9 @@ export default function Navbar() {
         <Link
           href="/shop"
           className="hidden md:inline-flex btn-accent"
-          style={{ padding: "10px 20px", fontSize: "0.875rem" }}
+          style={{ padding: "9px 18px", fontSize: "0.75rem" }}
         >
-          Commander
+          Shop
         </Link>
 
         {/* Hamburger mobile */}

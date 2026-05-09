@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "axionpad-website",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,13 +7,16 @@
     "build": "next build",
     "pages:build": "npx @cloudflare/next-on-pages",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "hash-admin-password": "node scripts/hash-admin-password.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.0",
+    "framer-motion": "^12.38.0",
     "gsap": "^3.15.0",
+    "lucide-react": "^1.14.0",
     "next": "15.5.2",
     "react": "19.2.4",
     "react-dom": "19.2.4",

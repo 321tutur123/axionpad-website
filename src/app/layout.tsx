@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Space_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 const inter = Inter({
-  variable: "--font-inter",
+  variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  display: "swap",
+});
+
+const spaceMono = Space_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
   display: "swap",
 });
 
@@ -24,8 +30,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className="scroll-smooth">
-      <body className={`${inter.variable} antialiased`}>
-        {/* Fond animé — 3 orbes fixes qui dérivent lentement */}
+      <body className={`${inter.variable} ${spaceMono.variable} antialiased`}>
+        {/* Fond animé — 3 orbes violets/verts qui dérivent lentement */}
         <div className="bg-wrap" aria-hidden="true">
           <div className="bg-orb bg-orb-1" />
           <div className="bg-orb bg-orb-2" />

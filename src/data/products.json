@@ -1,12 +1,24 @@
 {
+  "site": {
+    "heroTitle": "Open source & fait main",
+    "heroSubtitle": "Firmware CircuitPython, protocole AxionPad Native et configurateur Windows AxionPad Configurator : sources publiques sur GitHub. Chaque macro pad prêt à l’emploi est assemblé, contrôlé et testé à la main avant envoi.",
+    "pillLabels": [
+      "Firmware & protocole open source",
+      "Configurateur Windows open source",
+      "Assemblage et QA à la main",
+      "Schémas & dépôt public sur GitHub"
+    ],
+    "repoUrl": "https://github.com/321tutur123/axion-pad",
+    "repoLabel": "Voir le code sur GitHub"
+  },
   "products": [
     {
       "id": "axion-pad-standard",
       "slug": "axion-pad-standard",
-      "name": "Axion Pad Standard",
-      "tagline": "Le macro pad essentiel pour ton workflow",
-      "description": "12 touches mécaniques + 4 potentiomètres sur RP2040. Boîtier imprimé en 3D, firmware CircuitPython.",
-      "longDescription": "L'Axion Pad Standard est le point d'entrée parfait dans l'univers des macro pads programmables. Avec ses 12 touches mécaniques Cherry MX et ses 4 potentiomètres linéaires B103 (10 kΩ), il te permet de contrôler n'importe quelle application en un geste. Le boîtier est imprimé en 3D en PLA par défaut, personnalisable à la commande. Le couvercle supérieur peut recevoir une gravure en creux (extrusion négative) : texte court ou logo officiel Axion ; un logo entièrement personnalisé est réalisé à partir de ton fichier vectoriel après validation de la commande.",
+      "name": "Axion Pad Elite",
+      "tagline": "12 touches MX · 4 potentiomètres · assemblé à la main en France",
+      "description": "12 touches mécaniques + 4 potentiomètres sur RP2040. Boîtier imprimé en 3D, firmware CircuitPython — sources et configurateur publics sur GitHub ; chaque unité est assemblée à la main.",
+      "longDescription": "Projet open source de bout en bout : tu peux lire, modifier et redistribuer le firmware CircuitPython ainsi que le configurateur Windows AxionPad Configurator sur le dépôt GitHub officiel. L'Axion Pad Standard est le point d'entrée parfait dans l'univers des macro pads programmables : 12 touches mécaniques Cherry MX et 4 potentiomètres linéaires B103 (10 kΩ) pour piloter n'importe quelle application en un geste. Chaque exemplaire est assemblé à la main, contrôlé visuellement puis testé avant expédition. Le boîtier est imprimé en 3D en PLA par défaut, personnalisable à la commande. Le couvercle supérieur peut recevoir une gravure en creux (extrusion négative) : texte court ou logo officiel Axion ; un logo entièrement personnalisé est réalisé à partir de ton fichier vectoriel après validation de la commande.",
       "price": 7999,
       "comparePrice": 9999,
       "category": "macro-pads",
@@ -65,11 +77,11 @@
         {
           "id": "firmware",
           "label": "Firmware",
-          "type": "select",
+          "type": "radio",
           "choices": [
             { "value": "circuitpython", "label": "CircuitPython (recommandé)",     "available": true },
-            { "value": "kmk",           "label": "KMK Firmware",                  "available": false},
-            { "value": "qmk-compat",    "label": "QMK-compatible (expérimental)", "available": false, "badge": "Beta" }
+            { "value": "kmk",           "label": "KMK Firmware",                  "available": true },
+            { "value": "qmk-compat",    "label": "QMK-compatible (expérimental)", "available": false }
           ]
         }
       ],
@@ -83,99 +95,25 @@
         { "label": "Dimensions",     "value": "120 × 80 × 22 mm" },
         { "label": "Poids",          "value": "~145 g (boîtier PLA)" },
         { "label": "Compatibilité",  "value": "Windows / macOS / Linux" },
-        { "label": "Firmware",       "value": "CircuitPython open-source" }
+        { "label": "Firmware",       "value": "CircuitPython — sources sur GitHub" },
+        { "label": "Philosophie",    "value": "Open source (firmware + app config) · assemblé à la main" }
       ],
       "includes": [
-        "1 × Axion Pad assemblé",
+        "1 × Axion Pad assemblé à la main et testé avant envoi",
         "1 × Câble USB-C 1m",
-        "Firmware pré-installé",
+        "Firmware pré-installé (modifiable depuis les sources publiques)",
         "Guide de configuration (PDF)",
+        "Lien vers le dépôt GitHub (firmware + AxionPad Configurator)",
         "Instructions gravure logo perso (e-mail après commande si option choisie)"
-      ]
-    },
-    {
-      "id": "axion-pad-pro",
-      "slug": "axion-pad-pro",
-      "name": "Axion Pad Pro",
-      "tagline": "Version premium avec boîtier aluminium CNC",
-      "description": "Boîtier aluminium CNC anodisé, RGB underglow, switches premium.",
-      "longDescription": "L'Axion Pad Pro pousse l'expérience encore plus loin avec un boîtier usiné CNC en aluminium anodisé. Le RGB underglow ajoute une ambiance lumineuse sous le pad, synchronisable avec ton setup.",
-      "price": 12999,
-      "comparePrice": 15999,
-      "category": "macro-pads",
-      "badge": "Bientôt",
-      "comingSoon": true,
-      "stock": 12,
-      "imagePath": "/images/products/axion-pad-pro.jpg",
-      "options": [
-        {
-          "id": "color",
-          "label": "Couleur boîtier",
-          "type": "color",
-          "choices": [
-            { "value": "black-ano",  "label": "Noir anodisé",   "color": "#0f0f0f", "available": true },
-            { "value": "silver",     "label": "Argent brossé",  "color": "#c0c0c0", "available": true },
-            { "value": "space-gray", "label": "Space Gray",     "color": "#4a4a4a", "available": true },
-            { "value": "gold",       "label": "Champagne Gold", "color": "#d4af37", "available": true, "badge": "Limité" }
-          ]
-        },
-        {
-          "id": "switches",
-          "label": "Switches",
-          "type": "radio",
-          "choices": [
-            { "value": "mx-red",          "label": "Cherry MX Red — Linéaire",          "priceAdd": 0,   "available": true, "badge": "Populaire" },
-            { "value": "mx-brown",        "label": "Cherry MX Brown — Tactile",         "priceAdd": 0,   "available": false },
-            { "value": "mx-silent-red",   "label": "Cherry MX Silent Red — Silencieux", "priceAdd": 600, "available": false },
-            { "value": "mx-silent-brown", "label": "Cherry MX Silent Brown",            "priceAdd": 600, "available": false },
-            { "value": "mx-blue",         "label": "Cherry MX Blue — Clicky",           "priceAdd": 0,   "available": false }
-          ]
-        },
-        {
-          "id": "rgb",
-          "label": "RGB Underglow",
-          "type": "radio",
-          "choices": [
-            { "value": "rgb-on",  "label": "Activé (16 LEDs WS2812B)", "priceAdd": 0,    "available": true, "badge": "Inclus" },
-            { "value": "rgb-off", "label": "Sans RGB",                  "priceAdd": -800, "available": true }
-          ]
-        },
-        {
-          "id": "firmware",
-          "label": "Firmware",
-          "type": "select",
-          "choices": [
-            { "value": "circuitpython", "label": "CircuitPython (recommandé)",     "available": true },
-            { "value": "kmk",           "label": "KMK Firmware",                  "available":  false },
-            { "value": "qmk-compat",    "label": "QMK-compatible (expérimental)", "available":  false, "badge": "Beta" }
-          ]
-        }
-      ],
-      "specs": [
-        { "label": "MCU",            "value": "RP2040 Dual-core 133 MHz" },
-        { "label": "Touches",        "value": "12 × Cherry MX" },
-        { "label": "Potentiomètres", "value": "4 × B103 (lin., 10 kΩ)" },
-        { "label": "Boîtier",        "value": "Aluminium 6061 CNC anodisé" },
-        { "label": "RGB",            "value": "16 LEDs WS2812B underglow" },
-        { "label": "Connecteur",     "value": "USB-C Gen 2 + port TRRS" },
-        { "label": "Dimensions",     "value": "122 × 82 × 20 mm" },
-        { "label": "Poids",          "value": "~320 g" }
-      ],
-      "includes": [
-        "1 × Axion Pad Pro assemblé",
-        "1 × Câble USB-C tressé 1.5m",
-        "1 × Set de 12 keycaps translucides",
-        "Firmware pré-installé",
-        "Certificat de calibration"
       ]
     },
     {
       "id": "axion-pad-mini",
       "slug": "axion-pad-mini",
       "name": "Axion Pad Mini",
-      "tagline": "Format ultracompact pour setup minimaliste",
-      "description": "6 touches dans un format minimaliste 3×2. Idéal pour les raccourcis essentiels.",
-      "longDescription": "L'Axion Pad Mini concentre l'essentiel en 6 touches mécaniques. Format 3×2 ultra-compact, il se glisse partout et se configure en quelques minutes.",
+      "tagline": "Open source & fait main — format ultracompact",
+      "description": "6 touches en 3×2, firmware CircuitPython et sources sur GitHub ; assemblage manuel comme le reste de la gamme.",
+      "longDescription": "Même philosophie open source et fabrication attentive : firmware CircuitPython et configurateur Windows documentés sur le dépôt public. L'Axion Pad Mini concentre l'essentiel en 6 touches mécaniques. Format 3×2 ultra-compact, il se glisse partout et se configure en quelques minutes.",
       "price": 5999,
       "category": "macro-pads",
       "comingSoon": true,
@@ -216,6 +154,16 @@
             { "value": "mx-silent-brown", "label": "Cherry MX Silent Brown",            "priceAdd": 600, "available": true },
             { "value": "mx-blue",         "label": "Cherry MX Blue — Clicky",           "priceAdd": 0,   "available": true }
           ]
+        },
+        {
+          "id": "firmware",
+          "label": "Firmware",
+          "type": "radio",
+          "choices": [
+            { "value": "circuitpython", "label": "CircuitPython (recommandé)", "available": true },
+            { "value": "kmk",           "label": "KMK Firmware",               "available": true },
+            { "value": "qmk-compat",    "label": "QMK-compatible",             "available": true, "badge": "Mini exclusif" }
+          ]
         }
       ],
       "specs": [
@@ -235,9 +183,9 @@
       "id": "axion-pad-xl",
       "slug": "axion-pad-xl",
       "name": "Axion Pad XL",
-      "tagline": "Studio grade — 16 touches + écran OLED",
-      "description": "4×4 touches, 6 potentiomètres, écran OLED 128×32 intégré.",
-      "longDescription": "Pour les créatifs qui veulent tout contrôler. L'Axion Pad XL embarque 16 touches, 6 potentiomètres et un écran OLED affichant les mappings en temps réel.",
+      "tagline": "Open source & fait main — studio grade, 16 touches + OLED",
+      "description": "4×4 touches, 6 potentiomètres, OLED 128×32 — firmware et outils publics sur GitHub ; montage et contrôles à la main.",
+      "longDescription": "Pour les créatifs qui veulent tout contrôler tout en gardant la main sur le code : firmware, protocole et configurateur restent open source sur GitHub. L'Axion Pad XL embarque 16 touches, 6 potentiomètres et un écran OLED affichant les mappings en temps réel ; chaque unité est assemblée et testée manuellement.",
       "price": 17999,
       "comparePrice": 19999,
       "category": "macro-pads",
@@ -292,17 +240,17 @@
         {
           "id": "firmware",
           "label": "Firmware",
-          "type": "select",
+          "type": "radio",
           "choices": [
             { "value": "circuitpython", "label": "CircuitPython (recommandé)",     "available": true },
-            { "value": "kmk",           "label": "KMK Firmware",                  "available":  false },
-            { "value": "qmk-compat",    "label": "QMK-compatible (expérimental)", "available":  false, "badge": "Beta" }
+            { "value": "kmk",           "label": "KMK Firmware",                  "available": true },
+            { "value": "qmk-compat",    "label": "QMK-compatible (expérimental)", "available": false }
           ]
         }
       ],
       "specs": [
         { "label": "MCU",            "value": "RP2040 Dual-core 133 MHz" },
-        { "label": "Touches",        "value": "16 × Cherry MX (4×4)" },
+        { "label": "Touches",        "value": "15 × Cherry MX (5×3)" },
         { "label": "Potentiomètres", "value": "6 × B103 (lin., 10 kΩ)" },
         { "label": "Écran",          "value": "OLED 128×32 I2C" },
         { "label": "Boîtier",        "value": "PLA 3D (par défaut)" },
@@ -320,9 +268,9 @@
       "id": "axion-kit-diy",
       "slug": "axion-kit-diy",
       "name": "Kit DIY Axion",
-      "tagline": "Construis ton propre macro pad",
-      "description": "PCB, RP2040 et composants fournis. Boîtier STL inclus pour impression 3D.",
-      "longDescription": "Le kit DIY te fourni tout le nécessaire : PCB nu RP2040, composants (potentiomètres, résistances, connecteur USB-C), et les fichiers STL du boîtier pour l'imprimer toi-même. Soudage requis.",
+      "tagline": "Open source — construis ton macro pad à la main",
+      "description": "PCB, RP2040 et composants fournis ; schémas et firmware publics sur GitHub. Boîtier STL inclus pour impression 3D.",
+      "longDescription": "Le kit DIY prolonge l’esprit open source du projet : tu récupères le même firmware et les mêmes outils que les versions assemblées, avec la fierté du montage à la main. Le kit fournit PCB nu RP2040, composants (potentiomètres, résistances, connecteur USB-C) et fichiers STL du boîtier pour l'imprimer toi-même. Soudage requis.",
       "price": 4999,
       "category": "kits",
       "stock": 15,
@@ -368,9 +316,9 @@
       "id": "kit-pcb",
       "slug": "kit-pcb",
       "name": "Kit PCB seul",
-      "tagline": "PCB RP2040 pour projets custom",
-      "description": "PCB RP2040 nu 2 couches. Soudage requis.",
-      "longDescription": "Le PCB seul pour les makers qui veulent construire un boîtier entièrement custom. Tout-monté côté SMD, tu n'as qu'à souder les switches et les potentiomètres.",
+      "tagline": "PCB open source pour projets custom",
+      "description": "PCB RP2040 nu 2 couches — même base matérielle que la gamme Axion Pad, documentée sur GitHub. Soudage requis.",
+      "longDescription": "Le PCB seul pour les makers qui veulent un boîtier entièrement custom tout en restant aligné sur l’écosystème open source Axion Pad (firmware et configurator). Tout-monté côté SMD, tu n'as qu'à souder les switches et les potentiomètres.",
       "price": 2299,
       "category": "kits",
       "stock": 30,
@@ -407,7 +355,7 @@
       "price": 1299,
       "category": "accessories",
       "stock": 50,
-      "imagePath": "/images/products/cable-usbc.jpg",
+      "imagePath": "/images/products/cable-usbc.svg",
       "options": [
         {
           "id": "length",

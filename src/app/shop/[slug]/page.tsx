@@ -14,167 +14,218 @@ export function generateStaticParams() {
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> },
 ): Promise<Metadata> {
-  const { slug } = await params;
-  const product  = getProduct(slug);
+  const { slug }  = await params;
+  const product   = getProduct(slug);
   if (!product) return {};
-  const price = formatPrice(product.price);
   return {
-    title:       `${product.name} — ${price} | Axion Pad`,
-    description: product.description,
+    title:       `${product.name} — ${formatPrice(product.price)} | Axion Pad`,
+    description: product.tagline,
     openGraph: {
-      title:       `${product.name} — ${price}`,
-      description: product.description,
+      title:       `${product.name} — ${formatPrice(product.price)}`,
+      description: product.tagline,
       images:      [{ url: product.imagePath }],
       type:        "website",
     },
   };
 }
 
-function productEmoji(slug: string): string {
-  if (slug.includes("cable"))   return "🔌";
-  if (slug.includes("keycap"))  return "⌨️";
-  if (slug.includes("support")) return "🖥️";
-  if (slug.includes("pcb"))     return "🔬";
-  if (slug.includes("kit"))     return "🔧";
-  return "⌨️";
-}
+const TRUST = [
+  { icon: "🇫🇷", label: "Assemblé à Orléans" },
+  { icon: "🔒", label: "Paiement sécurisé" },
+  { icon: "📦", label: "Expédié en 3–5 j" },
+  { icon: "↩",  label: "Retours 30 j" },
+];
+
+const HIGHLIGHTS = [
+  "Assemblé à la main · contrôlé et testé avant envoi",
+  "Firmware CircuitPython — sources publiques sur GitHub",
+  "Configurateur Windows natif inclus — gratuit",
+  "Compatible Windows / macOS / Linux · zéro driver",
+];
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const product = getProduct(slug);
+  const { slug }  = await params;
+  const product   = getProduct(slug);
   if (!product) notFound();
 
-  const emoji = productEmoji(slug);
   const related = getAllProducts()
     .filter(p => p.slug !== slug && p.category === product.category)
     .slice(0, 4);
 
+  const savings = product.comparePrice
+    ? product.comparePrice - product.price
+    : 0;
+
   return (
     <main style={{ minHeight: "100vh", background: "transparent", paddingTop: "80px" }}>
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-6 py-10">
 
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm mb-10" style={{ color: "var(--color-text-mute)" }}>
-          <Link href="/" className="transition-colors hover:underline" style={{ color: "var(--color-text-mute)" }}>Accueil</Link>
+        <nav className="flex items-center gap-2 text-sm mb-8" style={{ color: "var(--color-text-mute)" }}>
+          <Link href="/"     className="hover:underline" style={{ color: "var(--color-text-mute)" }}>Accueil</Link>
           <span>›</span>
-          <Link href="/shop" className="transition-colors hover:underline" style={{ color: "var(--color-text-mute)" }}>Boutique</Link>
+          <Link href="/shop" className="hover:underline" style={{ color: "var(--color-text-mute)" }}>Boutique</Link>
           <span>›</span>
           <span style={{ color: "var(--color-text)" }}>{product.name}</span>
         </nav>
 
-        {/* Hero produit */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start mb-24">
+        {/* ── HERO ZONE ─────────────────────────────────────────── */}
+        <div className="pdp-grid">
 
-          {/* Visuel */}
-          <div className="lg:sticky lg:top-24">
-            <div
-              className="relative aspect-square overflow-hidden"
-              style={{
-                borderRadius: "24px",
-                background: "var(--color-accent-lt)",
-                border: "0.5px solid var(--color-border)",
-                boxShadow: "0 2px 40px rgba(45,52,54,0.08)",
-              }}
-            >
+          {/* Left — sticky image */}
+          <div className="pdp-image-col">
+            <div className="pdp-image-wrap">
               <ProductImage
                 src={product.imagePath}
                 alt={product.name}
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-contain p-8"
+                className="object-contain p-10 h-full w-full"
                 priority
                 fallback={
-                  <div className="absolute inset-0 flex items-center justify-center text-9xl">
-                    {emoji}
+                  <div className="absolute inset-0 flex items-center justify-center text-9xl select-none">
+                    ⌨️
                   </div>
                 }
               />
+
+              {/* Open source badge */}
+              <div className="pdp-os-badge">
+                <span>◻</span> MIT Open Source
+              </div>
             </div>
-            <div
-              className="mx-auto mt-2 h-4 rounded-full"
-              style={{ width: "70%", background: "rgba(180,120,60,0.12)", filter: "blur(16px)" }}
-            />
-            {!product.inStock && (
-              <p
-                className="mt-4 text-center text-xs py-2.5 rounded-xl"
-                style={{ color: "var(--color-text-mute)", border: "0.5px solid var(--color-border)", background: "var(--color-bg-card)" }}
-              >
+
+            {/* Shadow */}
+            <div className="pdp-image-shadow" />
+
+            {/* Stock out */}
+            {!product.inStock && !product.comingSoon && (
+              <p className="pdp-out-of-stock">
                 Rupture de stock — disponible sur commande
               </p>
             )}
           </div>
 
-          {/* Info + configurateur */}
-          <div>
-            <div className="flex flex-wrap items-center gap-2 mb-3">
+          {/* Right — conversion zone */}
+          <div className="pdp-info-col">
+
+            {/* Badges */}
+            <div className="pdp-badges">
               {product.badge && <span className="badge">{product.badge}</span>}
-              <span className="badge">🇫🇷 Fabriqué en France</span>
-              <span className="text-xs uppercase tracking-wider capitalize" style={{ color: "var(--color-text-mute)" }}>
-                {product.category.replace("-", " ")}
-              </span>
+              <span className="badge">🇫🇷 Fait main</span>
+              {product.inStock && !product.comingSoon && (
+                <span className="pdp-stock-badge">
+                  <span className="pdp-stock-dot" />
+                  En stock
+                </span>
+              )}
             </div>
 
-            <h1
-              className="font-semibold mb-2 leading-tight"
-              style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)", color: "var(--color-text)", letterSpacing: "-0.02em" }}
-            >
-              {product.name}
-            </h1>
-            <p className="text-lg mb-8" style={{ color: "var(--color-text-mute)" }}>{product.tagline}</p>
+            {/* Title */}
+            <h1 className="pdp-title">{product.name}</h1>
+            <p className="pdp-tagline">{product.tagline}</p>
 
-            <p
-              className="leading-relaxed mb-8"
-              style={{ fontSize: "0.9375rem", color: "var(--color-text)", lineHeight: 1.7 }}
-            >
-              {product.longDescription}
-            </p>
+            {/* Price block */}
+            <div className="pdp-price-block">
+              <span className="pdp-price">{formatPrice(product.price)}</span>
+              {product.comparePrice && (
+                <>
+                  <span className="pdp-compare">{formatPrice(product.comparePrice)}</span>
+                  <span className="pdp-savings">Économisez {formatPrice(savings)}</span>
+                </>
+              )}
+            </div>
 
-            <ProductConfigurator product={product} />
+            {/* Trust strip */}
+            <div className="pdp-trust-strip">
+              {TRUST.map(t => (
+                <div key={t.label} className="pdp-trust-item">
+                  <span>{t.icon}</span>
+                  <span>{t.label}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Key highlights */}
+            <div className="pdp-highlights">
+              {HIGHLIGHTS.map((h, i) => (
+                <div key={i} className="pdp-highlight">
+                  <span className="pdp-highlight-check">✓</span>
+                  <span>{h}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Configurator (options + CTA) */}
+            <div className="pdp-configurator">
+              <ProductConfigurator product={product} />
+            </div>
+
+            {/* Stock urgency */}
+            {product.inStock && !product.comingSoon && product.stock > 0 && (
+              <div className="pdp-stock-urgency">
+                <span className="pdp-stock-dot" />
+                {product.stock <= 5
+                  ? `Plus que ${product.stock} unité${product.stock > 1 ? "s" : ""} disponible${product.stock > 1 ? "s" : ""} !`
+                  : `${product.stock} unités en stock`}
+              </div>
+            )}
+
           </div>
         </div>
 
-        {/* Specs + contenu boîte */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-24">
-          <div>
-            <h2 className="font-semibold text-base mb-4 flex items-center gap-2" style={{ color: "var(--color-text)" }}>
-              <span className="w-1 h-4 rounded-full inline-block" style={{ background: "var(--color-accent)" }} />
-              Caractéristiques
+        {/* ── SPECS + BOX + DESCRIPTION ─────────────────────────── */}
+        <div className="pdp-details">
+
+          {/* Specs */}
+          <div className="pdp-section">
+            <h2 className="pdp-section-title">
+              <span className="pdp-section-dot" />
+              Caractéristiques techniques
             </h2>
-            <div className="space-y-0">
+            <div className="pdp-specs-table">
               {product.specs.map(s => (
-                <div key={s.label} className="flex justify-between py-3 last:border-0"
-                  style={{ borderBottom: "0.5px solid var(--color-border)" }}>
-                  <span className="text-sm" style={{ color: "var(--color-text-mute)" }}>{s.label}</span>
-                  <span className="text-sm font-medium text-right max-w-[55%]" style={{ color: "var(--color-text)" }}>
-                    {s.value}
-                  </span>
+                <div key={s.label} className="pdp-spec-row">
+                  <span className="pdp-spec-k">{s.label}</span>
+                  <span className="pdp-spec-v">{s.value}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div>
-            <h2 className="font-semibold text-base mb-4 flex items-center gap-2" style={{ color: "var(--color-text)" }}>
-              <span className="w-1 h-4 rounded-full inline-block" style={{ background: "var(--color-accent)" }} />
+          {/* Box contents */}
+          <div className="pdp-section">
+            <h2 className="pdp-section-title">
+              <span className="pdp-section-dot" />
               Contenu de la boîte
             </h2>
-            <ul className="space-y-3">
+            <ul className="pdp-includes">
               {product.includes.map((item, i) => (
-                <li key={i} className="flex items-start gap-3 text-sm" style={{ color: "var(--color-text)" }}>
-                  <span className="mt-0.5 shrink-0" style={{ color: "var(--color-accent)" }}>✓</span>
+                <li key={i} className="pdp-include">
+                  <span className="pdp-include-check">✓</span>
                   {item}
                 </li>
               ))}
             </ul>
           </div>
+
+          {/* Long description */}
+          <div className="pdp-section pdp-section--full">
+            <h2 className="pdp-section-title">
+              <span className="pdp-section-dot" />
+              À propos
+            </h2>
+            <p className="pdp-description">{product.longDescription}</p>
+          </div>
+
         </div>
 
+        {/* ── REVIEWS ───────────────────────────────────────────── */}
         <ReviewSection productSlug={slug} />
 
+        {/* ── RELATED ───────────────────────────────────────────── */}
         {related.length > 0 && (
-          <div>
-            <h2 className="text-xs uppercase tracking-widest mb-5" style={{ color: "var(--color-text-mute)" }}>
-              Produits similaires
-            </h2>
+          <div className="pdp-related">
+            <h2 className="pdp-related-title">Vous aimerez aussi</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {related.map(p => <ProductCard key={p.slug} product={p} />)}
             </div>

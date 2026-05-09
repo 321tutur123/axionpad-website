@@ -3,45 +3,45 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Logiciel Configurateur — Axion Pad",
-  description: "Configurez votre Axion Pad en quelques clics. Mappings, macros, layers, protocole AxionPad Native, optimisation CPU ultra-faible. Gratuit, open-source, Windows / macOS / Linux.",
+  description: "Configurez votre Axion Pad en quelques clics. Mappings, macros, layers, protocole AxionPad Native, optimisation CPU ultra-faible. Gratuit, open-source, Windows.",
 };
 
 const FEATURES = [
   {
     icon: "⌨️",
     title: "Mapping visuel",
-    desc: "Assigne une action à chaque touche par glisser-déposer. Raccourcis clavier, texte, lancement d'appli, séquences personnalisées.",
-    color: "#7c3aed",
+    desc: "Assigne une action à chaque touche. Raccourcis clavier, texte, lancement d'appli, séquences personnalisées.",
+    color: "#6C63FF",
   },
   {
     icon: "⚡",
     title: "Macros",
-    desc: "Enregistre et rejoue des séquences de touches complexes avec délais personnalisables. Idéal pour les workflows répétitifs.",
-    color: "#059669",
+    desc: "Enregistre et rejoue des séquences de touches complexes avec délais personnalisables.",
+    color: "#00D9A3",
   },
   {
     icon: "📚",
     title: "Layers",
-    desc: "Jusqu'à 8 layers par profil. Bascule de layer via une touche dédiée pour multiplier les fonctions sans changer de config.",
-    color: "#0891b2",
+    desc: "Jusqu'à 3 layers par profil. Bascule via une touche dédiée pour multiplier les fonctions.",
+    color: "#38bdf8",
   },
   {
     icon: "🎚️",
     title: "AxionPad Native",
-    desc: "Protocole propriétaire bas-latence avec Watchdog auto-recovery. Contrôle le volume de chaque application via les 4 potentiomètres. CPU ultra-faible.",
-    color: "#d97706",
+    desc: "Contrôle le volume de chaque application via les 4 potentiomètres. CPU ultra-faible, Watchdog intégré.",
+    color: "#fcd34d",
   },
   {
     icon: "🎨",
-    title: "Profils par app",
-    desc: "Détection automatique de l'application active. Les mappings changent quand tu passes de Premiere à VS Code ou OBS.",
-    color: "#7c3aed",
+    title: "RGB NeoPixel",
+    desc: "Contrôle complet des LEDs : statique, breathing, wave — depuis l'app ou l'API OpenRGB.",
+    color: "#6C63FF",
   },
   {
     icon: "🔄",
     title: "Sync instantanée",
-    desc: "Les modifications sont appliquées en temps réel sur le pad. Pas besoin de redémarrer. L'Axion Pad se monte comme une clé USB.",
-    color: "#dc2626",
+    desc: "Les modifications sont appliquées en temps réel. Aucun redémarrage requis.",
+    color: "#00D9A3",
   },
 ];
 
@@ -67,7 +67,7 @@ export default function SoftwarePage() {
   return (
     <main className="min-h-screen pb-12" style={{ background: "transparent", paddingTop: "5.5rem" }}>
 
-      {/* ── Hero ───────────────────────────────────────────────────────── */}
+      {/* ── Hero ─────────────────────────────────────────────────── */}
       <section className="pb-20 px-6 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
@@ -76,17 +76,19 @@ export default function SoftwarePage() {
             <div
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium mb-6"
               style={{
-                background: "var(--color-accent-muted)",
-                borderColor: "rgba(184,118,92,0.25)",
+                background: "rgba(108,99,255,0.10)",
+                borderColor: "rgba(108,99,255,0.25)",
                 color: "var(--color-accent)",
               }}
             >
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-accent)" }} />
-              v2.1 — Gratuit & open-source
+              v2.1 — Gratuit &amp; open-source
             </div>
-            <h1 className="text-4xl md:text-5xl font-semibold mb-5 leading-tight" style={{ color: "var(--color-text)" }}>
-              Axion Pad
-              <br />
+            <h1
+              className="text-4xl md:text-5xl font-semibold mb-5 leading-tight"
+              style={{ color: "var(--color-text)", letterSpacing: "-0.025em" }}
+            >
+              Axion Pad<br />
               <span style={{ color: "var(--color-accent)" }}>Configurateur</span>
             </h1>
             <p className="text-lg leading-relaxed mb-8" style={{ color: "var(--color-text-mute)" }}>
@@ -94,49 +96,49 @@ export default function SoftwarePage() {
               Mappings, macros, layers, protocole AxionPad Native — tout en quelques clics.
             </p>
             <div className="flex flex-wrap gap-3">
-              <DownloadButton os="Windows" icon="🪟" ext=".exe" href="#download" primary />
-              <DownloadButton os="macOS" icon="🍎" ext=".dmg" href="#download" />
-              <DownloadButton os="Linux" icon="🐧" ext=".AppImage" href="#download" />
+              <DownloadButton os="Windows" icon="🪟" ext=".msi" href="https://github.com/321tutur123/axion-pad-apps/tree/main/application/dist" primary />
+              <DownloadButton os="macOS"   icon="🍎" ext=".dmg" href="https://github.com/321tutur123/axion-pad-apps/tree/main/application/dist" />
+              <DownloadButton os="Linux"   icon="🐧" ext=".AppImage" href="https://github.com/321tutur123/axion-pad-apps/tree/main/application/dist" />
             </div>
             <p className="text-xs mt-4" style={{ color: "var(--color-text-mute)" }}>
-              Compatible Windows 10+, macOS 12+, Ubuntu 20.04+ · Python non requis
+              Windows 10+ requis · Java 17 embarqué · Aucune installation manuelle
             </p>
           </div>
 
-          {/* App mockup */}
+          {/* App mockup — pixel-faithful real app */}
           <AppMockup />
         </div>
       </section>
 
-      {/* ── Features ────────────────────────────────────────────────────── */}
+      {/* ── Features ─────────────────────────────────────────────── */}
       <section className="py-20 px-6 max-w-6xl mx-auto">
         <div className="text-center mb-14">
-          <h2 className="text-3xl font-semibold mb-3" style={{ color: "var(--color-text)" }}>Tout ce dont tu as besoin</h2>
+          <h2 className="text-3xl font-semibold mb-3" style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}>
+            Tout ce dont tu as besoin
+          </h2>
           <p style={{ color: "var(--color-text-mute)" }}>Puissant pour les utilisateurs avancés, simple pour commencer.</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FEATURES.map(f => (
             <div
               key={f.title}
-              className="p-5 rounded-2xl border transition-shadow hover:shadow-md group card"
+              className="p-5 rounded-2xl border transition-all card"
               style={{ borderColor: "var(--color-border)", background: "var(--color-bg-card)" }}
             >
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center text-xl mb-4"
-                style={{ background: `${f.color}14`, border: `1px solid ${f.color}28` }}
+                style={{ background: `${f.color}14`, border: `1px solid ${f.color}30` }}
               >
                 {f.icon}
               </div>
-              <h3 className="font-semibold mb-2 transition-colors" style={{ color: "var(--color-text)" }}>
-                {f.title}
-              </h3>
+              <h3 className="font-semibold mb-2" style={{ color: "var(--color-text)" }}>{f.title}</h3>
               <p className="text-sm leading-relaxed" style={{ color: "var(--color-text-mute)" }}>{f.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── AxionPad Native section ──────────────────────────────────────── */}
+      {/* ── AxionPad Native — potentiomètres ─────────────────────── */}
       <section className="py-20 px-6 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <DeejMockup />
@@ -144,18 +146,18 @@ export default function SoftwarePage() {
             <div
               className="inline-block text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full border mb-5"
               style={{
-                background: "rgba(212,187,140,0.2)",
-                color: "#6b5a45",
-                borderColor: "rgba(184,118,92,0.25)",
+                background: "rgba(252,211,77,0.10)",
+                color: "#fcd34d",
+                borderColor: "rgba(252,211,77,0.28)",
               }}
             >
               Protocole AxionPad Native
             </div>
-            <h2 className="text-3xl font-semibold mb-4" style={{ color: "var(--color-text)" }}>
+            <h2 className="text-3xl font-semibold mb-4" style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}>
               Un potentiomètre,<br />un volume.
             </h2>
             <p className="leading-relaxed mb-6" style={{ color: "var(--color-text-mute)" }}>
-              Chacun des 4 potentiomètres de l'Axion Pad peut être assigné à n'importe quelle
+              Chacun des 4 potentiomètres peut être assigné à n'importe quelle
               application en cours d'exécution. Plus besoin de plonger dans le mixer Windows.
             </p>
             <ul className="space-y-3">
@@ -169,8 +171,8 @@ export default function SoftwarePage() {
                   <span
                     className="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0"
                     style={{
-                      background: "var(--color-accent-lt)",
-                      borderColor: "rgba(184,118,92,0.3)",
+                      background: "rgba(108,99,255,0.10)",
+                      borderColor: "rgba(108,99,255,0.30)",
                       color: "var(--color-accent)",
                     }}
                   >
@@ -187,13 +189,13 @@ export default function SoftwarePage() {
         </div>
       </section>
 
-      {/* ── CircuitPython section ─────────────────────────────────────────── */}
+      {/* ── CircuitPython ─────────────────────────────────────────── */}
       <section className="py-20 px-6 max-w-6xl mx-auto">
         <div
           className="rounded-3xl border p-10 md:p-14"
           style={{
-            borderColor: "var(--color-border)",
-            background: "linear-gradient(145deg, var(--color-accent-lt) 0%, var(--color-bg-card) 40%, rgba(108,92,231,0.06) 100%)",
+            borderColor: "rgba(108,99,255,0.18)",
+            background: "linear-gradient(145deg, rgba(108,99,255,0.06) 0%, var(--color-bg-card) 40%, rgba(0,217,163,0.04) 100%)",
             boxShadow: "0 8px 40px rgba(0,0,0,0.35)",
           }}
         >
@@ -202,28 +204,28 @@ export default function SoftwarePage() {
               <div
                 className="inline-block text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full border mb-5"
                 style={{
-                  background: "rgba(139,157,195,0.18)",
-                  color: "#4d5670",
-                  borderColor: "rgba(139,157,195,0.35)",
+                  background: "rgba(0,217,163,0.10)",
+                  color: "#00D9A3",
+                  borderColor: "rgba(0,217,163,0.28)",
                 }}
               >
                 Mode avancé
               </div>
-              <h2 className="text-3xl font-semibold mb-4" style={{ color: "var(--color-text)" }}>
+              <h2 className="text-3xl font-semibold mb-4" style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}>
                 Pas de limites avec CircuitPython
               </h2>
               <p className="leading-relaxed mb-6" style={{ color: "var(--color-text-mute)" }}>
                 Si le configurateur ne suffit plus, édite{" "}
                 <code
                   className="px-1.5 py-0.5 rounded text-sm"
-                  style={{ color: "var(--color-accent)", background: "var(--color-accent-muted)" }}
+                  style={{ color: "var(--color-accent)", background: "rgba(108,99,255,0.10)" }}
                 >
                   code.py
                 </code>{" "}
-                à la racine du volume USB (l&apos;Axion Pad se monte comme une clé). Dans le dépôt, la version Standard est le fichier{" "}
+                à la racine du volume USB. Dans le dépôt, la version Standard est le fichier{" "}
                 <code
                   className="px-1.5 py-0.5 rounded text-sm"
-                  style={{ color: "var(--color-accent)", background: "var(--color-accent-muted)" }}
+                  style={{ color: "var(--color-accent)", background: "rgba(108,99,255,0.10)" }}
                 >
                   firmwares/STANDARD/code.py
                 </code>
@@ -234,13 +236,13 @@ export default function SoftwarePage() {
                   href="https://circuitpython.org"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-full border text-sm transition-colors hover:opacity-90"
-                  style={{ borderColor: "rgba(139,157,195,0.45)", color: "#4d5670", background: "rgba(139,157,195,0.1)" }}
+                  className="px-4 py-2 rounded-full border text-sm transition-opacity hover:opacity-80"
+                  style={{ borderColor: "rgba(0,217,163,0.30)", color: "#00D9A3", background: "rgba(0,217,163,0.08)" }}
                 >
                   Doc CircuitPython →
                 </a>
                 <a
-                  href="https://github.com/321tutur123/axion-pad/tree/main/firmwares/STANDARD"
+                  href="https://github.com/321tutur123/axion-pad-apps/tree/main/firmwares"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-4 py-2 rounded-full border text-sm transition-colors"
@@ -255,9 +257,12 @@ export default function SoftwarePage() {
         </div>
       </section>
 
-      {/* ── Getting started ───────────────────────────────────────────────── */}
+      {/* ── Getting started ─────────────────────────────────────── */}
       <section className="py-20 px-6 max-w-4xl mx-auto">
-        <h2 className="text-3xl font-semibold text-center mb-14" style={{ color: "var(--color-text)" }}>
+        <h2
+          className="text-3xl font-semibold text-center mb-14"
+          style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}
+        >
           Opérationnel en 3 minutes
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -269,11 +274,14 @@ export default function SoftwarePage() {
             >
               <div
                 className="text-5xl font-black absolute top-4 right-5 leading-none select-none"
-                style={{ color: "rgba(58,54,51,0.06)" }}
+                style={{ color: "rgba(108,99,255,0.07)" }}
               >
                 {step.n}
               </div>
-              <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--color-accent)" }}>
+              <div
+                className="text-xs font-semibold uppercase tracking-widest mb-3"
+                style={{ color: "var(--color-accent)" }}
+              >
                 Étape {step.n}
               </div>
               <h3 className="font-semibold mb-2" style={{ color: "var(--color-text)" }}>{step.title}</h3>
@@ -283,30 +291,34 @@ export default function SoftwarePage() {
         </div>
       </section>
 
-      {/* ── Download ─────────────────────────────────────────────────────── */}
+      {/* ── Download ─────────────────────────────────────────────── */}
       <section id="download" className="py-20 px-6 max-w-3xl mx-auto text-center">
-        <div className="p-10 rounded-3xl border card" style={{ borderColor: "var(--color-border)", background: "var(--color-bg-card-alt)" }}>
+        <div className="p-10 rounded-3xl border card" style={{ borderColor: "rgba(108,99,255,0.18)", background: "var(--color-bg-card-alt)" }}>
           <div className="text-5xl mb-5">⬇️</div>
-          <h2 className="text-3xl font-semibold mb-3" style={{ color: "var(--color-text)" }}>Télécharger le configurateur</h2>
+          <h2 className="text-3xl font-semibold mb-3" style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}>
+            Télécharger le configurateur
+          </h2>
           <p className="mb-8" style={{ color: "var(--color-text-mute)" }}>
             Gratuit, sans publicité, sans télémétrie. Code source disponible sur GitHub.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-6">
-            <DownloadButton os="Windows" icon="🪟" ext=".exe" href="#" primary size="lg" />
-            <DownloadButton os="macOS" icon="🍎" ext=".dmg" href="#" size="lg" />
-            <DownloadButton os="Linux" icon="🐧" ext=".AppImage" href="#" size="lg" />
+            <DownloadButton os="Windows" icon="🪟" ext=".msi"      href="https://github.com/321tutur123/axion-pad-apps/tree/main/application/dist" primary size="lg" />
+            <DownloadButton os="macOS"   icon="🍎" ext=".dmg"      href="https://github.com/321tutur123/axion-pad-apps/tree/main/application/dist" size="lg" />
+            <DownloadButton os="Linux"   icon="🐧" ext=".AppImage" href="https://github.com/321tutur123/axion-pad-apps/tree/main/application/dist" size="lg" />
           </div>
           <p className="text-xs" style={{ color: "var(--color-text-mute)" }}>
-            v2.1.0 · 45 MB · Nécessite l'Axion Pad pour fonctionner
+            v2.1.0 · ~45 MB · Java 17 embarqué · Nécessite l'Axion Pad pour fonctionner
           </p>
         </div>
       </section>
 
-      {/* ── CTA shop ─────────────────────────────────────────────────────── */}
+      {/* ── CTA shop ─────────────────────────────────────────────── */}
       <section className="py-16 px-6 text-center">
-        <p className="text-sm mb-4" style={{ color: "var(--color-text-mute)" }}>Tu n&apos;as pas encore l&apos;Axion Pad ?</p>
+        <p className="text-sm mb-4" style={{ color: "var(--color-text-mute)" }}>
+          Tu n&apos;as pas encore l&apos;Axion Pad ?
+        </p>
         <Link href="/shop" className="btn-accent inline-flex px-8 py-3.5 font-semibold">
-          Commander — à partir de 59,99 €
+          Commander — à partir de 49,99 €
         </Link>
       </section>
 
@@ -314,7 +326,7 @@ export default function SoftwarePage() {
   );
 }
 
-// ── Sub-components ────────────────────────────────────────────────────────────
+// ── Sub-components ──────────────────────────────────────────────────────────
 
 function DownloadButton({
   os, icon, ext, href, primary = false, size = "md",
@@ -322,148 +334,140 @@ function DownloadButton({
   os: string; icon: string; ext: string; href: string;
   primary?: boolean; size?: "md" | "lg";
 }) {
-  const base = size === "lg" ? "px-6 py-3.5 text-sm" : "px-4 py-2.5 text-sm";
+  const pad = size === "lg" ? "px-6 py-3.5 text-sm" : "px-4 py-2.5 text-sm";
   return (
     <a
       href={href}
-      className={`inline-flex items-center gap-2.5 rounded-full font-medium transition-all hover:opacity-92 ${base} ${
-        primary
-          ? "btn-accent shadow-md"
-          : "border"
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`inline-flex items-center gap-2.5 rounded-full font-medium transition-all ${pad} ${
+        primary ? "btn-accent shadow-md" : "border"
       }`}
       style={
         primary
           ? undefined
-          : {
-              borderColor: "var(--color-border)",
-              color: "var(--color-text)",
-              background: "var(--color-bg-card)",
-            }
+          : { borderColor: "var(--color-border)", color: "var(--color-text)", background: "var(--color-bg-card)" }
       }
     >
       <span>{icon}</span>
       <span>{os}</span>
-      <span className={`text-xs ${primary ? "opacity-90" : ""}`} style={primary ? undefined : { color: "var(--color-text-mute)" }}>
+      <span
+        className="text-xs"
+        style={primary ? { opacity: 0.85 } : { color: "var(--color-text-mute)" }}
+      >
         {ext}
       </span>
     </a>
   );
 }
 
+// ── AppMockup — pixel-faithful to real AxionPad Configurator ───────────────
+const MOCKUP_KEYS: { fn: string; label: string; action: string; icon: string; variant?: "amber" | "purple" }[] = [
+  { fn: "F13", label: "F13", action: "I",       icon: "⌨" },
+  { fn: "F14", label: "F14", action: "M",       icon: "⌨" },
+  { fn: "F15", label: "F15", action: "F15",     icon: "⌨" },
+  { fn: "F16", label: "F16", action: "L+1",     icon: "▶", variant: "purple" },
+  { fn: "F17", label: "F17", action: "F17",     icon: "⌨" },
+  { fn: "F18", label: "F18", action: "Alt+TAB", icon: "⌨" },
+  { fn: "F19", label: "F19", action: "APP",     icon: "🚀", variant: "amber" },
+  { fn: "F20", label: "F20", action: "F20",     icon: "⌨" },
+  { fn: "F21", label: "F21", action: "F21",     icon: "⌨" },
+  { fn: "F22", label: "F22", action: "F22",     icon: "⌨" },
+  { fn: "F23", label: "F23", action: "F23",     icon: "⌨" },
+  { fn: "F24", label: "F24", action: "F24",     icon: "⌨" },
+];
+
+const MOCKUP_FADERS = [
+  { id: 1, emoji: "🔊", name: "Master",  pct: 48,  color: "#fcd34d", glow: "rgba(252,211,77,0.55)"  },
+  { id: 2, emoji: "🎵", name: "OBS",     pct: 100, color: "#6ee7b7", glow: "rgba(110,231,183,0.55)" },
+  { id: 3, emoji: "🎧", name: "Discord", pct: 97,  color: "#fdba74", glow: "rgba(253,186,116,0.55)" },
+  { id: 4, emoji: "🌐", name: "Musique", pct: 4,   color: "#93c5fd", glow: "rgba(147,197,253,0.50)" },
+];
+
 function AppMockup() {
-  const keys = [
-    { label: "OBS", sub: "Rec", color: "#dc2626" },
-    { label: "Scene", sub: "2", color: "#7c3aed" },
-    { label: "Mute", sub: "mic", color: "#dc2626" },
-    { label: "Vol ↑", sub: "", color: "#059669" },
-    { label: "Spotify", sub: "▶", color: "#059669" },
-    { label: "Skip", sub: "→", color: "#059669" },
-    { label: "Ctrl+Z", sub: "undo", color: "#0891b2" },
-    { label: "Ctrl+S", sub: "save", color: "#0891b2" },
-    { label: "Win+D", sub: "desk", color: "#7c3aed" },
-    { label: "Layer", sub: "→2", color: "#d97706" },
-    { label: "Macro", sub: "1", color: "#7c3aed" },
-    { label: "Sleep", sub: "💤", color: "#52525b" },
-  ];
-
-  const chrome = {
-    shell: { borderColor: "var(--color-border)", background: "var(--color-bg-card)" },
-    bar: { borderColor: "var(--color-border)", background: "var(--color-bg-soft)" },
-    muted: "var(--color-text-mute)",
-    text: "var(--color-text)",
-  } as const;
-
   return (
-    <div className="rounded-2xl border overflow-hidden shadow-xl" style={chrome.shell}>
-      <div className="flex items-center justify-between px-4 py-3 border-b" style={chrome.bar}>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full" style={{ background: "#e8a598" }} />
-          <div className="w-3 h-3 rounded-full" style={{ background: "#e8d598" }} />
-          <div className="w-3 h-3 rounded-full" style={{ background: "#a8c9a8" }} />
+    <div className="sw-window">
+      {/* Titlebar */}
+      <div className="sw-titlebar">
+        <div className="sw-dots">
+          <span style={{ background: "#ff5f57" }} />
+          <span style={{ background: "#febc2e" }} />
+          <span style={{ background: "#28c840" }} />
         </div>
-        <span className="text-xs font-medium" style={{ color: chrome.muted }}>AxionPad Configurator</span>
-        <div className="w-14" />
+        <span className="sw-logo">▲</span>
+        <span className="sw-app-name">AxionPad</span>
+        <div className="sw-device-pill">AxionPad Elite</div>
+        <div style={{ flex: 1 }} />
+        <div className="sw-status-pill">
+          <span className="sw-status-dot" />
+          Axion Pad connecté
+        </div>
       </div>
 
-      <div className="flex items-center gap-1 px-4 py-2 border-b" style={{ ...chrome.bar, borderColor: "var(--color-border)" }}>
-        {["Layer 1", "Layer 2", "Layer 3", "+ Ajouter"].map((l, i) => (
-          <button
-            key={l}
-            type="button"
-            className={`px-3 py-1 rounded text-xs transition-colors border ${
-              i === 0 ? "" : ""
-            }`}
-            style={
-              i === 0
-                ? { background: "var(--color-accent-muted)", color: "var(--color-accent)", borderColor: "rgba(184,118,92,0.35)" }
-                : { color: chrome.muted, borderColor: "transparent", background: "transparent" }
-            }
-          >
-            {l}
-          </button>
+      {/* Tab bar */}
+      <div className="sw-tabs-bar">
+        {["Contrôles", "Presets", "RGB", "Paramètres"].map((t, i) => (
+          <div key={t} className={`sw-tab${i === 0 ? " sw-tab--active" : ""}`}>{t}</div>
         ))}
-        <div className="ml-auto flex items-center gap-2">
-          <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "#7aab82" }} />
-          <span className="text-xs" style={{ color: chrome.muted }}>Connecté</span>
-        </div>
       </div>
 
-      <div className="p-4" style={{ background: "var(--color-bg-card-alt)" }}>
-        <div className="grid grid-cols-4 gap-2 mb-4">
-          {keys.map((key, i) => (
-            <div
-              key={i}
-              className="aspect-square rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all hover:scale-[1.02] border"
-              style={{
-                background: i === 4 ? `${key.color}22` : `${key.color}12`,
-                borderColor: i === 4 ? key.color : `${key.color}35`,
-                ...(i === 4 ? { boxShadow: "0 0 0 2px rgba(184,118,92,0.28)" } : {}),
-              }}
-            >
-              <span className="text-[10px] font-bold leading-tight text-center px-1" style={{ color: chrome.text }}>
-                {key.label}
-              </span>
-              {key.sub && (
-                <span className="text-[8px] mt-0.5" style={{ color: chrome.muted }}>{key.sub}</span>
-              )}
-            </div>
-          ))}
+      {/* Body: keys left + faders right */}
+      <div className="sw-body">
+        {/* Keys workbench */}
+        <div className="sw-keys-zone">
+          <div className="sw-layer-bar">
+            <button className="sw-layer-btn" aria-label="précédent">◀</button>
+            <div className="sw-layer-active">Layer 1</div>
+            <button className="sw-layer-btn" aria-label="suivant">▶</button>
+            <button className="sw-layer-add" aria-label="ajouter">+</button>
+          </div>
+          <div className="sw-keys-subtitle">AxionPad Elite — 12 touches</div>
+          <div className="sw-key-simple-grid">
+            {MOCKUP_KEYS.map((k, i) => (
+              <button
+                key={i}
+                className={`sw-key-simple${k.variant ? ` sw-key-simple--${k.variant}` : ""}`}
+              >
+                <div className="sw-key-header">
+                  <span className="sw-key-type-icon">{k.icon}</span>
+                  <span className="sw-key-fn-badge">{k.fn}</span>
+                </div>
+                <span className="sw-key-main-label">{k.label}</span>
+                <span className="sw-key-action-pill">{k.action}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
-        <div
-          className="rounded-xl border p-3"
-          style={{ borderColor: "rgba(184,118,92,0.28)", background: "var(--color-accent-lt)" }}
-        >
-          <div className="text-[10px] uppercase tracking-wider mb-2" style={{ color: chrome.muted }}>
-            Touche sélectionnée — Spotify ▶
-          </div>
-          <div className="flex items-center gap-2 mb-2">
-            <div
-              className="flex-1 px-2 py-1.5 rounded-lg border text-xs"
-              style={{ background: "var(--color-bg-card)", borderColor: "var(--color-border)", color: chrome.text }}
-            >
-              Ctrl + Alt + Espace
-            </div>
-            <div
-              className="w-6 h-6 rounded border flex items-center justify-center text-xs"
-              style={{ borderColor: "var(--color-border)", color: chrome.muted }}
-            >
-              ↻
-            </div>
-          </div>
-          <div className="flex gap-1.5">
-            {["Touche", "Macro", "Media", "App"].map((t, i) => (
-              <span
-                key={t}
-                className="text-[9px] px-2 py-0.5 rounded-full"
-                style={
-                  i === 2
-                    ? { background: "var(--color-accent-muted)", color: "var(--color-accent)" }
-                    : { color: chrome.muted }
-                }
-              >
-                {t}
-              </span>
+        {/* Faders */}
+        <div className="sw-faders-zone">
+          <div className="sw-faders-header">4 potentiomètres</div>
+          <div className="sw-faders-row">
+            {MOCKUP_FADERS.map(ch => (
+              <div key={ch.id} className="sw-fader-col">
+                <span className="sw-fader-pct" style={{ color: ch.color }}>{ch.pct}%</span>
+                <div className="sw-fader-wrap">
+                  <div className="sw-fader-track">
+                    <div
+                      className="sw-fader-fill"
+                      style={{ height: `${ch.pct}%`, background: ch.color, boxShadow: `0 0 12px ${ch.glow}` }}
+                    />
+                  </div>
+                  <div
+                    className="sw-fader-knob"
+                    style={{
+                      bottom: `calc(${ch.pct}% - 12px)`,
+                      borderColor: ch.color,
+                      boxShadow: `0 0 0 3px ${ch.glow}, 0 2px 8px rgba(0,0,0,0.70), inset 0 1px 0 rgba(255,255,255,0.12)`,
+                    }}
+                  />
+                </div>
+                <span className="sw-fader-emoji">{ch.emoji}</span>
+                <span className="sw-fader-name">{ch.name}</span>
+                <div className="sw-fader-badge" style={{ borderColor: ch.color, color: ch.color }}>
+                  {ch.id}
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -472,113 +476,107 @@ function AppMockup() {
   );
 }
 
-function DeejMockup() {
-  const channels = [
-    { name: "Système",  app: "🔊", val: 85, color: "#7c3aed" },
-    { name: "Spotify",  app: "🎵", val: 62, color: "#059669" },
-    { name: "Discord",  app: "🎧", val: 40, color: "#0891b2" },
-    { name: "Chrome",   app: "🌐", val: 70, color: "#d97706" },
-  ];
+// ── DeejMockup — faithful DEEJ-style faders ────────────────────────────────
+const DEEJ_CHANNELS = [
+  { id: 1, emoji: "🔊", name: "Système",  pct: 85, color: "#fcd34d", glow: "rgba(252,211,77,0.55)"  },
+  { id: 2, emoji: "🎵", name: "Spotify",  pct: 62, color: "#6ee7b7", glow: "rgba(110,231,183,0.55)" },
+  { id: 3, emoji: "🎧", name: "Discord",  pct: 40, color: "#fdba74", glow: "rgba(253,186,116,0.55)" },
+  { id: 4, emoji: "🌐", name: "Chrome",   pct: 70, color: "#93c5fd", glow: "rgba(147,197,253,0.50)" },
+];
 
+function DeejMockup() {
   return (
-    <div className="rounded-2xl border p-5 shadow-lg card" style={{ borderColor: "var(--color-border)", background: "var(--color-bg-card)" }}>
-      <div className="text-xs uppercase tracking-wider mb-5 flex items-center gap-2" style={{ color: "var(--color-text-mute)" }}>
-        <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: "var(--color-accent)" }} />
-        AxionPad Native — en direct
+    <div className="sw-window" style={{ maxWidth: "320px" }}>
+      <div className="sw-titlebar">
+        <div className="sw-dots">
+          <span style={{ background: "#ff5f57" }} />
+          <span style={{ background: "#febc2e" }} />
+          <span style={{ background: "#28c840" }} />
+        </div>
+        <span className="sw-logo">▲</span>
+        <span className="sw-app-name">AxionPad</span>
+        <div style={{ flex: 1 }} />
+        <div className="sw-status-pill">
+          <span className="sw-status-dot" />
+          Connecté
+        </div>
       </div>
-      <div className="flex items-end gap-4 justify-center">
-        {channels.map((ch, i) => (
-          <div key={ch.name} className="flex flex-col items-center gap-2">
-            <span className="text-xs font-medium" style={{ color: ch.color }}>
-              {ch.val}%
-            </span>
-            <div
-              className="relative w-7 rounded-full border"
-              style={{ height: 120, background: "var(--color-bg-soft)", borderColor: "var(--color-border)" }}
-            >
-              <div
-                className="absolute bottom-0 left-0 right-0 rounded-full transition-all"
-                style={{ height: `${ch.val}%`, background: `${ch.color}40`, borderTop: `2px solid ${ch.color}` }}
-              />
-              <div
-                className="absolute left-1/2 -translate-x-1/2 w-5 h-5 rounded-full border-2 shadow-md"
-                style={{
-                  bottom: `calc(${ch.val}% - 10px)`,
-                  borderColor: ch.color,
-                  background: "var(--color-bg-card)",
-                  boxShadow: `0 2px 8px ${ch.color}35`,
-                }}
-              />
-            </div>
-            <span className="text-lg">{ch.app}</span>
-            <span className="text-[10px] text-center w-12 leading-tight" style={{ color: "var(--color-text-mute)" }}>{ch.name}</span>
-            <div
-              className="w-5 h-5 rounded-full border text-[10px] flex items-center justify-center font-bold"
-              style={{ borderColor: `${ch.color}45`, color: "var(--color-text-mute)" }}
-            >
-              {i + 1}
-            </div>
-          </div>
-        ))}
+
+      <div className="sw-tabs-bar">
+        <div className="sw-tab sw-tab--active">Contrôles</div>
+        <div className="sw-tab">Presets</div>
+        <div className="sw-tab">RGB</div>
       </div>
-      <p className="text-xs text-center mt-4" style={{ color: "var(--color-text-mute)" }}>Mappé sur les 4 potentiomètres</p>
+
+      {/* Faders only — no key zone */}
+      <div className="sw-faders-zone" style={{ width: "100%", minWidth: "unset", borderLeft: "none", padding: "16px 20px" }}>
+        <div className="sw-faders-header" style={{ marginBottom: "12px" }}>
+          4 canaux · sortie native AxionPad
+        </div>
+        <div className="sw-faders-row" style={{ gap: "16px", justifyContent: "space-between" }}>
+          {DEEJ_CHANNELS.map(ch => (
+            <div key={ch.id} className="sw-fader-col">
+              <span className="sw-fader-pct" style={{ color: ch.color }}>{ch.pct}%</span>
+              <div className="sw-fader-wrap" style={{ height: "130px" }}>
+                <div className="sw-fader-track">
+                  <div
+                    className="sw-fader-fill"
+                    style={{ height: `${ch.pct}%`, background: ch.color, boxShadow: `0 0 12px ${ch.glow}` }}
+                  />
+                </div>
+                <div
+                  className="sw-fader-knob"
+                  style={{
+                    bottom: `calc(${ch.pct}% - 12px)`,
+                    borderColor: ch.color,
+                    boxShadow: `0 0 0 3px ${ch.glow}, 0 2px 8px rgba(0,0,0,0.70), inset 0 1px 0 rgba(255,255,255,0.12)`,
+                  }}
+                />
+              </div>
+              <span className="sw-fader-emoji">{ch.emoji}</span>
+              <span className="sw-fader-name">{ch.name}</span>
+              <div className="sw-fader-badge" style={{ borderColor: ch.color, color: ch.color }}>
+                {ch.id}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
-/** Extrait colorisé aligné sur firmwares/STANDARD/code.py (repo). */
+/** Extrait colorisé — firmwares/STANDARD/code.py */
 function CodeSnippet() {
-  const kw = "#c678dd";
+  const kw  = "#c678dd";
   const def = "#abb2bf";
   const str = "#98c379";
-  const fn = "#61afef";
+  const fn  = "#61afef";
   const varC = "#e06c75";
   const cls = "#e5c07b";
-  const cm = "#5c6370";
+  const cm  = "#5c6370";
+  const num = "#d19a66";
 
   const lines = [
-    { indent: 0, tokens: [{ t: "# firmwares/STANDARD/code.py — Standard v2.1.0 (extrait)", c: cm }] },
+    { indent: 0, tokens: [{ t: "# firmwares/STANDARD/code.py — Standard v2.1.0", c: cm }] },
     { indent: 0, tokens: [] },
-    { indent: 0, tokens: [{ t: "import ", c: kw }, { t: "analogio", c: cls }, { t: ", board, sys, usb_hid, supervisor", c: def }] },
-    { indent: 0, tokens: [{ t: "import ", c: kw }, { t: "adafruit_matrixkeypad", c: cls }] },
+    { indent: 0, tokens: [{ t: "import ", c: kw }, { t: "analogio", c: cls }, { t: ", board, usb_hid", c: def }] },
     { indent: 0, tokens: [{ t: "from ", c: kw }, { t: "adafruit_hid.keyboard ", c: def }, { t: "import ", c: kw }, { t: "Keyboard", c: cls }] },
     { indent: 0, tokens: [{ t: "from ", c: kw }, { t: "adafruit_hid.keycode ", c: def }, { t: "import ", c: kw }, { t: "Keycode", c: cls }] },
     { indent: 0, tokens: [{ t: "import ", c: kw }, { t: "time", c: cls }] },
     { indent: 0, tokens: [] },
     { indent: 0, tokens: [{ t: "DEVICE_ID ", c: varC }, { t: "= ", c: def }, { t: '"AXIONPAD:STANDARD"', c: str }] },
     { indent: 0, tokens: [] },
-    {
-      indent: 0,
-      tokens: [{ t: "sliders ", c: varC }, { t: "= [", c: def }],
-    },
+    { indent: 0, tokens: [{ t: "sliders ", c: varC }, { t: "= [", c: def }] },
     { indent: 1, tokens: [{ t: "analogio.AnalogIn(board.GP26), analogio.AnalogIn(board.GP27),", c: def }] },
     { indent: 1, tokens: [{ t: "analogio.AnalogIn(board.GP28), analogio.AnalogIn(board.GP29),", c: def }] },
     { indent: 0, tokens: [{ t: "]", c: def }] },
     { indent: 0, tokens: [{ t: "kbd ", c: varC }, { t: "= ", c: def }, { t: "Keyboard", c: cls }, { t: "(usb_hid.devices)", c: def }] },
     { indent: 0, tokens: [] },
-    { indent: 0, tokens: [{ t: "KEY_MAP ", c: varC }, { t: "= {", c: def }] },
-    {
-      indent: 1,
-      tokens: [
-        { t: "0", c: "#d19a66" },
-        { t: ": [Keycode.F13], 1: [Keycode.F14], 2: [Keycode.F15], 3: [Keycode.F16],", c: def },
-      ],
-    },
-    {
-      indent: 1,
-      tokens: [
-        { t: "4", c: "#d19a66" },
-        { t: ": [Keycode.F17], …, ", c: def },
-        { t: "11", c: "#d19a66" },
-        { t: ": [Keycode.F24],", c: def },
-      ],
-    },
-    { indent: 0, tokens: [{ t: "}", c: def }] },
-    { indent: 0, tokens: [] },
     { indent: 0, tokens: [{ t: "while ", c: kw }, { t: "True", c: cls }, { t: ":", c: def }] },
     { indent: 1, tokens: [{ t: "vals ", c: varC }, { t: "= [", c: def }, { t: "str", c: fn }, { t: "(int(s.value / 64)) ", c: def }, { t: "for", c: kw }, { t: " s ", c: def }, { t: "in", c: kw }, { t: " sliders]", c: def }] },
-    { indent: 1, tokens: [{ t: "print", c: fn }, { t: "(\"|\".join(vals))", c: def }] },
-    { indent: 1, tokens: [{ t: "time.sleep", c: fn }, { t: "(0.01)", c: def }] },
+    { indent: 1, tokens: [{ t: "print", c: fn }, { t: '("', c: def }, { t: "|", c: str }, { t: '".join(vals))', c: def }] },
+    { indent: 1, tokens: [{ t: "time.sleep", c: fn }, { t: "(", c: def }, { t: "0.01", c: num }, { t: ")", c: def }] },
   ];
 
   return (
@@ -588,21 +586,24 @@ function CodeSnippet() {
         style={{ borderColor: "var(--color-border)", background: "var(--color-bg-soft)" }}
       >
         <div className="flex items-center gap-1.5">
-          <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#c9c4bd" }} />
-          <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#c9c4bd" }} />
-          <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#c9c4bd" }} />
+          {["#ff5f57","#febc2e","#28c840"].map(c => (
+            <div key={c} className="w-2.5 h-2.5 rounded-full" style={{ background: c }} />
+          ))}
         </div>
-        <span className="text-xs font-mono" style={{ color: "var(--color-text-mute)" }}>firmwares/STANDARD/code.py</span>
+        <span className="text-xs font-mono" style={{ color: "var(--color-text-mute)" }}>
+          firmwares/STANDARD/code.py
+        </span>
         <div className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--color-accent)" }} />
           <span className="text-[10px]" style={{ color: "var(--color-text-mute)" }}>modifié</span>
         </div>
       </div>
-
       <div className="p-4 font-mono text-xs leading-6 overflow-x-auto" style={{ background: "#14141f" }}>
         {lines.map((line, i) => (
           <div key={i} className="flex">
-            <span className="w-7 shrink-0 text-right mr-3 select-none tabular-nums" style={{ color: "rgba(255,255,255,0.2)" }}>{i + 1}</span>
+            <span className="w-7 shrink-0 text-right mr-3 select-none" style={{ color: "rgba(255,255,255,0.2)" }}>
+              {i + 1}
+            </span>
             <span>
               {"  ".repeat(line.indent)}
               {line.tokens.map((tok, j) => (
@@ -612,13 +613,14 @@ function CodeSnippet() {
           </div>
         ))}
       </div>
-
       <div
         className="px-4 py-3 border-t flex items-center gap-2"
         style={{ borderColor: "var(--color-border)", background: "var(--color-bg-soft)" }}
       >
-        <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#7aab82" }} />
-        <span className="text-xs" style={{ color: "var(--color-text-mute)" }}>Sauvegardé — mise à jour instantanée</span>
+        <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#00D9A3" }} />
+        <span className="text-xs" style={{ color: "var(--color-text-mute)" }}>
+          Sauvegardé — mise à jour instantanée
+        </span>
       </div>
     </div>
   );
