@@ -7,7 +7,11 @@ import { escapeHtml } from "@/lib/htmlEscape";
 export const runtime = "edge";
 
 export async function POST(request: Request) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  const stripeSecret = process.env.STRIPE_SECRET_KEY;
+  if (!stripeSecret) {
+    return NextResponse.json({ error: "STRIPE_SECRET_KEY not configured" }, { status: 500 });
+  }
+  const stripe = new Stripe(stripeSecret);
 
   const body      = await request.text();
   const signature = request.headers.get("stripe-signature");
