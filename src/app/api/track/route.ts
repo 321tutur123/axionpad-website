@@ -81,7 +81,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Paramètres manquants" }, { status: 400 });
   }
 
-  /* ── Throttle par IP ──────────────────────────────────────────────────── */
+  /* ── Throttle par IP (fail-closed) ───────────────────────────────────── */
   try {
     const { getRequestContext } = await import("@cloudflare/next-on-pages");
     const { env } = getRequestContext();
@@ -95,7 +95,9 @@ export async function GET(request: Request) {
       );
     }
     await trackThrottleRecord(env.DB, bucketId);
-  } catch { /* D1 indisponible — on laisse passer */ }
+  } catch {
+    return NextResponse.json({ error: "Service temporairement indisponible" }, { status: 503 });
+  }
 
   /* ── Tentative D1 ─────────────────────────────────────────────────────── */
   try {

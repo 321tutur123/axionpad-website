@@ -3,6 +3,7 @@ export const runtime = "edge";
 import { NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { getAuthenticatedUserId } from "@/lib/user-auth";
+import { checkOrigin } from "@/lib/csrf";
 
 interface UpdateProfileBody {
   first_name?: string;
@@ -17,6 +18,9 @@ interface UserRow {
 }
 
 export async function PATCH(request: Request) {
+  const csrfError = checkOrigin(request);
+  if (csrfError) return csrfError;
+
   const userId = await getAuthenticatedUserId(request);
   if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

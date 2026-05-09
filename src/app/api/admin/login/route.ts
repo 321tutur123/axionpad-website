@@ -60,25 +60,23 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Mot de passe incorrect" }, { status: 401 });
   }
 
-  let db: D1Database | undefined;
+  let db: D1Database;
   try {
     db = getRequestContext().env.DB;
   } catch {
-    db = undefined;
+    // Fail-closed: si le backend throttle est indisponible, bloquer l'accès
+    return NextResponse.json({ error: "Service temporairement indisponible" }, { status: 503 });
   }
 
   const bucketId = await throttleBucketId("admin_login", request, secret);
-
-  if (db) {
-    const retryAfter = await adminLoginThrottleBlocked(db, bucketId);
-    if (retryAfter > 0) {
-      const res = NextResponse.json(
-        { error: "Trop de tentatives. Réessayez plus tard." },
-        { status: 429 },
-      );
-      res.headers.set("Retry-After", String(retryAfter));
-      return res;
-    }
+  const retryAfter = await adminLoginThrottleBlocked(db, bucketId);
+  if (retryAfter > 0) {
+    const res = NextResponse.json(
+      { error: "Trop de tentatives. Réessayez plus tard." },
+      { status: 429 },
+    );
+    res.headers.set("Retry-After", String(retryAfter));
+    return res;
   }
 
   let valid = false;
@@ -89,11 +87,11 @@ export async function POST(request: Request) {
   }
 
   if (!body.password || !valid) {
-    if (db) await adminLoginRecordFailure(db, bucketId);
+    await adminLoginRecordFailure(db, bucketId);
     return NextResponse.json({ error: "Mot de passe incorrect" }, { status: 401 });
   }
 
-  if (db) await adminLoginClear(db, bucketId);
+  await adminLoginClear(db, bucketId);
 
   const token = await createSessionToken(secret);
   const response = NextResponse.json({ ok: true });

@@ -66,9 +66,10 @@ export async function POST(request: Request) {
     } catch { /* non-critique */ }
   }
 
+  let isNewOrder = false;
   try {
     const { env } = getRequestContext();
-    await env.DB.prepare(`
+    const result = await env.DB.prepare(`
       INSERT OR IGNORE INTO orders (
         id, stripe_event_id, order_number, status, payment_status,
         customer_email, customer_name,
@@ -92,13 +93,15 @@ export async function POST(request: Request) {
       shippingMethod,
       session.created,
     ).run();
+    // changes === 0 means INSERT was ignored (duplicate event) — skip side effects
+    isNewOrder = (result.meta.changes ?? 0) > 0;
   } catch (dbErr) {
     console.error("D1 insert failed:", dbErr);
     // Retourner 500 pour que Stripe retente l'événement
     return NextResponse.json({ error: "Database unavailable" }, { status: 500 });
   }
 
-  if (process.env.RESEND_API_KEY && customerEmail) {
+  if (isNewOrder && process.env.RESEND_API_KEY && customerEmail) {
     const origin     = process.env.NEXT_PUBLIC_SITE_URL ?? "https://axionpad.fr";
     const trackUrl   = `${origin}/track?order=${encodeURIComponent(orderNumber)}&email=${encodeURIComponent(customerEmail)}`;
     const firstName  = customerName.split(" ")[0] || "";

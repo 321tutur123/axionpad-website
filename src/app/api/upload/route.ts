@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { getRequestContext } from "@cloudflare/next-on-pages";
 import { verifyUploadToken } from "@/lib/uploadToken";
 import { escapeHtml } from "@/lib/htmlEscape";
 
@@ -41,6 +42,17 @@ export async function POST(request: Request) {
 
   if (!(await verifyUploadToken(order, sig, secret))) {
     return NextResponse.json({ error: "Lien invalide ou expir&#233;" }, { status: 403 });
+  }
+
+  // One-time token enforcement — hash the raw token to avoid storing it plainly
+  const tokenHashBuf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(sig));
+  const tokenHash = Array.from(new Uint8Array(tokenHashBuf), b => b.toString(16).padStart(2, "0")).join("");
+
+  const { env } = getRequestContext();
+  const already = await env.DB.prepare("SELECT 1 FROM upload_tokens_used WHERE token_hash = ?")
+    .bind(tokenHash).first();
+  if (already) {
+    return NextResponse.json({ error: "Ce lien a d&#233;j&#224; &#233;t&#233; utilis&#233;" }, { status: 409 });
   }
 
   if (file.size > MAX_SIZE) {
@@ -87,6 +99,11 @@ export async function POST(request: Request) {
   if (!res.ok) {
     return NextResponse.json({ error: "Erreur lors de l'envoi" }, { status: 502 });
   }
+
+  // Invalidate the token after successful upload
+  await env.DB.prepare(
+    "INSERT OR IGNORE INTO upload_tokens_used (token_hash, order_number, used_at) VALUES (?, ?, ?)",
+  ).bind(tokenHash, order, Math.floor(Date.now() / 1000)).run();
 
   return NextResponse.json({ ok: true });
 }
