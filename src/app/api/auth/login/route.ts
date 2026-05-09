@@ -21,6 +21,7 @@ interface UserRow {
   password_hash: string;
   first_name: string;
   last_name: string;
+  email_verified: number;
 }
 
 // Dummy hash used when no user is found — keeps timing consistent and prevents
@@ -57,7 +58,7 @@ export async function POST(request: Request) {
   }
 
   const user = await env.DB.prepare(
-    "SELECT id, email, password_hash, first_name, last_name FROM users WHERE email = ?",
+    "SELECT id, email, password_hash, first_name, last_name, email_verified FROM users WHERE email = ?",
   )
     .bind(email.trim().toLowerCase())
     .first<UserRow>();
@@ -68,6 +69,13 @@ export async function POST(request: Request) {
   if (!user || !validPassword) {
     await loginRecordFailure(env.DB, bucketId);
     return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
+  }
+
+  if (!user.email_verified) {
+    return NextResponse.json(
+      { error: "Please verify your email address before signing in.", code: "EMAIL_NOT_VERIFIED" },
+      { status: 403 },
+    );
   }
 
   await loginClear(env.DB, bucketId);

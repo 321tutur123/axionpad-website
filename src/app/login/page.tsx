@@ -35,8 +35,8 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (searchParams.get("registered") === "1") {
-      setNotice("Account created — sign in below.");
+    if (searchParams.get("verified") === "1") {
+      setNotice("Email confirmé — vous pouvez vous connecter.");
     }
   }, [searchParams]);
 
@@ -64,9 +64,13 @@ function LoginForm() {
         credentials: "include",
         body: JSON.stringify(form),
       });
-      const data = await res.json() as { error?: string };
+      const data = await res.json() as { error?: string; code?: string };
       if (!res.ok) {
-        setError(data.error ?? "Login failed. Please try again.");
+        if (data.code === "EMAIL_NOT_VERIFIED") {
+          setError("Veuillez confirmer votre email avant de vous connecter. Vérifiez votre boîte mail.");
+        } else {
+          setError(data.error ?? "Login failed. Please try again.");
+        }
         return;
       }
       router.push("/account");

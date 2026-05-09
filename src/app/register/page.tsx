@@ -71,7 +71,7 @@ export default function RegisterPage() {
         setError(data.error ?? "Registration failed. Please try again.");
         return;
       }
-      router.push("/login?registered=1");
+      router.push("/check-email");
     } catch {
       setError("Connection error. Please try again.");
     } finally {
