@@ -85,9 +85,9 @@ export default function CartPage() {
               const isLowStock = stock < 5 && stock > 0 && stock !== Infinity;
 
               return (
-                <div key={item._id || item.id} className={`flex gap-4 ${cardLine}`} style={cardStyle}>
+                <div key={item._id || item.id} className={`flex flex-wrap gap-3 ${cardLine}`} style={cardStyle}>
                   <div
-                    className="w-16 h-16 rounded-xl flex items-center justify-center text-2xl shrink-0"
+                    className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl shrink-0"
                     style={{ background: "var(--color-accent-lt)" }}
                   >
                     📦
@@ -111,7 +111,7 @@ export default function CartPage() {
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
                     <div
                       className="flex items-center gap-1 rounded-full px-1 border"
                       style={{ borderColor: "var(--color-border)" }}
@@ -119,7 +119,7 @@ export default function CartPage() {
                       <button
                         type="button"
                         onClick={() => update(item._id || item.id!, qty - 1)}
-                        className="w-6 h-6 transition-colors text-sm"
+                        className="w-9 h-9 flex items-center justify-center transition-colors text-sm"
                         style={{ color: "var(--color-text-mute)" }}
                       >
                         −
@@ -129,19 +129,19 @@ export default function CartPage() {
                         type="button"
                         onClick={() => update(item._id || item.id!, qty + 1)}
                         disabled={qty >= stock}
-                        className="w-6 h-6 transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="w-9 h-9 flex items-center justify-center transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
                         style={{ color: "var(--color-text-mute)" }}
                       >
                         +
                       </button>
                     </div>
-                    <div className="w-16 text-right text-sm font-medium" style={{ color: "var(--color-text)" }}>
+                    <div className="text-sm font-medium" style={{ color: "var(--color-text)" }}>
                       {((item.price || 0) * qty).toFixed(2)} €
                     </div>
                     <button
                       type="button"
                       onClick={() => remove(item._id || item.id!)}
-                      className="ml-1 transition-colors hover:opacity-70"
+                      className="w-9 h-9 flex items-center justify-center transition-colors hover:opacity-70"
                       style={{ color: "var(--color-text-mute)" }}
                     >
                       ✕

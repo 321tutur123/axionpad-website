@@ -146,9 +146,9 @@ export default function ProductConfigurator({ product }: { product: ProductVaria
               )}
             </div>
             <div className="flex items-center gap-1 rounded-full px-1 py-0.5" style={{ border: "0.5px solid var(--color-border)" }}>
-              <button onClick={() => setQty(q => Math.max(1, q - 1))} className="w-8 h-8 rounded-full flex items-center justify-center text-xl" style={{ color: "var(--color-text-mute)" }}>−</button>
+              <button onClick={() => setQty(q => Math.max(1, q - 1))} className="w-11 h-11 rounded-full flex items-center justify-center text-xl" style={{ color: "var(--color-text-mute)" }}>−</button>
               <span className="text-sm font-medium w-5 text-center" style={{ color: "var(--color-text)" }}>{qty}</span>
-              <button onClick={() => setQty(q => Math.min(10, q + 1))} className="w-8 h-8 rounded-full flex items-center justify-center text-xl" style={{ color: "var(--color-text-mute)" }}>+</button>
+              <button onClick={() => setQty(q => Math.min(10, q + 1))} className="w-11 h-11 rounded-full flex items-center justify-center text-xl" style={{ color: "var(--color-text-mute)" }}>+</button>
             </div>
           </div>
 

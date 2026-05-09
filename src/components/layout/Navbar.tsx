@@ -67,7 +67,7 @@ export default function Navbar() {
         {/* Panier */}
         <Link
           href="/cart"
-          className="relative p-2 transition-colors"
+          className="relative p-2.5 transition-colors"
           style={{ color: "var(--color-text-mute)" }}
           onMouseEnter={e => (e.currentTarget.style.color = "var(--color-accent)")}
           onMouseLeave={e => (e.currentTarget.style.color = "var(--color-text-mute)")}
@@ -89,7 +89,7 @@ export default function Navbar() {
         {/* Account */}
         <Link
           href="/account"
-          className="p-2 transition-colors"
+          className="p-2.5 transition-colors"
           style={{ color: "var(--color-text-mute)" }}
           onMouseEnter={e => (e.currentTarget.style.color = "var(--color-accent)")}
           onMouseLeave={e => (e.currentTarget.style.color = "var(--color-text-mute)")}
@@ -112,7 +112,7 @@ export default function Navbar() {
 
         {/* Hamburger mobile */}
         <button
-          className="md:hidden p-2"
+          className="md:hidden p-3"
           onClick={() => setMenuOpen(o => !o)}
           aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
           style={{ color: "var(--color-text)" }}
