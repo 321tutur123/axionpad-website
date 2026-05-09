@@ -37,6 +37,8 @@ function LoginForm() {
   useEffect(() => {
     if (searchParams.get("verified") === "1") {
       setNotice("Email confirmé — vous pouvez vous connecter.");
+    } else if (searchParams.get("reset") === "1") {
+      setNotice("Mot de passe mis à jour — vous pouvez vous connecter.");
     }
   }, [searchParams]);
 
@@ -145,6 +147,11 @@ function LoginForm() {
               {fieldErrors.password && (
                 <p className="text-xs text-red-400 mt-1.5">{fieldErrors.password}</p>
               )}
+              <div className="text-right mt-1.5">
+                <Link href="/forgot-password" className="text-xs text-zinc-500 hover:text-violet-400 transition-colors">
+                  Mot de passe oublié ?
+                </Link>
+              </div>
             </div>
 
             <button

@@ -156,3 +156,30 @@ export async function trackThrottleRecord(db: D1Database, bucketId: string): Pro
   }
   await db.prepare("UPDATE api_throttle SET count = count + 1 WHERE bucket_id = ?").bind(bucketId).run();
 }
+
+// ─── Forgot-password throttle (5 req / 15 min par IP) ────────────────────────
+
+const FORGOT_WINDOW_MS = 15 * 60 * 1000;
+const MAX_FORGOT_PER_WINDOW = 5;
+
+export async function forgotPasswordThrottleBlocked(db: D1Database, bucketId: string): Promise<number> {
+  const now = Date.now();
+  const row = await db.prepare("SELECT count, window_start FROM api_throttle WHERE bucket_id = ?")
+    .bind(bucketId).first<{ count: number; window_start: number }>();
+  if (!row || now - row.window_start > FORGOT_WINDOW_MS) return 0;
+  if (row.count < MAX_FORGOT_PER_WINDOW) return 0;
+  return Math.max(1, Math.ceil((row.window_start + FORGOT_WINDOW_MS - now) / 1000));
+}
+
+export async function forgotPasswordThrottleRecord(db: D1Database, bucketId: string): Promise<void> {
+  const now = Date.now();
+  const row = await db.prepare("SELECT count, window_start FROM api_throttle WHERE bucket_id = ?")
+    .bind(bucketId).first<{ count: number; window_start: number }>();
+  if (!row || now - row.window_start > FORGOT_WINDOW_MS) {
+    await db.prepare(
+      "INSERT INTO api_throttle (bucket_id, count, window_start) VALUES (?, 1, ?) ON CONFLICT(bucket_id) DO UPDATE SET count = 1, window_start = excluded.window_start",
+    ).bind(bucketId, now).run();
+    return;
+  }
+  await db.prepare("UPDATE api_throttle SET count = count + 1 WHERE bucket_id = ?").bind(bucketId).run();
+}
