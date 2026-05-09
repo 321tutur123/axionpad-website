@@ -86,6 +86,21 @@ export default function Navbar() {
           )}
         </Link>
 
+        {/* Account */}
+        <Link
+          href="/account"
+          className="p-2 transition-colors"
+          style={{ color: "var(--color-text-mute)" }}
+          onMouseEnter={e => (e.currentTarget.style.color = "var(--color-accent)")}
+          onMouseLeave={e => (e.currentTarget.style.color = "var(--color-text-mute)")}
+          aria-label="Mon compte"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+          </svg>
+        </Link>
+
         {/* CTA desktop */}
         <Link
           href="/shop"
@@ -131,6 +146,14 @@ export default function Navbar() {
               {l.label}
             </Link>
           ))}
+          <Link
+            href="/account"
+            onClick={() => setMenuOpen(false)}
+            className="py-3 px-2 text-sm font-medium border-b"
+            style={{ color: "var(--color-text-mute)", borderColor: "var(--color-border)" }}
+          >
+            Mon compte
+          </Link>
           <Link
             href="/shop"
             onClick={() => setMenuOpen(false)}
