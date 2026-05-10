@@ -13,6 +13,12 @@ interface Props {
   children?: React.ReactNode;
 }
 
+// Photos lifestyle (fond clair) — reçoivent un traitement CSS spécifique
+const LIFESTYLE_IMAGES = ["kit-pcb.png", "kit-pcb-2.png"];
+function isLifestyle(src: string): boolean {
+  return LIFESTYLE_IMAGES.some(name => src.includes(name));
+}
+
 /** Fiche produit : image principale + miniatures si plusieurs URLs. */
 export default function ProductImageGallery({
   images,
@@ -40,7 +46,10 @@ export default function ProductImageGallery({
 
   return (
     <div className="pdp-gallery">
-      <div className="pdp-image-wrap">
+      <div
+        className="pdp-image-wrap"
+        data-lifestyle={isLifestyle(src) ? "true" : undefined}
+      >
         <ProductImage
           src={src}
           alt={list.length > 1 ? `${alt} — vue ${index + 1}` : alt}
@@ -60,6 +69,7 @@ export default function ProductImageGallery({
               role="tab"
               aria-selected={i === index}
               className={`pdp-gallery-thumb${i === index ? " is-active" : ""}`}
+              data-lifestyle={isLifestyle(href) ? "true" : undefined}
               onClick={() => setIndex(i)}
             >
               <span className="relative block h-full w-full">

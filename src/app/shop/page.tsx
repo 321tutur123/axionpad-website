@@ -6,6 +6,10 @@ import { getAllProducts, formatPrice, type ProductVariantFull } from "@/lib/prod
 import { useCart } from "@/store/cart";
 import ProductImage from "@/components/products/ProductImage";
 
+// Photos lifestyle (fond clair) — traitement CSS renforcé
+const LIFESTYLE_IMAGES = ["kit-pcb.png", "kit-pcb-2.png"];
+const isLifestyle = (src: string) => LIFESTYLE_IMAGES.some(n => src.includes(n));
+
 // ── Pad key layouts ───────────────────────────────────────────
 type KV = "d" | "p" | "g";
 
@@ -98,7 +102,10 @@ function ShopCard({ product }: { product: ProductVariantFull }) {
 
       {/* Visual — image produit ou fallback contextuel */}
       <Link href={`/shop/${product.slug}`} className="shop-card-visual">
-        <div className="shop-card-visual-inner">
+        <div
+          className="shop-card-visual-inner"
+          data-lifestyle={isLifestyle(product.imagePath) ? "true" : undefined}
+        >
           <ProductImage
             src={product.imagePath}
             alt={product.name}
