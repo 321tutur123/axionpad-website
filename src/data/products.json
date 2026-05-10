@@ -184,8 +184,8 @@
       "slug": "axion-pad-xl",
       "name": "Axion Pad XL",
       "tagline": "Open source & fait main — studio grade, 16 touches + OLED",
-      "description": "4×4 touches, 6 potentiomètres, OLED 128×32 — firmware et outils publics sur GitHub ; montage et contrôles à la main.",
-      "longDescription": "Pour les créatifs qui veulent tout contrôler tout en gardant la main sur le code : firmware, protocole et configurateur restent open source sur GitHub. L'Axion Pad XL embarque 16 touches, 6 potentiomètres et un écran OLED affichant les mappings en temps réel ; chaque unité est assemblée et testée manuellement.",
+      "description": "Matrice 4×4 (16 touches), 6 potentiomètres, OLED 0.91\" 128×32 — firmware et outils publics sur GitHub ; montage et contrôles à la main.",
+      "longDescription": "Pour les créatifs qui veulent tout contrôler tout en gardant la main sur le code : firmware, protocole et configurateur restent open source sur GitHub. L'Axion Pad XL embarque une matrice 4×4 (16 touches), 6 potentiomètres lus via multiplexeur 74HC4051 et un écran OLED 0.91\" SSD1306 en I2C ; chaque unité est assemblée et testée manuellement.",
       "price": 17999,
       "comparePrice": 19999,
       "category": "macro-pads",
@@ -250,12 +250,14 @@
       ],
       "specs": [
         { "label": "MCU",            "value": "RP2040 Dual-core 133 MHz" },
-        { "label": "Touches",        "value": "15 × Cherry MX (5×3)" },
+        { "label": "Touches",        "value": "16 × Cherry MX (4×4)" },
         { "label": "Potentiomètres", "value": "6 × B103 (lin., 10 kΩ)" },
-        { "label": "Écran",          "value": "OLED 128×32 I2C" },
+        { "label": "Écran",          "value": "OLED 0.91\" SSD1306 (128×32) — I2C GP0 (SDA) / GP1 (SCL)" },
+        { "label": "Multiplexeur",   "value": "74HC4051 — ADC GP26 + contrôle GP2/GP3/GP4" },
+        { "label": "Matrice",        "value": "4×4 (pas 5×3)" },
         { "label": "Boîtier",        "value": "PLA 3D (par défaut)" },
         { "label": "Connecteur",     "value": "USB-C Gen 2" },
-        { "label": "Dims",           "value": "180 × 110 × 25 mm" }
+        { "label": "Dimensions PCB", "value": "210 × 90 mm (XL)" }
       ],
       "includes": [
         "1 × Axion Pad XL",
@@ -276,6 +278,16 @@
       "stock": 15,
       "imagePath": "/images/products/axion-kit-diy.jpg",
       "options": [
+        {
+          "id": "form-factor",
+          "label": "Format Axion Pad",
+          "type": "radio",
+          "choices": [
+            { "value": "mini",  "label": "MINI — PCB 85 × 55 mm",   "priceAdd": 0,    "available": true },
+            { "value": "elite", "label": "ELITE — PCB 169 × 89 mm", "priceAdd": 1000, "available": true, "badge": "Populaire" },
+            { "value": "xl",    "label": "XL — PCB 210 × 90 mm",    "priceAdd": 2000, "available": true }
+          ]
+        },
         {
           "id": "assembly",
           "label": "Niveau d'assemblage",
@@ -298,16 +310,17 @@
         }
       ],
       "specs": [
-        { "label": "PCB",     "value": "2 couches FR4, RP2040" },
+        { "label": "PCB",     "value": "2 couches FR4, RP2040 (format au choix)" },
+        { "label": "Formats", "value": "MINI 85×55 · ELITE 169×89 · XL 210×90 mm" },
         { "label": "STL",     "value": "Fichiers inclus (impression 3D)" },
         { "label": "Soudage", "value": "Requis (kit nu)" },
         { "label": "Outils",  "value": "Fer à souder recommandé" }
       ],
       "includes": [
-        "1 × PCB Axion Pad",
+        "1 × PCB Axion Pad (format MINI / ELITE / XL au choix)",
         "Tous les composants CMS",
         "1 × RP2040 pré-flashé",
-        "4 × Potentiomètres B103 (10 kΩ lin.)",
+        "Potentiomètres B103 (10 kΩ lin.) selon format",
         "Fichiers STL boîtier (Impression 3D)",
         "Guide d'assemblage PDF"
       ]
@@ -316,33 +329,39 @@
       "id": "kit-pcb",
       "slug": "kit-pcb",
       "name": "Kit PCB seul",
-      "tagline": "PCB open source pour projets custom",
+      "tagline": "PCB open source — routage MINI, ELITE et XL",
       "description": "PCB 2 couches uniquement — même base que la gamme Axion Pad (MCU RP2040 non inclus par défaut). Conçue pour projet custom, docs sur GitHub. Soudage requis.",
       "longDescription": "Le PCB nu pour les makers qui veulent un boîtier entièrement custom tout en restant alignés sur l’écosystème open source Axion Pad (firmware et configurator). Le RP2040 n’est pas fourni avec la carte : tu dois le souder (ou un module équivalent prévu par le design) ainsi que le reste des composants hors PCB selon ta config — switches, potentiomètres, USB-C, etc.",
       "price": 2299,
       "category": "kits",
       "stock": 30,
-      "imagePath": "/images/products/kit-pcb.png",
-      "gallery": [ "/images/products/kit-pcb-2.png" ],
+      "imagePath": "/images/products/kit-pcb-routing-elite.png",
+      "gallery": [
+        "/images/products/kit-pcb-routing-mini.png",
+        "/images/products/kit-pcb-routing-xl.png",
+        "/images/products/kit-pcb.png",
+        "/images/products/kit-pcb-2.png"
+      ],
       "options": [
         {
-          "id": "pcb-version",
-          "label": "Version PCB",
+          "id": "form-factor",
+          "label": "Format Axion Pad",
           "type": "radio",
           "choices": [
-            { "value": "v1", "label": "V1 — Version originale",        "priceAdd": 0,   "available": true },
-            { "value": "v3", "label": "V3 — Pins espacées (amélioré)", "priceAdd": 300, "available": true, "badge": "Recommandé" }
+            { "value": "mini",  "label": "MINI — PCB 85 × 55 mm",   "priceAdd": -300, "available": true },
+            { "value": "elite", "label": "ELITE — PCB 169 × 89 mm", "priceAdd": 0,    "available": true, "badge": "Standard" },
+            { "value": "xl",    "label": "XL — PCB 210 × 90 mm",    "priceAdd": 500,  "available": true }
           ]
         }
       ],
       "specs": [
         { "label": "MCU",       "value": "RP2040 à fournir (non inclus)" },
         { "label": "Couches",   "value": "2 couches FR4" },
-        { "label": "Dims",      "value": "80 × 60 mm" },
+        { "label": "Formats",   "value": "MINI 85×55 · ELITE 169×89 · XL 210×90 mm" },
         { "label": "Flash",     "value": "2 MB QSPI (une fois RP2040 monté)" }
       ],
       "includes": [
-        "1 × PCB Axion Pad (MCU RP2040 non inclus)"
+        "1 × PCB Axion Pad (format MINI / ELITE / XL, MCU RP2040 non inclus)"
       ]
     },
     {
