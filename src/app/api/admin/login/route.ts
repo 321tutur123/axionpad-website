@@ -12,6 +12,7 @@ import {
   throttleBucketId,
 } from "@/lib/rateLimit";
 import { verifyPassword } from "@/lib/user-auth";
+import { checkOrigin } from "@/lib/csrf";
 
 export const runtime = "edge";
 
@@ -45,6 +46,9 @@ function setCookieHeader(value: string, maxAge: number): string {
 }
 
 export async function POST(request: Request) {
+  const originErr = checkOrigin(request);
+  if (originErr) return originErr;
+
   let body: { password?: string };
   try {
     body = (await request.json()) as typeof body;

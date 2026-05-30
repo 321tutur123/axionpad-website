@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { getProduct, getAllProducts, formatPrice, listProductImages } from "@/lib/products-data";
 import ProductConfigurator from "./ProductConfigurator";
 import ProductImageGallery from "@/components/products/ProductImageGallery";
+import ProductFallback from "@/components/products/ProductFallback";
 import ReviewSection from "@/components/reviews/ReviewSection";
 import ProductCard from "@/components/products/ProductCard";
 
@@ -25,6 +26,12 @@ export async function generateMetadata(
       description: product.tagline,
       images:      listProductImages(product).map(url => ({ url })),
       type:        "website",
+    },
+    twitter: {
+      card:        "summary_large_image",
+      title:       `${product.name} — ${formatPrice(product.price)}`,
+      description: product.tagline,
+      images:      listProductImages(product),
     },
   };
 }
@@ -56,8 +63,33 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     ? product.comparePrice - product.price
     : 0;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    brand: { "@type": "Brand", name: "Axion Pad" },
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "EUR",
+      price: (product.price / 100).toFixed(2),
+      availability: product.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      url: `https://axionpad.fr/shop/${product.slug}`,
+      seller: { "@type": "Organization", name: "Axion Pad" },
+    },
+    image: listProductImages(product).map(u =>
+      u.startsWith("http") ? u : `https://axionpad.fr${u}`
+    ),
+  };
+
   return (
     <main style={{ minHeight: "100vh", background: "transparent", paddingTop: "80px" }}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="max-w-6xl mx-auto px-6 py-10">
 
         {/* Breadcrumb */}
@@ -81,8 +113,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               className="object-contain p-10 h-full w-full"
               priority
               fallback={
-                <div className="absolute inset-0 flex items-center justify-center text-9xl select-none">
-                  ⌨️
+                <div className="absolute inset-0 flex items-center justify-center select-none">
+                  <ProductFallback slug={product.slug} category={product.category} />
                 </div>
               }
             >

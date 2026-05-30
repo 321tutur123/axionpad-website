@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { isAuthorized } from "@/lib/admin-auth";
+import { checkOrigin } from "@/lib/csrf";
 
 export const runtime = "edge";
 
 export async function GET(request: Request) {
+  const originErr = checkOrigin(request);
+  if (originErr) return originErr;
   if (!(await isAuthorized(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

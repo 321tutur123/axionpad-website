@@ -162,35 +162,20 @@ const PRODUCTS: ProductDef[] = [
     ],
     pots: 4,
   },
-  {
-    name: "Axion Pad XL",
-    tagline: "16 touches, écran OLED 0.91\" et 6 potentiomètres",
-    price: 11999,
-    badge: "Bientôt",
-    available: false,
-    specs: [
-      ["Touches",   "16 mécaniques MX (4×4)"],
-      ["Potars",    "6 × B103 10 kΩ"],
-      ["OLED",      "SSD1306 0.91\" (128×32) I2C"],
-      ["RGB",       "NeoPixel"],
-    ],
-    gridCols: "4c",
-    keys: [
-      ["d", "p", "d", "d"],
-      ["d", "d", "g", "d"],
-      ["p", "d", "d", "d"],
-      ["d", "d", "p", "d"],
-    ],
-    pots: 6,
-  },
 ];
 
-// Fill levels for mini faders — different positions for realism
-const MINI_FADER_LEVELS_4 = [60, 25, 78, 42];
-const MINI_FADER_LEVELS_6 = [70, 40, 55, 82, 28, 63];
+const MINI_FADER_LEVELS = [60, 25, 78, 42];
 
-function MiniPad({ keys, gridCols, pots = 0 }: { keys: KeyV[][]; gridCols: "2c" | "3c" | "4c" | "5c"; pots?: number }) {
-  const levels = pots === 6 ? MINI_FADER_LEVELS_6 : MINI_FADER_LEVELS_4;
+function MiniPad({
+  keys,
+  gridCols,
+  pots = 0,
+}: {
+  keys: KeyV[][];
+  gridCols: "2c" | "3c" | "4c" | "5c";
+  pots?: number;
+}) {
+  const levels = MINI_FADER_LEVELS;
 
   return (
     <div className="mini-pad">
@@ -208,16 +193,18 @@ function MiniPad({ keys, gridCols, pots = 0 }: { keys: KeyV[][]; gridCols: "2c" 
           ))}
         </div>
         {pots > 0 && (
-          <div className="mini-faders" aria-hidden>
-            {Array.from({ length: pots }).map((_, i) => {
-              const pct = levels[i] ?? 50;
-              return (
-                <div key={i} className="mini-fader">
-                  <div className="mini-fader-fill" style={{ height: `${pct}%` }} />
-                  <div className="mini-fader-knob" style={{ bottom: `calc(${pct}% - 4px)` }} />
-                </div>
-              );
-            })}
+          <div className="mini-side-cluster" aria-hidden>
+            <div className="mini-faders">
+              {Array.from({ length: pots }).map((_, i) => {
+                const pct = levels[i] ?? 50;
+                return (
+                  <div key={i} className="mini-fader">
+                    <div className="mini-fader-fill" style={{ height: `${pct}%` }} />
+                    <div className="mini-fader-knob" style={{ bottom: `calc(${pct}% - 4px)` }} />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
@@ -274,17 +261,26 @@ function ProductCard({ p, delay = 0 }: { p: ProductDef; delay?: number }) {
       </div>
 
       {p.available && p.slug ? (
-        <Link href={`/shop/${p.slug}`} className="btn-cart btn-cart--primary">
-          → Commander
-        </Link>
+        <>
+          <Link href={`/shop/${p.slug}`} className="btn-cart btn-cart--primary">
+            → Commander maintenant
+          </Link>
+          <div className="product-stock-hint">
+            <span className="product-stock-dot" />
+            En stock · expédié sous 5 j depuis Orléans
+          </div>
+        </>
       ) : p.available ? (
         <Link href="/shop" className="btn-cart btn-cart--primary">
           → Commander
         </Link>
       ) : (
-        <button className="btn-cart btn-cart--disabled" disabled>
-          En développement
-        </button>
+        <a
+          href={`mailto:contact@axionpad.fr?subject=Liste+d%27attente+${encodeURIComponent(p.name)}`}
+          className="btn-cart btn-cart--outline"
+        >
+          M'avertir à la sortie →
+        </a>
       )}
     </motion.div>
   );
@@ -314,7 +310,7 @@ function SpecCard() {
       >
         <div className="spec-card-header">
           <span className="eyebrow">FICHE TECHNIQUE</span>
-          <span className="spec-card-badge">AxionPad Pro</span>
+          <span className="spec-card-badge">Axion Pad Elite</span>
         </div>
 
         <div className="spec-card-rows">
@@ -405,7 +401,7 @@ function SoftwarePreview() {
             </div>
             <span className="sw-logo">▲</span>
             <span className="sw-app-name">AxionPad</span>
-            <div className="sw-device-pill">AxionPad Pro</div>
+            <div className="sw-device-pill">Axion Pad Elite</div>
             <div style={{ flex: 1 }} />
             <div className="sw-status-pill">
               <span className="sw-status-dot" />
@@ -431,7 +427,7 @@ function SoftwarePreview() {
                 <button className="sw-layer-btn" aria-label="suivant">▶</button>
                 <button className="sw-layer-add" aria-label="ajouter">+</button>
               </div>
-              <div className="sw-keys-subtitle">AxionPad Pro — 12 touches</div>
+              <div className="sw-keys-subtitle">Axion Pad Elite — 12 touches</div>
               {/* 3×4 key grid — column layout matching real app .key-sw */}
               <div className="sw-key-simple-grid">
                 {SW_KEYS.map((k, i) => (
@@ -750,11 +746,11 @@ export default function HomePage() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.55, ease: "easeOut" }}
         >
-          <span className="eyebrow block mb-4">CHOISISSEZ VOTRE MODÈLE</span>
-          <h2 className="products-section-title">Le pad qui vous correspond.</h2>
+          <span className="eyebrow block mb-4">GAMME AXION PAD</span>
+          <h2 className="products-section-title">Open source. Fait main.</h2>
           <p className="products-section-sub">
-            De 6 à 16 touches, avec ou sans OLED — chaque modèle est open source,
-            assemblé à la main et expédié depuis Orléans.
+            Chaque unité est assemblée, contrôlée et testée à la main avant expédition.
+            Firmware CircuitPython — sources et configurateur publics sur GitHub.
           </p>
         </motion.div>
 

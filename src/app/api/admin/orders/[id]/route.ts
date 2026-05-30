@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 import { isAuthorized } from "@/lib/admin-auth";
+import { checkOrigin } from "@/lib/csrf";
 
 export const runtime = "edge";
 
@@ -24,15 +25,24 @@ function esc(s: string | undefined): string {
     .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
+function isValidId(id: string): boolean {
+  return id.length > 0 && id.length <= 128 && /^[a-zA-Z0-9\-_]+$/.test(id);
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const originErr = checkOrigin(request);
+  if (originErr) return originErr;
   if (!(await isAuthorized(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { id } = await params;
+  if (!isValidId(id)) {
+    return NextResponse.json({ error: "ID invalide" }, { status: 400 });
+  }
   let body: { status?: string; tracking_number?: string };
   try {
     body = (await request.json()) as typeof body;
@@ -161,7 +171,9 @@ export async function PATCH(
 </td></tr></table>
 </body></html>`,
         }),
-      }).catch(() => null); // fire-and-forget
+      }).catch((err: unknown) => {
+        console.error("[admin/orders] Resend failed:", err);
+      });
     }
 
     return NextResponse.json({ success: true });
@@ -174,10 +186,15 @@ export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
+  const originErr = checkOrigin(request);
+  if (originErr) return originErr;
   if (!(await isAuthorized(request))) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { id } = await params;
+  if (!isValidId(id)) {
+    return NextResponse.json({ error: "ID invalide" }, { status: 400 });
+  }
   try {
     const { env } = getRequestContext();
     await env.DB.prepare("DELETE FROM orders WHERE id = ?").bind(id).run();

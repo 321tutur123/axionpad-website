@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 
 interface ShippingAddress {
   line1?: string;
@@ -124,7 +124,7 @@ function printPackingSlip(order: Order) {
   <div class="sub">axionpad.fr &#8212; contact@axionpad.fr</div>
   <hr>
   <div class="row">
-    <span class="order-num">Commande <strong>${order.order_number}</strong></span>
+    <span class="order-num">Commande <strong>${escHtml(order.order_number)}</strong></span>
     <span class="date">${date}</span>
   </div>
 
@@ -205,7 +205,11 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
   const deleteOrder = async () => {
     setDeleting(true);
     try {
-      await fetch(`/api/admin/orders/${order.id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/orders/${order.id}`, { method: "DELETE" });
+      if (!res.ok) {
+        console.error("[admin] delete failed:", res.status);
+        return;
+      }
       onUpdate(order.id, {} as Partial<Order>);
       onClose();
     } finally {
@@ -228,11 +232,15 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
   const markShipped = async () => {
     setSaving(true);
     try {
-      await fetch(`/api/admin/orders/${order.id}`, {
+      const res = await fetch(`/api/admin/orders/${order.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "shipped", tracking_number: tracking }),
       });
+      if (!res.ok) {
+        console.error("[admin] patch failed:", res.status);
+        return;
+      }
       onUpdate(order.id, { status: "shipped", tracking_number: tracking });
     } finally {
       setSaving(false);
@@ -409,6 +417,25 @@ export default function AdminOrdersPage() {
   const [statusFilter,  setStatusFilter]  = useState<string>("all");
   const [search,        setSearch]        = useState("");
 
+  const filtered = useMemo(() => orders.filter(o => {
+    if (statusFilter !== "all" && o.status !== statusFilter) return false;
+    if (search) {
+      const q = search.toLowerCase();
+      return (
+        o.order_number.toLowerCase().includes(q) ||
+        o.customer_name?.toLowerCase().includes(q) ||
+        o.customer_email.toLowerCase().includes(q)
+      );
+    }
+    return true;
+  }), [orders, statusFilter, search]);
+
+  const totals = useMemo(() => ({
+    all:       orders.length,
+    confirmed: orders.filter(o => o.status === "confirmed").length,
+    shipped:   orders.filter(o => o.status === "shipped").length,
+  }), [orders]);
+
   const fetchOrders = useCallback(async () => {
     setLoadingOrders(true);
     try {
@@ -489,25 +516,6 @@ export default function AdminOrdersPage() {
       </main>
     );
   }
-
-  const filtered = orders.filter(o => {
-    if (statusFilter !== "all" && o.status !== statusFilter) return false;
-    if (search) {
-      const q = search.toLowerCase();
-      return (
-        o.order_number.toLowerCase().includes(q) ||
-        o.customer_name?.toLowerCase().includes(q) ||
-        o.customer_email.toLowerCase().includes(q)
-      );
-    }
-    return true;
-  });
-
-  const totals = {
-    all:       orders.length,
-    confirmed: orders.filter(o => o.status === "confirmed").length,
-    shipped:   orders.filter(o => o.status === "shipped").length,
-  };
 
   return (
     <>

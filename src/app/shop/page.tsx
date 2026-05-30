@@ -5,65 +5,8 @@ import Link from "next/link";
 import { getAllProducts, formatPrice, type ProductVariantFull } from "@/lib/products-data";
 import { useCart } from "@/store/cart";
 import ProductImage from "@/components/products/ProductImage";
-
-// Photos lifestyle (fond clair) — traitement CSS renforcé
-const LIFESTYLE_IMAGES = ["kit-pcb.png", "kit-pcb-2.png"];
-const isLifestyle = (src: string) => LIFESTYLE_IMAGES.some(n => src.includes(n));
-
-// ── Pad key layouts ───────────────────────────────────────────
-type KV = "d" | "p" | "g";
-
-const PAD_ELITE: KV[][] = [["d","d","p","d"],["d","g","d","d"],["d","d","d","p"]];            // 3×4 — 12 touches
-const PAD_MINI:  KV[][] = [["d","p","d"],["d","d","g"]];                                       // 2×3 — 6 touches
-const PAD_XL:    KV[][] = [["d","p","d","d"],["d","d","g","d"],["p","d","d","d"],["d","d","p","d"]]; // 4×4 — 16 touches
-
-const FADER_LEVELS_4 = [58, 28, 75, 44];
-const FADER_LEVELS_6 = [68, 38, 52, 85, 24, 60];
-
-function PadVisual({ keys, cols, pots = 0 }: { keys: KV[][]; cols: 3 | 4 | 5; pots?: number }) {
-  const levels = pots === 6 ? FADER_LEVELS_6 : FADER_LEVELS_4;
-  return (
-    <div className="mini-pad">
-      <div className="mini-led" aria-hidden />
-      <div className="mini-pad-body">
-        <div className={`mini-key-grid mini-key-grid--${cols}c`}>
-          {keys.flat().map((v, i) => (
-            <button key={i} className={`mk${v === "p" ? " mk--p" : v === "g" ? " mk--g" : ""}`} aria-hidden tabIndex={-1} />
-          ))}
-        </div>
-        {pots > 0 && (
-          <div className="mini-faders" aria-hidden>
-            {Array.from({ length: pots }).map((_, i) => {
-              const pct = levels[i] ?? 50;
-              return (
-                <div key={i} className="mini-fader">
-                  <div className="mini-fader-fill" style={{ height: `${pct}%` }} />
-                  <div className="mini-fader-knob" style={{ bottom: `calc(${pct}% - 4px)` }} />
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// Fallback visuel selon la catégorie / slug du produit
-function ProductFallback({ slug, category }: { slug: string; category: string }) {
-  // Macro pads — pad CSS
-  if (slug === "axion-pad-standard") return <PadVisual keys={PAD_ELITE} cols={4} pots={4} />;
-  if (slug === "axion-pad-mini")     return <PadVisual keys={PAD_MINI}  cols={3} pots={0} />;
-  if (slug === "axion-pad-xl")       return <PadVisual keys={PAD_XL}    cols={4} pots={6} />;
-  // Accessoires / kits — emoji approprié
-  const emoji =
-    slug.includes("cable")   ? "🔌" :
-    slug.includes("keycap")  ? "⌨️" :
-    slug.includes("pcb")     ? "🔬" :
-    category === "kits"      ? "🔧" :
-    "📦";
-  return <span style={{ fontSize: "3.5rem", lineHeight: 1 }}>{emoji}</span>;
-}
+import ProductFallback from "@/components/products/ProductFallback";
+import { isLifestyle } from "@/lib/lifestyle-images";
 
 function shopCardCategoryLabel(category: string): string {
   switch (category) {
@@ -83,7 +26,7 @@ function ShopCard({ product }: { product: ProductVariantFull }) {
   const [adding, setAdding] = useState(false);
   const [done,   setDone]   = useState(false);
 
-  const isElite = product.category === "macro-pads" && product.slug !== "axion-pad-pro";
+  const isElite = product.category === "macro-pads";
 
   async function handleAdd() {
     if (!product.inStock || adding) return;

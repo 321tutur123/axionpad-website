@@ -49,3 +49,6 @@ next-env.d.ts
 .claude/
 AGENTS.md
 CLAUDE.md
+
+# twitter bot — local only, credentials sensibles
+/twitter-bot/

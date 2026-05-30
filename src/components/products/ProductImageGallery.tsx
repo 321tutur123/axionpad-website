@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import ProductImage from "@/components/products/ProductImage";
+import { isLifestyle } from "@/lib/lifestyle-images";
 
 interface Props {
   images: string[];
@@ -11,12 +12,6 @@ interface Props {
   className?: string;
   fallback?: React.ReactNode;
   children?: React.ReactNode;
-}
-
-// Photos lifestyle (fond clair) — reçoivent un traitement CSS spécifique
-const LIFESTYLE_IMAGES = ["kit-pcb.png", "kit-pcb-2.png"];
-function isLifestyle(src: string): boolean {
-  return LIFESTYLE_IMAGES.some(name => src.includes(name));
 }
 
 /** Fiche produit : image principale + miniatures si plusieurs URLs. */
@@ -64,7 +59,7 @@ export default function ProductImageGallery({
         <div className="pdp-gallery-thumbs" role="tablist" aria-label="Photos du produit">
           {list.map((href, i) => (
             <button
-              key={`${href}-${i}`}
+              key={i}
               type="button"
               role="tab"
               aria-selected={i === index}
