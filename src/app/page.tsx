@@ -41,7 +41,7 @@ function HeroKey({ v, label }: { v: KeyV; label: string }) {
   return (
     <button
       className={`hero-key hero-key--${v}`}
-      style={pressed ? { transform: "translateY(3px) scale(0.96)", boxShadow: v === "p" ? "0 1px 0 #3A34BB" : v === "g" ? "0 1px 0 #006B4F" : "0 1px 0 #0A0A14" } : {}}
+      style={pressed ? { transform: "translateY(3px) scale(0.96)", boxShadow: v === "p" ? "0 1px 0 #8A2407" : v === "g" ? "0 1px 0 #06403A" : "0 1px 0 #100E0B" } : {}}
       onMouseDown={() => setPressed(true)}
       onMouseUp={() => setPressed(false)}
       onMouseLeave={() => setPressed(false)}
@@ -80,7 +80,7 @@ function MacroPad() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9, duration: 0.5, ease: "easeOut" }}
       >
-        <div className="fbi" style={{ background: "rgba(108,99,255,0.14)" }}>⚙</div>
+        <div className="fbi" style={{ background: "rgba(232,67,31,0.14)" }}>⚙</div>
         <div>
           <div style={{ fontWeight: 700, fontSize: ".83rem" }}>RP2040</div>
           <div style={{ color: "var(--color-text-mute)", fontSize: ".7rem" }}>133 MHz · Dual-core</div>
@@ -93,7 +93,7 @@ function MacroPad() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.1, duration: 0.5, ease: "easeOut" }}
       >
-        <div className="fbi" style={{ background: "rgba(0,217,163,0.14)" }}>🔌</div>
+        <div className="fbi" style={{ background: "rgba(15,118,110,0.14)" }}>🔌</div>
         <div>
           <div style={{ fontWeight: 700, fontSize: ".83rem" }}>USB-C HID</div>
           <div style={{ color: "var(--color-text-mute)", fontSize: ".7rem" }}>Win / Mac / Linux</div>
@@ -520,11 +520,11 @@ function PcbSchematic() {
     <div className="schematic-wrap">
       <span className="schematic-filename">PCB_LAYOUT_v2.1.kicad · MICRO PAD V4</span>
       <svg viewBox="0 0 520 340" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="6" y="6" width="508" height="328" rx="4" stroke="rgba(108,99,255,0.25)" strokeWidth="1"/>
+        <rect x="6" y="6" width="508" height="328" rx="4" stroke="rgba(232,67,31,0.25)" strokeWidth="1"/>
         {([[22,22],[498,22],[22,318],[498,318]] as [number,number][]).map(([cx,cy],i) => (
           <g key={i}>
-            <circle cx={cx} cy={cy} r="6" stroke="rgba(108,99,255,0.22)" strokeWidth="0.75"/>
-            <circle cx={cx} cy={cy} r="2" fill="rgba(108,99,255,0.15)"/>
+            <circle cx={cx} cy={cy} r="6" stroke="rgba(232,67,31,0.22)" strokeWidth="0.75"/>
+            <circle cx={cx} cy={cy} r="2" fill="rgba(232,67,31,0.15)"/>
           </g>
         ))}
         {Array.from({ length: 3 }, (_, r) =>
@@ -541,9 +541,9 @@ function PcbSchematic() {
         )}
         <text x="109" y="172" textAnchor="middle" fontSize="6.5" fill="rgba(200,200,230,0.35)" fontFamily="monospace" letterSpacing="0.06em">KEY MATRIX 3×4</text>
         <rect x="188" y="100" width="104" height="104" rx="3"
-          stroke="rgba(108,99,255,0.65)" strokeWidth="1.5" fill="rgba(108,99,255,0.04)"/>
-        <text x="240" y="144" textAnchor="middle" fontSize="10" fill="rgba(108,99,255,0.90)" fontFamily="monospace" fontWeight="bold" letterSpacing="0.04em">RP2040</text>
-        <text x="240" y="158" textAnchor="middle" fontSize="6" fill="rgba(108,99,255,0.50)" fontFamily="monospace" letterSpacing="0.1em">RASPBERRY PI</text>
+          stroke="rgba(232,67,31,0.65)" strokeWidth="1.5" fill="rgba(232,67,31,0.04)"/>
+        <text x="240" y="144" textAnchor="middle" fontSize="10" fill="rgba(232,67,31,0.90)" fontFamily="monospace" fontWeight="bold" letterSpacing="0.04em">RP2040</text>
+        <text x="240" y="158" textAnchor="middle" fontSize="6" fill="rgba(232,67,31,0.50)" fontFamily="monospace" letterSpacing="0.1em">RASPBERRY PI</text>
         {Array.from({ length: 7 }, (_, i) => (
           <g key={`pin${i}`}>
             <rect x={168} y={108+i*13} width="20" height="5" rx="1" fill="rgba(200,200,230,0.10)" stroke="rgba(200,200,230,0.18)" strokeWidth="0.5"/>
@@ -551,25 +551,25 @@ function PcbSchematic() {
           </g>
         ))}
         <rect x="360" y="60" width="20" height="148" rx="3"
-          stroke="rgba(0,217,163,0.35)" strokeWidth="1" fill="rgba(0,217,163,0.03)"/>
+          stroke="rgba(15,118,110,0.35)" strokeWidth="1" fill="rgba(15,118,110,0.03)"/>
         {Array.from({ length: 10 }, (_, i) => (
           <g key={`conn${i}`}>
             <rect x={364} y={68+i*13} width="12" height="7" rx="1"
-              stroke="rgba(0,217,163,0.28)" strokeWidth="0.6" fill="rgba(0,217,163,0.06)"/>
+              stroke="rgba(15,118,110,0.28)" strokeWidth="0.6" fill="rgba(15,118,110,0.06)"/>
           </g>
         ))}
-        <text x="370" y="220" textAnchor="middle" fontSize="6" fill="rgba(0,217,163,0.45)" fontFamily="monospace" letterSpacing="0.05em" style={{ writingMode: "vertical-rl" } as React.CSSProperties}>CONNECTOR</text>
+        <text x="370" y="220" textAnchor="middle" fontSize="6" fill="rgba(15,118,110,0.45)" fontFamily="monospace" letterSpacing="0.05em" style={{ writingMode: "vertical-rl" } as React.CSSProperties}>CONNECTOR</text>
         {Array.from({ length: 4 }, (_, i) => (
           <g key={`pot${i}`}>
             <circle cx={400+i*26} cy={260} r="13"
-              stroke="rgba(0,217,163,0.38)" strokeWidth="0.75"/>
+              stroke="rgba(15,118,110,0.38)" strokeWidth="0.75"/>
             <circle cx={400+i*26} cy={260} r="6"
-              fill="rgba(0,217,163,0.10)" stroke="rgba(0,217,163,0.25)" strokeWidth="0.5"/>
-            <circle cx={400+i*26} cy={260} r="2" fill="rgba(0,217,163,0.20)"/>
-            <text x={400+i*26} y={282} textAnchor="middle" fontSize="5.5" fill="rgba(0,217,163,0.40)" fontFamily="monospace">B103</text>
+              fill="rgba(15,118,110,0.10)" stroke="rgba(15,118,110,0.25)" strokeWidth="0.5"/>
+            <circle cx={400+i*26} cy={260} r="2" fill="rgba(15,118,110,0.20)"/>
+            <text x={400+i*26} y={282} textAnchor="middle" fontSize="5.5" fill="rgba(15,118,110,0.40)" fontFamily="monospace">B103</text>
           </g>
         ))}
-        <text x="452" y="248" textAnchor="middle" fontSize="6" fill="rgba(0,217,163,0.45)" fontFamily="monospace" letterSpacing="0.06em">POTS ×4</text>
+        <text x="452" y="248" textAnchor="middle" fontSize="6" fill="rgba(15,118,110,0.45)" fontFamily="monospace" letterSpacing="0.06em">POTS ×4</text>
         <rect x="200" y="296" width="80" height="22" rx="3"
           stroke="rgba(56,189,248,0.45)" strokeWidth="1" fill="rgba(56,189,248,0.04)"/>
         <rect x="216" y="300" width="12" height="8" rx="1"
@@ -577,16 +577,16 @@ function PcbSchematic() {
         <rect x="252" y="300" width="12" height="8" rx="1"
           stroke="rgba(56,189,248,0.30)" strokeWidth="0.5" fill="rgba(56,189,248,0.06)"/>
         <text x="240" y="312" textAnchor="middle" fontSize="7" fill="rgba(56,189,248,0.65)" fontFamily="monospace" fontWeight="bold" letterSpacing="0.06em">USB-C</text>
-        <path d="M188 130 L168 130 L109 130" stroke="rgba(108,99,255,0.28)" strokeWidth="1.2"/>
-        <path d="M292 130 L360 130" stroke="rgba(108,99,255,0.22)" strokeWidth="1.2"/>
-        <path d="M240 204 L240 296" stroke="rgba(0,217,163,0.18)" strokeWidth="1"/>
-        <path d="M240 100 L240 30 L109 30" stroke="rgba(108,99,255,0.20)" strokeWidth="0.9" strokeDasharray="4 3"/>
-        <path d="M360 80 L312 80 L292 118" stroke="rgba(0,217,163,0.25)" strokeWidth="0.75"/>
-        <path d="M360 100 L312 100 L292 135" stroke="rgba(0,217,163,0.20)" strokeWidth="0.75"/>
-        <path d="M400 247 L400 220 L370 200 L340 170" stroke="rgba(0,217,163,0.18)" strokeWidth="0.75" strokeDasharray="3 2"/>
+        <path d="M188 130 L168 130 L109 130" stroke="rgba(232,67,31,0.28)" strokeWidth="1.2"/>
+        <path d="M292 130 L360 130" stroke="rgba(232,67,31,0.22)" strokeWidth="1.2"/>
+        <path d="M240 204 L240 296" stroke="rgba(15,118,110,0.18)" strokeWidth="1"/>
+        <path d="M240 100 L240 30 L109 30" stroke="rgba(232,67,31,0.20)" strokeWidth="0.9" strokeDasharray="4 3"/>
+        <path d="M360 80 L312 80 L292 118" stroke="rgba(15,118,110,0.25)" strokeWidth="0.75"/>
+        <path d="M360 100 L312 100 L292 135" stroke="rgba(15,118,110,0.20)" strokeWidth="0.75"/>
+        <path d="M400 247 L400 220 L370 200 L340 170" stroke="rgba(15,118,110,0.18)" strokeWidth="0.75" strokeDasharray="3 2"/>
         <path d="M188 170 L150 170 L150 100 L84 100" stroke="rgba(200,200,230,0.14)" strokeWidth="0.6"/>
         <path d="M188 148 L160 148 L160 62 L106 62" stroke="rgba(200,200,230,0.12)" strokeWidth="0.6" strokeDasharray="3 2"/>
-        <text x="36" y="320" fontSize="8" fill="rgba(108,99,255,0.55)" fontFamily="monospace" fontWeight="bold" letterSpacing="0.08em">MICRO PAD V4</text>
+        <text x="36" y="320" fontSize="8" fill="rgba(232,67,31,0.55)" fontFamily="monospace" fontWeight="bold" letterSpacing="0.08em">MICRO PAD V4</text>
         <text x="36" y="332" fontSize="6" fill="rgba(200,200,230,0.20)" fontFamily="monospace" letterSpacing="0.05em">FR-ORL · MIT OPEN SOURCE · REV 2.1</text>
       </svg>
     </div>

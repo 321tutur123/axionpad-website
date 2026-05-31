@@ -1,19 +1,28 @@
 import type { Metadata } from "next";
-import { Inter, Space_Mono } from "next/font/google";
+import { Archivo, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
-const inter = Inter({
-  variable: "--font-sans",
+// DA « Spec industriel » — Archivo (display grotesque), Hanken Grotesk (corps), JetBrains Mono (données)
+const archivo = Archivo({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
   display: "swap",
 });
 
-const spaceMono = Space_Mono({
+const hanken = Hanken_Grotesk({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "500", "700"],
   display: "swap",
 });
 
@@ -57,12 +66,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" className="scroll-smooth">
-      <body className={`${inter.variable} ${spaceMono.variable} antialiased`}>
-        {/* Fond animé — 3 orbes violets/verts qui dérivent lentement */}
+      <body className={`${archivo.variable} ${hanken.variable} ${jetbrainsMono.variable} antialiased`}>
+        {/* Fond — grille technique « blueprint » sur papier chaud */}
         <div className="bg-wrap" aria-hidden="true">
-          <div className="bg-orb bg-orb-1" />
-          <div className="bg-orb bg-orb-2" />
-          <div className="bg-orb bg-orb-3" />
+          <div className="bg-grid-tech" />
         </div>
         <script
           type="application/ld+json"
