@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { getAllProducts, formatPrice } from "@/lib/products-data";
+import { getAllProducts } from "@/lib/products-data";
 
 // ── Console data ───────────────────────────────────────────────
 const CONSOLE_LINES = [
@@ -120,50 +120,71 @@ interface ProductDef {
   pots?: number;
 }
 
-const PRODUCTS: ProductDef[] = [
-  {
-    name: "Axion Pad Mini",
-    tagline: "Ultra-compact, 6 touches — l'essentiel, sans compromis",
-    price: 5999,
-    badge: "Bientôt",
-    available: false,
-    specs: [
-      ["Touches",   "6 mécaniques MX"],
-      ["MCU",       "RP2040 @ 133 MHz"],
-      ["Interface", "USB-C HID"],
-      ["RGB",       "Non"],
-    ],
-    gridCols: "3c",
-    keys: [
-      ["d", "d", "d"],
-      ["d", "p", "g"],
-    ],
-    pots: 0,
-  },
-  {
-    name: "Axion Pad Elite",
+// Visuels propres à l'accueil (pad CSS, specs courtes, accroche) par slug.
+// La LISTE et l'ORDRE viennent de products.json : catégorie « macro-pads », champ `order`.
+const PAD_VISUALS: Record<
+  string,
+  { tagline: string; gridCols: "2c" | "3c" | "4c" | "5c"; pots: number; keys: KeyV[][]; specs: [string, string][] }
+> = {
+  "axion-pad-standard": {
     tagline: "Le macro pad essentiel pour votre workflow",
-    price: 7999,
-    comparePrice: 9999,
-    badge: "Best-seller",
-    slug: "axion-pad-standard",
-    featured: true,
-    available: true,
+    gridCols: "4c",
+    pots: 4,
+    keys: [
+      ["d", "d", "p", "d"],
+      ["d", "g", "d", "d"],
+      ["d", "d", "d", "p"],
+    ],
     specs: [
       ["Touches",   "12 mécaniques MX"],
       ["Potars",    "4 × B103 10 kΩ"],
       ["MCU",       "RP2040 @ 133 MHz"],
       ["Interface", "USB-C HID"],
     ],
-    gridCols: "4c",
-    keys: [
-      ["d", "d", "p", "d"],
-      ["d", "g", "d", "d"],
-      ["d", "d", "d", "p"],
-    ],
-    pots: 4,
   },
-];
+  "axion-pad-mini": {
+    tagline: "Ultra-compact, 6 touches — l'essentiel, sans compromis",
+    gridCols: "3c",
+    pots: 0,
+    keys: [
+      ["d", "d", "d"],
+      ["d", "p", "g"],
+    ],
+    specs: [
+      ["Touches",   "6 mécaniques MX"],
+      ["MCU",       "RP2040 @ 133 MHz"],
+      ["Interface", "USB-C HID"],
+      ["RGB",       "Non"],
+    ],
+  },
+};
+
+// Source unique : products.json (macro-pads), trié par `order`. Visuel = PAD_VISUALS.
+const PRODUCTS: ProductDef[] = getAllProducts()
+  .filter((p) => p.category === "macro-pads")
+  .map((p) => {
+    const v = PAD_VISUALS[p.slug] ?? {
+      tagline: p.tagline,
+      gridCols: "4c" as const,
+      pots: 0,
+      keys: [["d"]] as KeyV[][],
+      specs: p.specs.slice(0, 4).map((s) => [s.label, s.value] as [string, string]),
+    };
+    return {
+      name: p.name,
+      tagline: v.tagline,
+      price: p.price,
+      comparePrice: p.comparePrice,
+      badge: p.comingSoon ? "Bientôt" : p.badge,
+      slug: p.slug,
+      featured: p.inStock,
+      available: p.inStock,
+      specs: v.specs,
+      keys: v.keys,
+      gridCols: v.gridCols,
+      pots: v.pots,
+    };
+  });
 
 const MINI_FADER_LEVELS = [60, 25, 78, 42];
 
