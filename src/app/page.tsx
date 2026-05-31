@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { getAllProducts, formatPrice } from "@/lib/products-data";
 
 // ── Console data ───────────────────────────────────────────────
 const CONSOLE_LINES = [
