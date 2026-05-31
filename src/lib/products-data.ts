@@ -1,4 +1,5 @@
 import rawData from "../data/products.json";
+import productImages from "../data/product-images.json";
 
 export interface ProductChoice {
   value: string;
@@ -37,7 +38,8 @@ export interface ProductVariantFull {
   stock: number;        // 0 = out of stock
   inStock: boolean;     // derived: stock > 0 && !comingSoon
   comingSoon?: boolean; // true = En développement, no purchase
-  imagePath: string;    // drop file at public/ + imagePath
+  order?: number;       // tri d'affichage (plus petit = affiché en premier)
+  imagePath?: string;   // résolu via product-images.json (sinon repli visuel)
   /** URLs additionnelles (public/) — même produit, autres angles ; la 1ère reste imagePath pour les listings. */
   gallery?: string[];
   description: string;
@@ -119,10 +121,18 @@ export function buildCheckoutEngravingDescription(
 
 type RawProduct = Omit<ProductVariantFull, "inStock">;
 
+const imageMap = productImages as Record<string, string>;
+
 const PRODUCTS: Record<string, ProductVariantFull> = Object.fromEntries(
   (rawData.products as unknown as RawProduct[]).map(p => [
     p.slug,
-    { ...p, inStock: p.stock > 0 && !p.comingSoon },
+    {
+      ...p,
+      // imagePath explicite (products.json) gagne ; sinon photo auto-détectée
+      // dans public/images/products/<slug>.<ext> (voir scripts/build-product-images.mjs)
+      imagePath: p.imagePath ?? imageMap[p.slug],
+      inStock: p.stock > 0 && !p.comingSoon,
+    },
   ])
 );
 
@@ -131,7 +141,10 @@ export function getProduct(slug: string): ProductVariantFull | null {
 }
 
 export function getAllProducts(): ProductVariantFull[] {
-  return Object.values(PRODUCTS);
+  return Object.values(PRODUCTS).sort(
+    (a, b) =>
+      (a.order ?? Number.MAX_SAFE_INTEGER) - (b.order ?? Number.MAX_SAFE_INTEGER),
+  );
 }
 
 /** Liste des images fiche produit : principale puis galerie (sans doublon). */
