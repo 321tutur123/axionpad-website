@@ -24,7 +24,7 @@
       "category": "macro-pads",
       "badge": "Best-seller",
       "stock": 25,
-      "imagePath": "/images/products/axion-pad-standard.jpg",
+      "order": 1,
       "options": [
         {
           "id": "casing",
@@ -118,7 +118,7 @@
       "category": "macro-pads",
       "comingSoon": true,
       "stock": 0,
-      "imagePath": "/images/products/axion-pad-mini.jpg",
+      "order": 2,
       "options": [
         {
           "id": "casing",
@@ -189,7 +189,7 @@
       "price": 4999,
       "category": "kits",
       "stock": 15,
-      "imagePath": "/images/products/axion-kit-diy.jpg",
+      "order": 3,
       "options": [
         {
           "id": "form-factor",
@@ -330,7 +330,7 @@
       "price": 2499,
       "category": "accessories",
       "stock": 20,
-      "imagePath": "/images/products/keycaps-custom.jpg",
+      "order": 4,
       "options": [
         {
           "id": "keycap-profile",

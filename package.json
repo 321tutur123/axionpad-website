@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "images": "node scripts/build-product-images.mjs",
+    "predev": "node scripts/build-product-images.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/build-product-images.mjs",
     "build": "next build",
     "pages:build": "npx @cloudflare/next-on-pages",
     "start": "next start",
