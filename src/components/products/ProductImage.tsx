@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 
 interface Props {
-  src: string;
+  src?: string;
   alt: string;
   fallback?: React.ReactNode;
   sizes?: string;
@@ -15,7 +15,7 @@ interface Props {
 export default function ProductImage({ src, alt, fallback, sizes, priority, className }: Props) {
   const [err, setErr] = useState(false);
 
-  if (err) return <>{fallback ?? null}</>;
+  if (!src || err) return <>{fallback ?? null}</>;
 
   return (
     <Image
