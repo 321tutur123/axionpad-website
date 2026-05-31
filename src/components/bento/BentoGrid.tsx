@@ -20,7 +20,7 @@ const SPECS_FULL = [
   ["RGB",        "WS2812B NEOPIXEL"  ],
   ["ORIGINE",    "ORLÉANS, FR"       ],
   ["LICENCE",    "MIT OPEN SOURCE"   ],
-  ["PRIX",       "79,99 EUR"         ],
+  ["PRIX",       "79,99 €"           ],
   ["STOCK",      "EN STOCK"          ],
 ];
 
@@ -89,7 +89,7 @@ export default function BentoGrid() {
             className="btn-terminal btn-terminal--sm"
             style={{ marginTop: "16px", display: "flex" }}
           >
-            → COMMANDER — 79,99 EUR
+            Commander — 79,99 €
           </Link>
         </HwPanel>
       </motion.div>

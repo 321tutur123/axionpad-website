@@ -49,13 +49,13 @@ export interface ProductVariantFull {
 
 /** Converts cents to a display string: 7999 → "79.99 €" */
 export function formatPrice(cents: number): string {
-  return (cents / 100).toFixed(2) + " €";
+  return (cents / 100).toFixed(2).replace(".", ",") + " €";
 }
 
 /** Formats a priceAdd delta: +800 → "+8.00 €", -800 → "−8.00 €" */
 export function formatPriceAdd(cents: number): string {
   const abs = Math.abs(cents);
-  const display = (abs / 100).toFixed(2) + " €";
+  const display = (abs / 100).toFixed(2).replace(".", ",") + " €";
   return cents >= 0 ? `+${display}` : `−${display}`;
 }
 

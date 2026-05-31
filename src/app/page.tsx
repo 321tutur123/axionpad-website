@@ -11,7 +11,7 @@ const CONSOLE_LINES = [
   { t: "cmd",    s: "axionpad.specs.dump()" },
   { t: "data",   s: "│  12 touches MX · 4 pots B103 · RP2040@133MHz · USB-C HID" },
   { t: "cmd",    s: "axionpad.checkout({ qty: 1 })" },
-  { t: "ok",     s: "✓  Total: 79,99 EUR — Livraison: FR-ORL (5 j.)" },
+  { t: "ok",     s: "✓  Total: 79,99 € — Livraison: FR-ORL (5 j.)" },
   { t: "prompt", s: "Confirmer et expédier → " },
 ];
 
@@ -123,7 +123,7 @@ const PRODUCTS: ProductDef[] = [
   {
     name: "Axion Pad Mini",
     tagline: "Ultra-compact, 6 touches — l'essentiel, sans compromis",
-    price: 4999,
+    price: 5999,
     badge: "Bientôt",
     available: false,
     specs: [
@@ -252,10 +252,10 @@ function ProductCard({ p, delay = 0 }: { p: ProductDef; delay?: number }) {
 
       <div className="product-price-row">
         <span className="product-price-main">{euros},{cents}</span>
-        <span className="product-price-cur">&nbsp;EUR</span>
+        <span className="product-price-cur">&nbsp;€</span>
         {p.comparePrice && (
           <span className="product-price-strike">
-            {Math.floor(p.comparePrice / 100)},{String(p.comparePrice % 100).padStart(2, "0")} EUR
+            {Math.floor(p.comparePrice / 100)},{String(p.comparePrice % 100).padStart(2, "0")} €
           </span>
         )}
       </div>
@@ -263,7 +263,7 @@ function ProductCard({ p, delay = 0 }: { p: ProductDef; delay?: number }) {
       {p.available && p.slug ? (
         <>
           <Link href={`/shop/${p.slug}`} className="btn-cart btn-cart--primary">
-            → Commander maintenant
+            Commander →
           </Link>
           <div className="product-stock-hint">
             <span className="product-stock-dot" />
@@ -272,7 +272,7 @@ function ProductCard({ p, delay = 0 }: { p: ProductDef; delay?: number }) {
         </>
       ) : p.available ? (
         <Link href="/shop" className="btn-cart btn-cart--primary">
-          → Commander
+          Commander →
         </Link>
       ) : (
         <a
@@ -331,7 +331,7 @@ function SpecCard() {
 
         <div className="spec-card-footer">
           <Link href="/shop/axion-pad-standard" className="btn-terminal btn-terminal--sm">
-            → Commander — 79,99 EUR
+            Commander — 79,99 €
           </Link>
           <Link href="https://github.com/321tutur123/axion-pad-apps/tree/main/application/dist" className="btn-terminal btn-terminal--ghost btn-terminal--sm" target="_blank" rel="noopener noreferrer">
             Télécharger l'app
@@ -503,10 +503,10 @@ function SoftwarePreview() {
           transition={{ delay: 0.3, duration: 0.45 }}
         >
           <Link href="https://github.com/321tutur123/axion-pad-apps/tree/main/application/dist" className="btn-terminal" target="_blank" rel="noopener noreferrer">
-            → TÉLÉCHARGER L'APP — GRATUIT
+            Télécharger l'app — gratuit
           </Link>
           <Link href="/shop" className="btn-terminal btn-terminal--ghost">
-            COMMANDER LE PAD
+            Commander le pad
           </Link>
         </motion.div>
       </div>
@@ -660,7 +660,7 @@ function GlassConsole() {
                 transition={{ delay: 0.35, duration: 0.4 }}
               >
                 <Link href="/shop" className="btn-terminal">
-                  COMMANDER — 79,99 EUR →
+                  Commander — 79,99 €
                 </Link>
                 <Link href="https://github.com/321tutur123/axion-pad-apps/tree/main/application/dist" className="btn-terminal btn-terminal--ghost btn-terminal--sm" target="_blank" rel="noopener noreferrer">
                   TÉLÉCHARGER L'APP
@@ -705,7 +705,7 @@ export default function HomePage() {
 
           <div className="hero-actions">
             <Link href="/shop/axion-pad-standard" className="btn-terminal">
-              → Commander l'Elite — 79,99 EUR
+              Commander l'Elite — 79,99 €
             </Link>
             <Link href="https://github.com/321tutur123/axion-pad-apps/tree/main/application/dist" className="btn-terminal btn-terminal--ghost" target="_blank" rel="noopener noreferrer">
               Télécharger l'app
@@ -786,7 +786,7 @@ export default function HomePage() {
                 rel="noopener noreferrer"
                 className="btn-terminal btn-terminal--sm"
               >
-                → GITHUB
+                GitHub
               </a>
               <Link href="https://github.com/321tutur123/axion-pad-apps/tree/main/application/dist" className="btn-terminal btn-terminal--ghost btn-terminal--sm" target="_blank" rel="noopener noreferrer">
                 TÉLÉCHARGER L'APP

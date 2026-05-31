@@ -7,6 +7,7 @@ import ProductImageGallery from "@/components/products/ProductImageGallery";
 import ProductFallback from "@/components/products/ProductFallback";
 import ReviewSection from "@/components/reviews/ReviewSection";
 import ProductCard from "@/components/products/ProductCard";
+import { IconShield, IconPackage, IconReturn } from "@/components/ui/Icons";
 
 export function generateStaticParams() {
   return getAllProducts().map(p => ({ slug: p.slug }));
@@ -37,10 +38,10 @@ export async function generateMetadata(
 }
 
 const TRUST = [
-  { icon: "🇫🇷", label: "Assemblé à Orléans" },
-  { icon: "🔒", label: "Paiement sécurisé" },
-  { icon: "📦", label: "Expédié en 3–5 j" },
-  { icon: "↩",  label: "Retours 30 j" },
+  { icon: <span className="trust-flag">🇫🇷</span>, label: "Assemblé à Orléans" },
+  { icon: <IconShield />,  label: "Paiement sécurisé" },
+  { icon: <IconPackage />, label: "Expédié en 3–5 j" },
+  { icon: <IconReturn />,  label: "Retours 30 j" },
 ];
 
 const HIGHLIGHTS = [
@@ -168,7 +169,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div className="pdp-trust-strip">
               {TRUST.map(t => (
                 <div key={t.label} className="pdp-trust-item">
-                  <span>{t.icon}</span>
+                  <span className="trust-icon">{t.icon}</span>
                   <span>{t.label}</span>
                 </div>
               ))}

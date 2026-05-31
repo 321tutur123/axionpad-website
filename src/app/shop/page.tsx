@@ -7,6 +7,7 @@ import { useCart } from "@/store/cart";
 import ProductImage from "@/components/products/ProductImage";
 import ProductFallback from "@/components/products/ProductFallback";
 import { isLifestyle } from "@/lib/lifestyle-images";
+import { IconShield, IconPackage, IconReturn } from "@/components/ui/Icons";
 
 function shopCardCategoryLabel(category: string): string {
   switch (category) {
@@ -138,13 +139,13 @@ export default function ShopPage() {
           </div>
           <div className="shop-trust">
             {[
-              { icon: "🇫🇷", label: "Fabriqué à Orléans" },
-              { icon: "🔒", label: "Paiement sécurisé" },
-              { icon: "📦", label: "Expédition 3–5 j" },
-              { icon: "↩", label: "Retours 30 j" },
+              { icon: <span className="trust-flag">🇫🇷</span>, label: "Fabriqué à Orléans" },
+              { icon: <IconShield />, label: "Paiement sécurisé" },
+              { icon: <IconPackage />, label: "Expédition 3–5 j" },
+              { icon: <IconReturn />, label: "Retours 30 j" },
             ].map(t => (
               <div key={t.label} className="shop-trust-item">
-                <span>{t.icon}</span>
+                <span className="trust-icon">{t.icon}</span>
                 <span>{t.label}</span>
               </div>
             ))}

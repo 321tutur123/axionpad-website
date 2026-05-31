@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { IconShield, IconPackage } from "@/components/ui/Icons";
 
 const NAV = [
   {
@@ -95,9 +96,13 @@ export default function Footer() {
             © {new Date().getFullYear()} Axion Pad — Arthur Delacour. Tous droits réservés.
           </p>
           <div className="flex items-center gap-4 text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>
-            <span>🔒 Paiement sécurisé Stripe</span>
+            <span className="inline-flex items-center gap-1.5">
+              <IconShield size={14} /> Paiement sécurisé Stripe
+            </span>
             <span>·</span>
-            <span>📦 Expédié depuis Orléans</span>
+            <span className="inline-flex items-center gap-1.5">
+              <IconPackage size={14} /> Expédié depuis Orléans
+            </span>
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ import { gsap } from "@/lib/gsap";
 import { useCart } from "@/store/cart";
 
 const NAV_LINKS = [
-  { href: "/shop",     label: "Shop" },
+  { href: "/shop",     label: "Boutique" },
   { href: "/software", label: "Logiciel" },
   { href: "/about",    label: "À propos" },
   { href: "/track",    label: "Suivi" },
@@ -107,7 +107,7 @@ export default function Navbar() {
           className="hidden md:inline-flex btn-accent"
           style={{ padding: "9px 18px", fontSize: "0.75rem" }}
         >
-          Shop
+          Commander
         </Link>
 
         {/* Hamburger mobile */}

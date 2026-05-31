@@ -3508,6 +3508,16 @@ body {
   color: var(--color-text-mute);
 }
 
+/* Trust strips — SVG icons (accent) + brand flag emoji, partagé shop + PDP */
+.trust-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+.trust-flag { font-size: 1em; line-height: 1; }
+
 /* Highlights */
 .pdp-highlights {
   display: flex;
@@ -3651,6 +3661,45 @@ body {
   color: var(--color-text-mute);
   margin-bottom: 20px;
   font-family: var(--font-mono);
+}
+
+/* Related product card — même langage visuel que .shop-card */
+.related-card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255,255,255,0.030);
+  border: 1px solid rgba(108,99,255,0.14);
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.related-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(108,99,255,0.35);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.35);
+}
+.related-card-visual {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: radial-gradient(circle at 50% 40%, rgba(108,99,255,0.06), transparent 70%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.related-card-name {
+  padding: 10px 12px 2px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1.25;
+}
+.related-card:hover .related-card-name { color: var(--color-accent); }
+.related-card-price {
+  padding: 0 12px 12px;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  color: var(--color-text-mute);
 }
 
 /* ═══════════════════════════════════════════════════════════
