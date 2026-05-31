@@ -38,15 +38,15 @@ function VerifyEmailContent() {
   return (
     <main className="min-h-screen bg-transparent flex items-center justify-center px-6 py-32">
       <div className="w-full max-w-md text-center">
-        <Link href="/" className="inline-block text-white font-bold text-2xl tracking-tight mb-8">
-          AXION<span className="text-violet-500">PAD</span>
+        <Link href="/" className="inline-block text-[#16130E] font-bold text-2xl tracking-tight mb-8">
+          AXION<span className="text-[#E8431F]">PAD</span>
         </Link>
 
-        <div className="p-8 rounded-2xl border border-white/10 bg-white/[0.03]">
+        <div className="p-8 rounded-2xl border border-[#16130E]/12 bg-[#FAF7EF]">
           {status === "loading" && (
             <>
-              <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-6 animate-pulse" />
-              <p className="text-zinc-400 text-sm">Vérification en cours…</p>
+              <div className="w-14 h-14 rounded-full bg-[#FAF7EF] border border-[#16130E]/12 flex items-center justify-center mx-auto mb-6 animate-pulse" />
+              <p className="text-[#6A6453] text-sm">Vérification en cours…</p>
             </>
           )}
 
@@ -57,11 +57,11 @@ function VerifyEmailContent() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/>
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-white mb-3">Email confirmé !</h1>
-              <p className="text-sm text-zinc-400 mb-6">Votre compte est activé. Vous pouvez maintenant vous connecter.</p>
+              <h1 className="text-2xl font-bold text-[#16130E] mb-3">Email confirmé !</h1>
+              <p className="text-sm text-[#6A6453] mb-6">Votre compte est activé. Vous pouvez maintenant vous connecter.</p>
               <Link
                 href="/login"
-                className="inline-block w-full py-3.5 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm transition-all hover:scale-[1.02]"
+                className="inline-block w-full py-3.5 rounded-full bg-[#E8431F] hover:bg-[#C7370F] text-[#16130E] font-semibold text-sm transition-all hover:scale-[1.02]"
               >
                 Se connecter
               </Link>
@@ -75,11 +75,11 @@ function VerifyEmailContent() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-white mb-3">Lien invalide</h1>
-              <p className="text-sm text-zinc-400 mb-6">{message}</p>
+              <h1 className="text-2xl font-bold text-[#16130E] mb-3">Lien invalide</h1>
+              <p className="text-sm text-[#6A6453] mb-6">{message}</p>
               <Link
                 href="/register"
-                className="inline-block w-full py-3.5 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm transition-all hover:scale-[1.02]"
+                className="inline-block w-full py-3.5 rounded-full bg-[#E8431F] hover:bg-[#C7370F] text-[#16130E] font-semibold text-sm transition-all hover:scale-[1.02]"
               >
                 Créer un compte
               </Link>

@@ -88,15 +88,15 @@ function LoginForm() {
       <div className="w-full max-w-md">
 
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block text-white font-bold text-2xl tracking-tight">
-            AXION<span className="text-violet-500">PAD</span>
+          <Link href="/" className="inline-block text-[#16130E] font-bold text-2xl tracking-tight">
+            AXION<span className="text-[#E8431F]">PAD</span>
           </Link>
         </div>
 
-        <div className="p-8 rounded-2xl border border-white/10 bg-white/[0.03]">
+        <div className="p-8 rounded-2xl border border-[#16130E]/12 bg-[#FAF7EF]">
           <div className="mb-7">
-            <h1 className="text-2xl font-bold text-white mb-2">Welcome back</h1>
-            <p className="text-sm text-zinc-500">Sign in to your AXIONPAD account.</p>
+            <h1 className="text-2xl font-bold text-[#16130E] mb-2">Welcome back</h1>
+            <p className="text-sm text-[#6A6453]">Sign in to your AXIONPAD account.</p>
           </div>
 
           {notice && (
@@ -112,7 +112,7 @@ function LoginForm() {
 
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
             <div>
-              <label htmlFor="email" className="text-sm font-medium text-zinc-300 mb-1.5 block">
+              <label htmlFor="email" className="text-sm font-medium text-[#16130E] mb-1.5 block">
                 Email address
               </label>
               <input
@@ -123,7 +123,7 @@ function LoginForm() {
                 value={form.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
-                className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-white text-sm focus:outline-none focus:border-violet-500 placeholder:text-zinc-600 transition-colors ${fieldErrors.email ? "border-red-500/50" : "border-white/10"}`}
+                className={`w-full px-4 py-3 rounded-xl bg-[#FAF7EF] border text-[#16130E] text-sm focus:outline-none focus:border-[#E8431F] placeholder:text-[#9A9180] transition-colors ${fieldErrors.email ? "border-red-500/50" : "border-[#16130E]/12"}`}
               />
               {fieldErrors.email && (
                 <p className="text-xs text-red-400 mt-1.5">{fieldErrors.email}</p>
@@ -131,7 +131,7 @@ function LoginForm() {
             </div>
 
             <div>
-              <label htmlFor="password" className="text-sm font-medium text-zinc-300 mb-1.5 block">
+              <label htmlFor="password" className="text-sm font-medium text-[#16130E] mb-1.5 block">
                 Password
               </label>
               <input
@@ -142,13 +142,13 @@ function LoginForm() {
                 value={form.password}
                 onChange={handleChange}
                 placeholder="Your password"
-                className={`w-full px-4 py-3 rounded-xl bg-white/5 border text-white text-sm focus:outline-none focus:border-violet-500 placeholder:text-zinc-600 transition-colors ${fieldErrors.password ? "border-red-500/50" : "border-white/10"}`}
+                className={`w-full px-4 py-3 rounded-xl bg-[#FAF7EF] border text-[#16130E] text-sm focus:outline-none focus:border-[#E8431F] placeholder:text-[#9A9180] transition-colors ${fieldErrors.password ? "border-red-500/50" : "border-[#16130E]/12"}`}
               />
               {fieldErrors.password && (
                 <p className="text-xs text-red-400 mt-1.5">{fieldErrors.password}</p>
               )}
               <div className="text-right mt-1.5">
-                <Link href="/forgot-password" className="text-xs text-zinc-500 hover:text-violet-400 transition-colors">
+                <Link href="/forgot-password" className="text-xs text-[#6A6453] hover:text-[#E8431F] transition-colors">
                   Mot de passe oublié ?
                 </Link>
               </div>
@@ -157,16 +157,16 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 mt-2 rounded-full bg-violet-600 hover:bg-violet-500 text-white font-semibold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="w-full py-3.5 mt-2 rounded-full bg-[#E8431F] hover:bg-[#C7370F] text-[#16130E] font-semibold text-sm transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
               {loading ? "Signing in…" : "Sign in"}
             </button>
           </form>
         </div>
 
-        <p className="text-center text-sm text-zinc-500 mt-5">
+        <p className="text-center text-sm text-[#6A6453] mt-5">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="text-violet-400 hover:text-violet-300 transition-colors">
+          <Link href="/register" className="text-[#E8431F] hover:text-[#E8431F] transition-colors">
             Sign up
           </Link>
         </p>

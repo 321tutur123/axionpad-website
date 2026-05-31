@@ -32,12 +32,12 @@ interface Order {
 type Tab = "profile" | "orders";
 
 const STATUS_LABEL: Record<string, { label: string; color: string }> = {
-  pending:   { label: "En attente",  color: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20" },
-  paid:      { label: "Confirmée",   color: "text-green-400 bg-green-400/10 border-green-400/20" },
-  confirmed: { label: "Confirmée",   color: "text-green-400 bg-green-400/10 border-green-400/20" },
-  shipped:   { label: "Expédiée",    color: "text-violet-400 bg-violet-400/10 border-violet-400/20" },
-  delivered: { label: "Livrée",      color: "text-zinc-300 bg-white/5 border-white/10" },
-  cancelled: { label: "Annulée",     color: "text-red-400 bg-red-400/10 border-red-400/20" },
+  pending:   { label: "En attente",  color: "text-[#B45309] bg-[#B45309]/10 border-[#B45309]/25" },
+  paid:      { label: "Confirmée",   color: "text-[#15803D] bg-[#15803D]/10 border-[#15803D]/25" },
+  confirmed: { label: "Confirmée",   color: "text-[#15803D] bg-[#15803D]/10 border-[#15803D]/25" },
+  shipped:   { label: "Expédiée",    color: "text-[#E8431F] bg-[#E8431F]/10 border-[#E8431F]/20" },
+  delivered: { label: "Livrée",      color: "text-[#16130E] bg-[#FAF7EF] border-[#16130E]/12" },
+  cancelled: { label: "Annulée",     color: "text-[#B91C1C] bg-[#B91C1C]/10 border-[#B91C1C]/25" },
 };
 
 function fmt(iso: string) {
@@ -105,9 +105,9 @@ function ProfileTab({ user }: { user: UserProfile }) {
   }
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-8">
-      <h2 className="mb-1 text-lg font-semibold text-white">Informations personnelles</h2>
-      <p className="mb-6 text-sm text-zinc-500">Modifiez vos informations de profil.</p>
+    <div className="rounded-2xl border border-[#16130E]/12 bg-[#FAF7EF] p-8">
+      <h2 className="mb-1 text-lg font-semibold text-[#16130E]">Informations personnelles</h2>
+      <p className="mb-6 text-sm text-[#6A6453]">Modifiez vos informations de profil.</p>
 
       {error && <div className="mb-5 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">{error}</div>}
       {message && <div className="mb-5 rounded-xl border border-green-500/20 bg-green-500/10 px-4 py-3 text-sm text-green-400">{message}</div>}
@@ -115,38 +115,38 @@ function ProfileTab({ user }: { user: UserProfile }) {
       <form onSubmit={handleSave} noValidate className="space-y-4">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label htmlFor="first_name" className="mb-1.5 block text-sm font-medium text-zinc-300">Prénom</label>
+            <label htmlFor="first_name" className="mb-1.5 block text-sm font-medium text-[#16130E]">Prénom</label>
             <input
               id="first_name" name="first_name" type="text" autoComplete="given-name"
               value={firstName}
               onChange={e => { setFirstName(e.target.value); setFieldErrors(p => ({ ...p, first_name: undefined })); }}
-              className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none transition-colors ${fieldErrors.first_name ? "border-red-500/50" : "border-white/10"}`}
+              className={`w-full rounded-xl border bg-[#FAF7EF] px-4 py-3 text-sm text-[#16130E] placeholder:text-[#9A9180] focus:border-[#E8431F] focus:outline-none transition-colors ${fieldErrors.first_name ? "border-red-500/50" : "border-[#16130E]/12"}`}
             />
             {fieldErrors.first_name && <p className="mt-1.5 text-xs text-red-400">{fieldErrors.first_name}</p>}
           </div>
           <div>
-            <label htmlFor="last_name" className="mb-1.5 block text-sm font-medium text-zinc-300">Nom</label>
+            <label htmlFor="last_name" className="mb-1.5 block text-sm font-medium text-[#16130E]">Nom</label>
             <input
               id="last_name" name="last_name" type="text" autoComplete="family-name"
               value={lastName}
               onChange={e => { setLastName(e.target.value); setFieldErrors(p => ({ ...p, last_name: undefined })); }}
-              className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-sm text-white placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none transition-colors ${fieldErrors.last_name ? "border-red-500/50" : "border-white/10"}`}
+              className={`w-full rounded-xl border bg-[#FAF7EF] px-4 py-3 text-sm text-[#16130E] placeholder:text-[#9A9180] focus:border-[#E8431F] focus:outline-none transition-colors ${fieldErrors.last_name ? "border-red-500/50" : "border-[#16130E]/12"}`}
             />
             {fieldErrors.last_name && <p className="mt-1.5 text-xs text-red-400">{fieldErrors.last_name}</p>}
           </div>
         </div>
 
         <div>
-          <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-zinc-300">Adresse email</label>
+          <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-[#16130E]">Adresse email</label>
           <input
             id="email" type="email" value={user.email} disabled
-            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-400"
+            className="w-full rounded-xl border border-[#16130E]/12 bg-[#FAF7EF] px-4 py-3 text-sm text-[#6A6453]"
           />
         </div>
 
         <button
           type="submit" disabled={saving}
-          className="mt-2 w-full rounded-full bg-violet-600 py-3.5 text-sm font-semibold text-white transition-all hover:scale-[1.01] hover:bg-violet-500 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+          className="mt-2 w-full rounded-full bg-[#E8431F] py-3.5 text-sm font-semibold text-[#16130E] transition-all hover:scale-[1.01] hover:bg-[#C7370F] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
         >
           {saving ? "Enregistrement…" : "Enregistrer"}
         </button>
@@ -182,14 +182,14 @@ function OrdersTab({ userEmail }: { userEmail: string }) {
   }
 
   if (!orders) {
-    return <p className="text-sm text-zinc-400">Chargement des commandes…</p>;
+    return <p className="text-sm text-[#6A6453]">Chargement des commandes…</p>;
   }
 
   if (orders.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-12 text-center">
-        <p className="text-zinc-400 text-sm">Aucune commande pour le moment.</p>
-        <Link href="/shop" className="mt-4 inline-block text-sm text-violet-400 hover:text-violet-300 transition-colors">
+      <div className="rounded-2xl border border-[#16130E]/12 bg-[#FAF7EF] p-12 text-center">
+        <p className="text-[#6A6453] text-sm">Aucune commande pour le moment.</p>
+        <Link href="/shop" className="mt-4 inline-block text-sm text-[#E8431F] hover:text-[#E8431F] transition-colors">
           Découvrir la boutique →
         </Link>
       </div>
@@ -199,23 +199,23 @@ function OrdersTab({ userEmail }: { userEmail: string }) {
   return (
     <div className="space-y-4">
       {orders.map(order => {
-        const statusInfo = STATUS_LABEL[order.status] ?? { label: order.status, color: "text-zinc-400 bg-white/5 border-white/10" };
+        const statusInfo = STATUS_LABEL[order.status] ?? { label: order.status, color: "text-[#6A6453] bg-[#FAF7EF] border-[#16130E]/12" };
         const eligible = isReturnEligible(order);
 
         return (
-          <div key={order.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+          <div key={order.id} className="rounded-2xl border border-[#16130E]/12 bg-[#FAF7EF] p-6">
             {/* Order header */}
             <div className="flex flex-wrap items-start justify-between gap-3 mb-5">
               <div>
-                <p className="text-xs text-zinc-500 mb-0.5">Commande</p>
-                <p className="font-semibold text-white">{order.order_number}</p>
-                <p className="text-xs text-zinc-500 mt-0.5">{fmt(order.created_at)}</p>
+                <p className="text-xs text-[#6A6453] mb-0.5">Commande</p>
+                <p className="font-semibold text-[#16130E]">{order.order_number}</p>
+                <p className="text-xs text-[#6A6453] mt-0.5">{fmt(order.created_at)}</p>
               </div>
               <div className="flex items-center gap-3 flex-wrap">
                 <span className={`text-xs font-medium px-2.5 py-1 rounded-full border ${statusInfo.color}`}>
                   {statusInfo.label}
                 </span>
-                <p className="text-sm font-semibold text-white">{fmtPrice(order.total, order.currency)}</p>
+                <p className="text-sm font-semibold text-[#16130E]">{fmtPrice(order.total, order.currency)}</p>
               </div>
             </div>
 
@@ -224,8 +224,8 @@ function OrdersTab({ userEmail }: { userEmail: string }) {
               <div className="mb-5 space-y-2">
                 {order.items.map((item, i) => (
                   <div key={i} className="flex justify-between text-sm">
-                    <span className="text-zinc-300">{item.name} <span className="text-zinc-500">×{item.quantity}</span></span>
-                    <span className="text-zinc-400">{fmtPrice(item.subtotal ?? item.unit_price * item.quantity, order.currency)}</span>
+                    <span className="text-[#16130E]">{item.name} <span className="text-[#6A6453]">×{item.quantity}</span></span>
+                    <span className="text-[#6A6453]">{fmtPrice(item.subtotal ?? item.unit_price * item.quantity, order.currency)}</span>
                   </div>
                 ))}
               </div>
@@ -233,13 +233,13 @@ function OrdersTab({ userEmail }: { userEmail: string }) {
 
             {/* Tracking */}
             {order.tracking_number && (
-              <div className="mb-4 flex items-center gap-2 rounded-xl border border-violet-500/20 bg-violet-500/5 px-4 py-3">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-violet-400 shrink-0">
+              <div className="mb-4 flex items-center gap-2 rounded-xl border border-[#E8431F]/20 bg-[#C7370F]/5 px-4 py-3">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-[#E8431F] shrink-0">
                   <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs text-zinc-500">Numéro de suivi</p>
-                  <p className="text-sm font-medium text-violet-300">{order.tracking_number}</p>
+                  <p className="text-xs text-[#6A6453]">Numéro de suivi</p>
+                  <p className="text-sm font-medium text-[#E8431F]">{order.tracking_number}</p>
                 </div>
               </div>
             )}
@@ -248,14 +248,14 @@ function OrdersTab({ userEmail }: { userEmail: string }) {
             <div className="flex flex-wrap gap-2 pt-1">
               <Link
                 href={`/track?order=${encodeURIComponent(order.order_number)}&email=${encodeURIComponent(userEmail)}`}
-                className="text-xs font-medium px-4 py-2 rounded-full border border-white/15 text-zinc-300 hover:border-violet-500/50 hover:text-violet-300 transition-colors"
+                className="text-xs font-medium px-4 py-2 rounded-full border border-[#16130E]/15 text-[#16130E] hover:border-[#E8431F]/50 hover:text-[#E8431F] transition-colors"
               >
                 Suivre la commande
               </Link>
               {eligible && (
                 <a
                   href={returnMailto(order, userEmail)}
-                  className="text-xs font-medium px-4 py-2 rounded-full border border-white/15 text-zinc-300 hover:border-red-500/40 hover:text-red-300 transition-colors"
+                  className="text-xs font-medium px-4 py-2 rounded-full border border-[#16130E]/15 text-[#16130E] hover:border-red-500/40 hover:text-red-300 transition-colors"
                 >
                   Demander un retour
                 </a>
@@ -303,7 +303,7 @@ export default function AccountPage() {
   if (loading) {
     return (
       <main className="min-h-screen flex items-center justify-center">
-        <p className="text-sm text-zinc-400">Chargement…</p>
+        <p className="text-sm text-[#6A6453]">Chargement…</p>
       </main>
     );
   }
@@ -321,22 +321,22 @@ export default function AccountPage() {
           </Link>
           <button
             type="button" onClick={handleLogout}
-            className="rounded-full border border-white/20 px-4 py-2 text-sm text-zinc-200 hover:border-white/40 hover:text-white transition-colors"
+            className="rounded-full border border-[#16130E]/20 px-4 py-2 text-sm text-[#16130E] hover:border-[#16130E]/40 hover:text-[#16130E] transition-colors"
           >
             Se déconnecter
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-6 rounded-xl border border-white/10 bg-white/[0.03] p-1">
+        <div className="flex gap-1 mb-6 rounded-xl border border-[#16130E]/12 bg-[#FAF7EF] p-1">
           {(["profile", "orders"] as Tab[]).map(t => (
             <button
               key={t}
               onClick={() => setTab(t)}
               className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                 tab === t
-                  ? "bg-violet-600 text-white"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "bg-[#E8431F] text-[#16130E]"
+                  : "text-[#6A6453] hover:text-[#16130E]"
               }`}
             >
               {t === "profile" ? "Mon profil" : "Mes commandes"}

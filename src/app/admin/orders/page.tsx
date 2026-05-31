@@ -68,9 +68,9 @@ function StatusBadge({ status }: { status: string }) {
     confirmed: { cls: "bg-blue-500/15 text-blue-400 border-blue-500/20",   label: "Confirmée" },
     shipped:   { cls: "bg-green-500/15 text-green-400 border-green-500/20", label: "Expédiée" },
     cancelled: { cls: "bg-red-500/15 text-red-400 border-red-500/20",       label: "Annulée"  },
-    pending:   { cls: "bg-zinc-500/15 text-zinc-400 border-zinc-500/20",    label: "En attente" },
+    pending:   { cls: "bg-zinc-500/15 text-[#6A6453] border-zinc-500/20",    label: "En attente" },
   };
-  const { cls, label } = map[status] ?? { cls: "bg-zinc-500/15 text-zinc-400 border-zinc-500/20", label: status };
+  const { cls, label } = map[status] ?? { cls: "bg-zinc-500/15 text-[#6A6453] border-zinc-500/20", label: status };
   return (
     <span className={`inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-full border ${cls}`}>
       {label}
@@ -252,51 +252,51 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="w-full max-w-2xl bg-zinc-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="w-full max-w-2xl bg-zinc-900 border border-[#16130E]/12 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
 
-        <div className="flex items-start justify-between px-6 py-5 border-b border-white/10 shrink-0">
+        <div className="flex items-start justify-between px-6 py-5 border-b border-[#16130E]/12 shrink-0">
           <div>
-            <p className="text-[11px] font-mono text-zinc-500 mb-1">{order.order_number}</p>
-            <h2 className="text-white font-bold text-lg leading-tight">
+            <p className="text-[11px] font-mono text-[#6A6453] mb-1">{order.order_number}</p>
+            <h2 className="text-[#16130E] font-bold text-lg leading-tight">
               {order.customer_name || order.customer_email}
             </h2>
-            <p className="text-zinc-500 text-xs mt-0.5">{fmtDate(order.created_at)}</p>
+            <p className="text-[#6A6453] text-xs mt-0.5">{fmtDate(order.created_at)}</p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <StatusBadge status={order.status} />
-            <button onClick={onClose} className="text-zinc-500 hover:text-white transition-colors text-xl leading-none w-7 h-7 flex items-center justify-center">&#10005;</button>
+            <button onClick={onClose} className="text-[#6A6453] hover:text-[#16130E] transition-colors text-xl leading-none w-7 h-7 flex items-center justify-center">&#10005;</button>
           </div>
         </div>
 
         <div className="overflow-y-auto p-6 space-y-6 flex-1">
 
           <section>
-            <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-3">Adresse de livraison</p>
-            <div className="p-4 rounded-xl border border-white/10 bg-white/[0.03]">
-              <p className="text-white font-semibold text-base leading-tight">{order.shipping_name || order.customer_name}</p>
-              {address.line1   && <p className="text-zinc-300 text-sm mt-1">{address.line1}</p>}
-              {address.line2   && <p className="text-zinc-400 text-sm">{address.line2}</p>}
-              <p className="text-zinc-300 text-sm">
+            <p className="text-[10px] text-[#9A9180] uppercase tracking-widest mb-3">Adresse de livraison</p>
+            <div className="p-4 rounded-xl border border-[#16130E]/12 bg-[#FAF7EF]">
+              <p className="text-[#16130E] font-semibold text-base leading-tight">{order.shipping_name || order.customer_name}</p>
+              {address.line1   && <p className="text-[#16130E] text-sm mt-1">{address.line1}</p>}
+              {address.line2   && <p className="text-[#6A6453] text-sm">{address.line2}</p>}
+              <p className="text-[#16130E] text-sm">
                 {[address.postal_code, address.city].filter(Boolean).join(" ")}
               </p>
-              {address.state   && <p className="text-zinc-400 text-sm">{address.state}</p>}
-              {address.country && <p className="text-zinc-500 text-sm">{address.country}</p>}
+              {address.state   && <p className="text-[#6A6453] text-sm">{address.state}</p>}
+              {address.country && <p className="text-[#6A6453] text-sm">{address.country}</p>}
             </div>
           </section>
 
           {order.shipping_method && (
             <section className="flex items-center gap-3">
-              <p className="text-[10px] text-zinc-600 uppercase tracking-widest shrink-0">Transporteur</p>
+              <p className="text-[10px] text-[#9A9180] uppercase tracking-widest shrink-0">Transporteur</p>
               <CarrierBadge method={order.shipping_method} />
             </section>
           )}
 
           <section>
-            <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-3">Articles command&#233;s</p>
-            <div className="rounded-xl border border-white/10 overflow-hidden">
+            <p className="text-[10px] text-[#9A9180] uppercase tracking-widest mb-3">Articles command&#233;s</p>
+            <div className="rounded-xl border border-[#16130E]/12 overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10 text-[10px] text-zinc-600 uppercase tracking-wider">
+                  <tr className="border-b border-[#16130E]/12 text-[10px] text-[#9A9180] uppercase tracking-wider">
                     <th className="text-left px-4 py-3 font-medium">Article</th>
                     <th className="text-center px-4 py-3 font-medium w-12">Qt&#233;</th>
                     <th className="text-right px-4 py-3 font-medium">P.U.</th>
@@ -305,18 +305,18 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
                 </thead>
                 <tbody>
                   {items.map((item, i) => (
-                    <tr key={i} className="border-b border-white/5 last:border-0">
-                      <td className="px-4 py-3 text-white">{item.name}</td>
-                      <td className="px-4 py-3 text-zinc-400 text-center">{item.quantity}</td>
-                      <td className="px-4 py-3 text-zinc-400 text-right">{item.unit_price.toFixed(2)} &#8364;</td>
-                      <td className="px-4 py-3 text-white text-right font-medium">{item.subtotal.toFixed(2)} &#8364;</td>
+                    <tr key={i} className="border-b border-[#16130E]/8 last:border-0">
+                      <td className="px-4 py-3 text-[#16130E]">{item.name}</td>
+                      <td className="px-4 py-3 text-[#6A6453] text-center">{item.quantity}</td>
+                      <td className="px-4 py-3 text-[#6A6453] text-right">{item.unit_price.toFixed(2)} &#8364;</td>
+                      <td className="px-4 py-3 text-[#16130E] text-right font-medium">{item.subtotal.toFixed(2)} &#8364;</td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="border-t border-white/10">
-                    <td colSpan={3} className="px-4 py-3 text-zinc-400 text-sm font-semibold">Total pay&#233;</td>
-                    <td className="px-4 py-3 text-right text-white font-bold">
+                  <tr className="border-t border-[#16130E]/12">
+                    <td colSpan={3} className="px-4 py-3 text-[#6A6453] text-sm font-semibold">Total pay&#233;</td>
+                    <td className="px-4 py-3 text-right text-[#16130E] font-bold">
                       {(order.amount_total / 100).toFixed(2)} {order.currency.toUpperCase()}
                     </td>
                   </tr>
@@ -325,24 +325,24 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
             </div>
           </section>
 
-          <section className="text-sm text-zinc-400">
-            <span className="text-zinc-600">Email : </span>{order.customer_email}
+          <section className="text-sm text-[#6A6453]">
+            <span className="text-[#9A9180]">Email : </span>{order.customer_email}
           </section>
 
           {!isShipped && (
             <section>
-              <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-3">Marquer comme exp&#233;di&#233;e</p>
+              <p className="text-[10px] text-[#9A9180] uppercase tracking-widest mb-3">Marquer comme exp&#233;di&#233;e</p>
               <div className="flex gap-2">
                 <input
                   value={tracking}
                   onChange={e => setTracking(e.target.value)}
                   placeholder="N&#176; de suivi (optionnel)"
-                  className="flex-1 px-3 py-2.5 rounded-lg bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-green-500 placeholder-zinc-600"
+                  className="flex-1 px-3 py-2.5 rounded-lg bg-[#FAF7EF] border border-[#16130E]/12 text-[#16130E] text-sm focus:outline-none focus:border-green-500 placeholder-[#9A9180]"
                 />
                 <button
                   onClick={markShipped}
                   disabled={saving}
-                  className="px-5 py-2.5 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-colors disabled:opacity-60 whitespace-nowrap"
+                  className="px-5 py-2.5 rounded-lg bg-green-600 hover:bg-green-500 text-[#16130E] text-sm font-semibold transition-colors disabled:opacity-60 whitespace-nowrap"
                 >
                   {saving ? "..." : "Expédiée ✓"}
                 </button>
@@ -358,22 +358,22 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
           )}
         </div>
 
-        <div className="px-6 py-4 border-t border-white/10 flex flex-wrap gap-2 justify-between items-center shrink-0">
+        <div className="px-6 py-4 border-t border-[#16130E]/12 flex flex-wrap gap-2 justify-between items-center shrink-0">
           {confirmDel ? (
             <div className="flex items-center gap-2">
               <span className="text-xs text-red-400">Supprimer définitivement ?</span>
               <button onClick={deleteOrder} disabled={deleting}
-                className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white text-xs font-semibold transition-colors disabled:opacity-60">
+                className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-[#16130E] text-xs font-semibold transition-colors disabled:opacity-60">
                 {deleting ? "..." : "Confirmer"}
               </button>
               <button onClick={() => setConfirmDel(false)}
-                className="px-3 py-1.5 rounded-lg border border-white/10 text-zinc-400 hover:text-white text-xs transition-colors">
+                className="px-3 py-1.5 rounded-lg border border-[#16130E]/12 text-[#6A6453] hover:text-[#16130E] text-xs transition-colors">
                 Annuler
               </button>
             </div>
           ) : (
             <button onClick={() => setConfirmDel(true)}
-              className="text-xs text-zinc-600 hover:text-red-400 transition-colors">
+              className="text-xs text-[#9A9180] hover:text-red-400 transition-colors">
               Supprimer
             </button>
           )}
@@ -395,7 +395,7 @@ function OrderModal({ order, onUpdate, onClose }: ModalProps) {
           </div>
           <button
             onClick={() => printPackingSlip(order)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/10 text-zinc-300 hover:text-white hover:border-white/30 text-sm transition-colors"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-full border border-[#16130E]/12 text-[#16130E] hover:text-[#16130E] hover:border-[#16130E]/80 text-sm transition-colors"
           >
             <span>&#128424;</span> Bon de pr&#233;paration
           </button>
@@ -483,7 +483,7 @@ export default function AdminOrdersPage() {
   if (authState === "loading") {
     return (
       <main className="min-h-screen bg-zinc-950 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#E8431F] border-t-transparent rounded-full animate-spin" />
       </main>
     );
   }
@@ -493,8 +493,8 @@ export default function AdminOrdersPage() {
       <main className="min-h-screen bg-zinc-950 flex items-center justify-center px-6">
         <form onSubmit={handleLogin} className="w-full max-w-sm space-y-4">
           <div className="mb-6">
-            <p className="text-2xl font-bold text-white">AxionPad</p>
-            <p className="text-zinc-500 text-sm mt-1">Espace administration</p>
+            <p className="text-2xl font-bold text-[#16130E]">AxionPad</p>
+            <p className="text-[#6A6453] text-sm mt-1">Espace administration</p>
           </div>
           <input
             type="password"
@@ -502,13 +502,13 @@ export default function AdminOrdersPage() {
             onChange={e => { setKeyInput(e.target.value); setAuthError(""); }}
             placeholder="Mot de passe admin"
             autoFocus
-            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-violet-500 placeholder-zinc-600"
+            className="w-full px-4 py-3 rounded-xl bg-[#FAF7EF] border border-[#16130E]/12 text-[#16130E] text-sm focus:outline-none focus:border-[#E8431F] placeholder-[#9A9180]"
           />
           {authError && <p className="text-sm text-red-400">{authError}</p>}
           <button
             type="submit"
             disabled={authLoading}
-            className="w-full py-3 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold transition-colors disabled:opacity-60"
+            className="w-full py-3 rounded-xl bg-[#E8431F] hover:bg-[#C7370F] text-[#16130E] font-semibold transition-colors disabled:opacity-60"
           >
             {authLoading ? "Connexion..." : "Accéder"}
           </button>
@@ -524,8 +524,8 @@ export default function AdminOrdersPage() {
 
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-white">Commandes</h1>
-              <p className="text-zinc-500 text-sm mt-0.5">{orders.length} au total</p>
+              <h1 className="text-2xl font-bold text-[#16130E]">Commandes</h1>
+              <p className="text-[#6A6453] text-sm mt-0.5">{orders.length} au total</p>
             </div>
             <button
               onClick={async () => {
@@ -533,20 +533,20 @@ export default function AdminOrdersPage() {
                 setOrders([]);
                 setAuthState("logged-out");
               }}
-              className="text-xs text-zinc-600 hover:text-zinc-300 transition-colors"
+              className="text-xs text-[#9A9180] hover:text-[#16130E] transition-colors"
             >
               Déconnexion
             </button>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 mb-5">
-            <div className="flex gap-1 bg-white/5 rounded-xl p-1 border border-white/10">
+            <div className="flex gap-1 bg-[#FAF7EF] rounded-xl p-1 border border-[#16130E]/12">
               {(["all", "confirmed", "shipped"] as const).map(s => (
                 <button
                   key={s}
                   onClick={() => setStatusFilter(s)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                    statusFilter === s ? "bg-violet-600 text-white" : "text-zinc-400 hover:text-white"
+                    statusFilter === s ? "bg-[#E8431F] text-[#16130E]" : "text-[#6A6453] hover:text-[#16130E]"
                   }`}
                 >
                   {s === "all"
@@ -561,11 +561,11 @@ export default function AdminOrdersPage() {
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Rechercher nom, email, n° commande..."
-              className="flex-1 min-w-48 px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-violet-500 placeholder-zinc-600"
+              className="flex-1 min-w-48 px-3 py-2 rounded-xl bg-[#FAF7EF] border border-[#16130E]/12 text-[#16130E] text-sm focus:outline-none focus:border-[#E8431F] placeholder-[#9A9180]"
             />
             <button
               onClick={() => fetchOrders()}
-              className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-zinc-400 hover:text-white text-sm transition-colors"
+              className="px-3 py-2 rounded-xl bg-[#FAF7EF] border border-[#16130E]/12 text-[#6A6453] hover:text-[#16130E] text-sm transition-colors"
               title="Rafraîchir"
             >
               &#8635;
@@ -574,15 +574,15 @@ export default function AdminOrdersPage() {
 
           {loadingOrders ? (
             <div className="flex justify-center py-24">
-              <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+              <div className="w-8 h-8 border-2 border-[#E8431F] border-t-transparent rounded-full animate-spin" />
             </div>
           ) : filtered.length === 0 ? (
-            <p className="text-zinc-600 text-center py-24 text-sm">Aucune commande trouvée.</p>
+            <p className="text-[#9A9180] text-center py-24 text-sm">Aucune commande trouvée.</p>
           ) : (
-            <div className="overflow-x-auto rounded-2xl border border-white/10">
+            <div className="overflow-x-auto rounded-2xl border border-[#16130E]/12">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-white/10 text-[10px] text-zinc-500 uppercase tracking-wider">
+                  <tr className="border-b border-[#16130E]/12 text-[10px] text-[#6A6453] uppercase tracking-wider">
                     <th className="text-left px-5 py-3.5 font-medium">Date</th>
                     <th className="text-left px-5 py-3.5 font-medium">Commande</th>
                     <th className="text-left px-5 py-3.5 font-medium">Client</th>
@@ -597,13 +597,13 @@ export default function AdminOrdersPage() {
                     <tr
                       key={order.id}
                       onClick={() => setSelected(order)}
-                      className={`cursor-pointer transition-colors hover:bg-white/[0.04] ${i !== 0 ? "border-t border-white/5" : ""}`}
+                      className={`cursor-pointer transition-colors hover:bg-[#FAF7EF] ${i !== 0 ? "border-t border-[#16130E]/8" : ""}`}
                     >
-                      <td className="px-5 py-4 text-zinc-500 whitespace-nowrap text-xs">{fmtDate(order.created_at)}</td>
-                      <td className="px-5 py-4 text-zinc-300 font-mono text-xs">{order.order_number}</td>
-                      <td className="px-5 py-4 text-white font-medium">{order.customer_name || "—"}</td>
-                      <td className="px-5 py-4 text-zinc-500 hidden md:table-cell">{order.customer_email}</td>
-                      <td className="px-5 py-4 text-right text-white font-semibold whitespace-nowrap">
+                      <td className="px-5 py-4 text-[#6A6453] whitespace-nowrap text-xs">{fmtDate(order.created_at)}</td>
+                      <td className="px-5 py-4 text-[#16130E] font-mono text-xs">{order.order_number}</td>
+                      <td className="px-5 py-4 text-[#16130E] font-medium">{order.customer_name || "—"}</td>
+                      <td className="px-5 py-4 text-[#6A6453] hidden md:table-cell">{order.customer_email}</td>
+                      <td className="px-5 py-4 text-right text-[#16130E] font-semibold whitespace-nowrap">
                         {(order.amount_total / 100).toFixed(2)} &#8364;
                       </td>
                       <td className="px-5 py-4">

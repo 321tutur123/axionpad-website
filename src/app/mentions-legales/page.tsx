@@ -7,25 +7,25 @@ export const metadata = {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-10">
-      <h2 className="text-white font-semibold text-lg mb-4 pb-3 border-b border-white/10">{title}</h2>
-      <div className="text-zinc-400 text-sm leading-relaxed space-y-2">{children}</div>
+      <h2 className="text-[#16130E] font-semibold text-lg mb-4 pb-3 border-b border-[#16130E]/12">{title}</h2>
+      <div className="text-[#6A6453] text-sm leading-relaxed space-y-2">{children}</div>
     </section>
   );
 }
 
 export default function MentionsLegalesPage() {
   return (
-    <main className="min-h-screen bg-black pt-20">
+    <main className="min-h-screen bg-[#EFE9DC] pt-20">
       <div className="max-w-3xl mx-auto px-6 py-16">
 
-        <nav className="flex items-center gap-2 text-sm text-zinc-600 mb-10">
-          <Link href="/" className="hover:text-zinc-400 transition-colors">Accueil</Link>
+        <nav className="flex items-center gap-2 text-sm text-[#9A9180] mb-10">
+          <Link href="/" className="hover:text-[#6A6453] transition-colors">Accueil</Link>
           <span>›</span>
-          <span className="text-zinc-300">Mentions légales</span>
+          <span className="text-[#16130E]">Mentions légales</span>
         </nav>
 
-        <h1 className="text-3xl font-bold text-white mb-2">Mentions légales</h1>
-        <p className="text-zinc-500 text-sm mb-12">
+        <h1 className="text-3xl font-bold text-[#16130E] mb-2">Mentions légales</h1>
+        <p className="text-[#6A6453] text-sm mb-12">
           Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance
           en l'économie numérique.
         </p>
@@ -33,12 +33,12 @@ export default function MentionsLegalesPage() {
         <Section title="1. Éditeur du site">
           <p>Le site axionpad.fr est édité par :</p>
           <p>
-            <strong className="text-zinc-200">Arthur Delacour</strong><br />
+            <strong className="text-[#16130E]">Arthur Delacour</strong><br />
             Activité : vente en ligne de matériel électronique<br />
             Statut : Auto-entrepreneur / Micro-entrepreneur<br />
-            SIRET : <span className="text-zinc-500">[À COMPLÉTER]</span><br />
-            Adresse : <span className="text-zinc-500">[À COMPLÉTER]</span><br />
-            Email : <a href="mailto:contact@axionpad.fr" className="text-violet-400 hover:text-violet-300">contact@axionpad.fr</a>
+            SIRET : <span className="text-[#6A6453]">[À COMPLÉTER]</span><br />
+            Adresse : <span className="text-[#6A6453]">[À COMPLÉTER]</span><br />
+            Email : <a href="mailto:contact@axionpad.fr" className="text-[#E8431F] hover:text-[#E8431F]">contact@axionpad.fr</a>
           </p>
         </Section>
 
@@ -49,9 +49,9 @@ export default function MentionsLegalesPage() {
         <Section title="3. Hébergement">
           <p>
             Le site est hébergé par :<br />
-            <strong className="text-zinc-200">Vercel Inc.</strong><br />
+            <strong className="text-[#16130E]">Vercel Inc.</strong><br />
             340 Pine Street, Suite 801, San Francisco, CA 94104, USA<br />
-            <a href="https://vercel.com" className="text-violet-400 hover:text-violet-300">vercel.com</a>
+            <a href="https://vercel.com" className="text-[#E8431F] hover:text-[#E8431F]">vercel.com</a>
           </p>
         </Section>
 
@@ -67,14 +67,14 @@ export default function MentionsLegalesPage() {
           </p>
           <p>
             Les schémas PCB et fichiers STL du boîtier sont publiés sous licence{" "}
-            <strong className="text-zinc-200">CERN OHL v2 (Open Hardware Licence)</strong> — voir GitHub.
+            <strong className="text-[#16130E]">CERN OHL v2 (Open Hardware Licence)</strong> — voir GitHub.
           </p>
         </Section>
 
         <Section title="5. Données personnelles">
           <p>
             Le traitement des données personnelles collectées sur ce site est décrit dans notre{" "}
-            <Link href="/confidentialite" className="text-violet-400 hover:text-violet-300 underline">
+            <Link href="/confidentialite" className="text-[#E8431F] hover:text-[#E8431F] underline">
               politique de confidentialité
             </Link>.
           </p>
@@ -106,7 +106,7 @@ export default function MentionsLegalesPage() {
           </p>
         </Section>
 
-        <p className="text-xs text-zinc-700 pt-8 border-t border-white/5">
+        <p className="text-xs text-[#16130E] pt-8 border-t border-[#16130E]/8">
           Dernière mise à jour : avril 2026
         </p>
 

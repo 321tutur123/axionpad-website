@@ -11,13 +11,13 @@ const FEATURES = [
     icon: "⌨️",
     title: "Mapping visuel",
     desc: "Assigne une action à chaque touche. Raccourcis clavier, texte, lancement d'appli, séquences personnalisées.",
-    color: "#6C63FF",
+    color: "#E8431F",
   },
   {
     icon: "⚡",
     title: "Macros",
     desc: "Enregistre et rejoue des séquences de touches complexes avec délais personnalisables.",
-    color: "#00D9A3",
+    color: "#0F766E",
   },
   {
     icon: "📚",
@@ -35,13 +35,13 @@ const FEATURES = [
     icon: "🎨",
     title: "RGB NeoPixel",
     desc: "Contrôle complet des LEDs : statique, breathing, wave — depuis l'app ou l'API OpenRGB.",
-    color: "#6C63FF",
+    color: "#E8431F",
   },
   {
     icon: "🔄",
     title: "Sync instantanée",
     desc: "Les modifications sont appliquées en temps réel. Aucun redémarrage requis.",
-    color: "#00D9A3",
+    color: "#0F766E",
   },
 ];
 
@@ -76,8 +76,8 @@ export default function SoftwarePage() {
             <div
               className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-medium mb-6"
               style={{
-                background: "rgba(108,99,255,0.10)",
-                borderColor: "rgba(108,99,255,0.25)",
+                background: "rgba(232, 67, 31,0.10)",
+                borderColor: "rgba(232, 67, 31,0.25)",
                 color: "var(--color-accent)",
               }}
             >
@@ -171,8 +171,8 @@ export default function SoftwarePage() {
                   <span
                     className="w-6 h-6 rounded-full border flex items-center justify-center text-xs font-bold shrink-0"
                     style={{
-                      background: "rgba(108,99,255,0.10)",
-                      borderColor: "rgba(108,99,255,0.30)",
+                      background: "rgba(232, 67, 31,0.10)",
+                      borderColor: "rgba(232, 67, 31,0.30)",
                       color: "var(--color-accent)",
                     }}
                   >
@@ -194,8 +194,8 @@ export default function SoftwarePage() {
         <div
           className="rounded-3xl border p-10 md:p-14"
           style={{
-            borderColor: "rgba(108,99,255,0.18)",
-            background: "linear-gradient(145deg, rgba(108,99,255,0.06) 0%, var(--color-bg-card) 40%, rgba(0,217,163,0.04) 100%)",
+            borderColor: "rgba(232, 67, 31,0.18)",
+            background: "linear-gradient(145deg, rgba(232, 67, 31,0.06) 0%, var(--color-bg-card) 40%, rgba(15, 118, 110,0.04) 100%)",
             boxShadow: "0 8px 40px rgba(0,0,0,0.35)",
           }}
         >
@@ -204,9 +204,9 @@ export default function SoftwarePage() {
               <div
                 className="inline-block text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full border mb-5"
                 style={{
-                  background: "rgba(0,217,163,0.10)",
-                  color: "#00D9A3",
-                  borderColor: "rgba(0,217,163,0.28)",
+                  background: "rgba(15, 118, 110,0.10)",
+                  color: "#0F766E",
+                  borderColor: "rgba(15, 118, 110,0.28)",
                 }}
               >
                 Mode avancé
@@ -218,14 +218,14 @@ export default function SoftwarePage() {
                 Si le configurateur ne suffit plus, édite{" "}
                 <code
                   className="px-1.5 py-0.5 rounded text-sm"
-                  style={{ color: "var(--color-accent)", background: "rgba(108,99,255,0.10)" }}
+                  style={{ color: "var(--color-accent)", background: "rgba(232, 67, 31,0.10)" }}
                 >
                   code.py
                 </code>{" "}
                 à la racine du volume USB. Dans le dépôt, la version Standard est le fichier{" "}
                 <code
                   className="px-1.5 py-0.5 rounded text-sm"
-                  style={{ color: "var(--color-accent)", background: "rgba(108,99,255,0.10)" }}
+                  style={{ color: "var(--color-accent)", background: "rgba(232, 67, 31,0.10)" }}
                 >
                   firmwares/STANDARD/code.py
                 </code>
@@ -237,7 +237,7 @@ export default function SoftwarePage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-4 py-2 rounded-full border text-sm transition-opacity hover:opacity-80"
-                  style={{ borderColor: "rgba(0,217,163,0.30)", color: "#00D9A3", background: "rgba(0,217,163,0.08)" }}
+                  style={{ borderColor: "rgba(15, 118, 110,0.30)", color: "#0F766E", background: "rgba(15, 118, 110,0.08)" }}
                 >
                   Doc CircuitPython →
                 </a>
@@ -274,7 +274,7 @@ export default function SoftwarePage() {
             >
               <div
                 className="text-5xl font-black absolute top-4 right-5 leading-none select-none"
-                style={{ color: "rgba(108,99,255,0.07)" }}
+                style={{ color: "rgba(232, 67, 31,0.07)" }}
               >
                 {step.n}
               </div>
@@ -293,7 +293,7 @@ export default function SoftwarePage() {
 
       {/* ── Download ─────────────────────────────────────────────── */}
       <section id="download" className="py-20 px-6 max-w-3xl mx-auto text-center">
-        <div className="p-10 rounded-3xl border card" style={{ borderColor: "rgba(108,99,255,0.18)", background: "var(--color-bg-card-alt)" }}>
+        <div className="p-10 rounded-3xl border card" style={{ borderColor: "rgba(232, 67, 31,0.18)", background: "var(--color-bg-card-alt)" }}>
           <div className="text-5xl mb-5">⬇️</div>
           <h2 className="text-3xl font-semibold mb-3" style={{ color: "var(--color-text)", letterSpacing: "-0.02em" }}>
             Télécharger le configurateur
@@ -617,7 +617,7 @@ function CodeSnippet() {
         className="px-4 py-3 border-t flex items-center gap-2"
         style={{ borderColor: "var(--color-border)", background: "var(--color-bg-soft)" }}
       >
-        <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#00D9A3" }} />
+        <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#0F766E" }} />
         <span className="text-xs" style={{ color: "var(--color-text-mute)" }}>
           Sauvegardé — mise à jour instantanée
         </span>

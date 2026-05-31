@@ -7,25 +7,25 @@ export const metadata = {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mb-10">
-      <h2 className="text-white font-semibold text-lg mb-4 pb-3 border-b border-white/10">{title}</h2>
-      <div className="text-zinc-400 text-sm leading-relaxed space-y-3">{children}</div>
+      <h2 className="text-[#16130E] font-semibold text-lg mb-4 pb-3 border-b border-[#16130E]/12">{title}</h2>
+      <div className="text-[#6A6453] text-sm leading-relaxed space-y-3">{children}</div>
     </section>
   );
 }
 
 export default function CgvPage() {
   return (
-    <main className="min-h-screen bg-black pt-20">
+    <main className="min-h-screen bg-[#EFE9DC] pt-20">
       <div className="max-w-3xl mx-auto px-6 py-16">
 
-        <nav className="flex items-center gap-2 text-sm text-zinc-600 mb-10">
-          <Link href="/" className="hover:text-zinc-400 transition-colors">Accueil</Link>
+        <nav className="flex items-center gap-2 text-sm text-[#9A9180] mb-10">
+          <Link href="/" className="hover:text-[#6A6453] transition-colors">Accueil</Link>
           <span>›</span>
-          <span className="text-zinc-300">CGV</span>
+          <span className="text-[#16130E]">CGV</span>
         </nav>
 
-        <h1 className="text-3xl font-bold text-white mb-2">Conditions Générales de Vente</h1>
-        <p className="text-zinc-500 text-sm mb-12">
+        <h1 className="text-3xl font-bold text-[#16130E] mb-2">Conditions Générales de Vente</h1>
+        <p className="text-[#6A6453] text-sm mb-12">
           Les présentes CGV régissent les ventes réalisées sur axionpad.fr entre Axion Pad
           (vendeur) et tout acheteur (client).
         </p>
@@ -111,17 +111,17 @@ export default function CgvPage() {
         <Section title="7. Droit de rétractation">
           <p>
             Conformément à l'article L221-18 du Code de la consommation, le client dispose d'un délai
-            de <strong className="text-zinc-200">14 jours calendaires</strong> à compter de la réception
+            de <strong className="text-[#16130E]">14 jours calendaires</strong> à compter de la réception
             de sa commande pour exercer son droit de rétractation, sans avoir à justifier de motif.
           </p>
           <p>
-            <strong className="text-zinc-200">Exception :</strong> le droit de rétractation ne s'applique
+            <strong className="text-[#16130E]">Exception :</strong> le droit de rétractation ne s'applique
             pas aux produits clairement personnalisés ou fabriqués sur mesure (couleur ou matériau de boîtier
             personnalisé hors catalogue standard), conformément à l'article L221-28 du Code de la consommation.
           </p>
           <p>
             Pour exercer ce droit, le client doit notifier sa décision par email à{" "}
-            <a href="mailto:contact@axionpad.fr" className="text-violet-400 hover:text-violet-300">
+            <a href="mailto:contact@axionpad.fr" className="text-[#E8431F] hover:text-[#E8431F]">
               contact@axionpad.fr
             </a>{" "}
             avant l'expiration du délai.
@@ -144,7 +144,7 @@ export default function CgvPage() {
           <p>
             Conformément aux articles L217-4 et suivants du Code de la consommation, les produits
             bénéficient de la garantie légale de conformité de{" "}
-            <strong className="text-zinc-200">2 ans</strong> à compter de la livraison.
+            <strong className="text-[#16130E]">2 ans</strong> à compter de la livraison.
           </p>
           <p>
             En cas de défaut de conformité, le client peut choisir entre la réparation ou le
@@ -155,7 +155,7 @@ export default function CgvPage() {
         <Section title="10. Service client">
           <p>
             Pour toute question ou réclamation :{" "}
-            <a href="mailto:contact@axionpad.fr" className="text-violet-400 hover:text-violet-300">
+            <a href="mailto:contact@axionpad.fr" className="text-[#E8431F] hover:text-[#E8431F]">
               contact@axionpad.fr
             </a>
           </p>
@@ -173,14 +173,14 @@ export default function CgvPage() {
               href="https://ec.europa.eu/consumers/odr"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-violet-400 hover:text-violet-300"
+              className="text-[#E8431F] hover:text-[#E8431F]"
             >
               ec.europa.eu/consumers/odr
             </a>.
           </p>
         </Section>
 
-        <p className="text-xs text-zinc-700 pt-8 border-t border-white/5">
+        <p className="text-xs text-[#16130E] pt-8 border-t border-[#16130E]/8">
           Dernière mise à jour : avril 2026
         </p>
 

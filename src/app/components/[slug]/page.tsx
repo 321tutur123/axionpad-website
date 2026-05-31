@@ -50,13 +50,12 @@ export default async function ComponentPage({ params }: { params: Promise<{ slug
           <div
             className="card aspect-square overflow-hidden flex items-center justify-center text-8xl select-none relative"
             style={{
-              borderColor: `${component.color}35`,
+              borderColor: `${component.color}40`,
               background: `
-                radial-gradient(circle at 38% 32%, ${component.color}35 0%, transparent 52%),
-                radial-gradient(circle at 72% 78%, rgba(108, 92, 231, 0.12) 0%, transparent 46%),
-                var(--color-bg-card)
+                radial-gradient(circle at 38% 32%, ${component.color}22 0%, transparent 55%),
+                var(--color-bg-soft)
               `,
-              boxShadow: `0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 40px rgba(0,0,0,0.45), 0 0 0 1px ${component.color}18`,
+              boxShadow: `0 1px 2px rgba(20,17,13,0.06), 0 12px 28px rgba(20,17,13,0.08)`,
             }}
           >
             <span className="relative z-[1]" aria-hidden>{emoji}</span>
